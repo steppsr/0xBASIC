@@ -1,0 +1,50 @@
+name: Compiler checks
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  compiler:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Install pinned toolchain
+        run: rustup toolchain install 1.95.0 --profile minimal --component rustfmt --component clippy
+      - run: cargo fmt --all -- --check
+      - run: cargo clippy --workspace --all-targets --locked -- -D warnings
+      - run: cargo test --workspace --locked
+      - run: cargo build --workspace --locked
+      - run: python tools/verify_m0.py
+      - run: python tools/verify_m1.py
+      - run: python tools/verify_m2b.py
+      - run: python tools/verify_m2b.py --locals
+      - run: python tools/verify_m2b.py --assignments
+      - run: python tools/verify_m2b.py --constants
+      - run: python tools/verify_m2b.py --conditions
+      - run: python tools/verify_m2a_bool.py
+      - run: python tools/verify_m2a_bool.py --short-circuit
+      - run: python tools/verify_m2_branches.py
+      - run: python tools/verify_m2_branches.py --elseif
+      - run: python tools/verify_m2_functions.py
+      - run: python tools/verify_m2_functions.py --bytes
+      - run: python tools/verify_m2_functions.py --byte-constants
+      - run: python tools/verify_m2_functions.py --byte-operations
+      - run: python tools/verify_m2_functions.py --sha256
+      - run: python tools/verify_m2_functions.py --integer-bytes
+      - run: python tools/verify_m2_functions.py --unsigned-bytes
+      - run: python tools/verify_m2_functions.py --strings
+      - run: python tools/verify_m2_functions.py --utf8-validation
+      - run: python tools/verify_m2_functions.py --pairs
+      - run: python tools/verify_m2_functions.py --list-literals
+      - run: python tools/verify_m2_functions.py --list-operations
+      - run: python tools/verify_m2_functions.py --list-constants
+      - run: python tools/verify_collections.py
+      - run: python tools/verify_m2.py
+      - run: python tools/verify_m3_inputs.py
+      - run: python tools/verify_m3_bindings.py

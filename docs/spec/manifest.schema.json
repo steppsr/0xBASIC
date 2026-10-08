@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "0xBASIC build manifest v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "compiler", "language_version", "abi_version", "target_profile", "optimization", "source", "contract", "fixed_parameters", "inputs", "bindings", "template", "puzzle"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "compiler": {
+      "type": "object", "additionalProperties": false,
+      "required": ["version", "rust_version", "cargo_lock_sha256"],
+      "properties": {"version": {"type": "string"}, "rust_version": {"const": "1.95.0"}, "cargo_lock_sha256": {"$ref": "#/$defs/hash"}}
+    },
+    "language_version": {"const": "0.1"},
+    "abi_version": {"const": 1},
+    "target_profile": {"const": "chia-clvm-0.19-strict-v1"},
+    "optimization": {"const": "none"},
+    "source": {
+      "type": "object", "additionalProperties": false,
+      "required": ["name", "sha256"],
+      "properties": {"name": {"type": "string", "pattern": "^[^/\\\\]+[.][bB][aA][sS]$"}, "sha256": {"$ref": "#/$defs/hash"}}
+    },
+    "contract": {"$ref": "#/$defs/name"},
+    "fixed_parameters": {"type": "array", "items": {"$ref": "#/$defs/field"}},
+    "inputs": {"type": "array", "items": {"$ref": "#/$defs/field"}},
+    "bindings": {"type": ["object", "null"]},
+    "template": {"allOf": [{"$ref": "#/$defs/artifact"}, {"properties": {"binary": {"const": "template.clvm"}, "hex": {"const": "template.hex"}}}]},
+    "puzzle": {"oneOf": [{"type": "null"}, {"allOf": [{"$ref": "#/$defs/artifact"}, {"properties": {"binary": {"const": "puzzle.clvm"}, "hex": {"const": "puzzle.hex"}}}]}]}
+  },
+  "allOf": [
+    {"if": {"properties": {"puzzle": {"type": "null"}}}, "then": {"properties": {"bindings": {"type": "null"}}}, "else": {"properties": {"bindings": {"type": "object"}}}}
+  ],
+  "$defs": {
+    "hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "name": {"type": "string", "pattern": "^[a-z][a-z0-9_]*$"},
+    "field": {
+      "type": "object", "additionalProperties": false, "required": ["name", "type"],
+      "properties": {"name": {"$ref": "#/$defs/name"}, "type": {"$ref": "#/$defs/type"}}
+    },
+    "type": {
+      "oneOf": [
+        {"type": "object", "additionalProperties": false, "required": ["kind"], "properties": {"kind": {"enum": ["INTEGER", "BOOLEAN", "BYTES", "STRING", "PUZZLEHASH", "PUBLICKEY", "AMOUNT"]}}},
+        {"type": "object", "additionalProperties": false, "required": ["kind", "element"], "properties": {"kind": {"const": "LIST"}, "element": {"$ref": "#/$defs/type"}}},
+        {"type": "object", "additionalProperties": false, "required": ["kind", "first", "rest"], "properties": {"kind": {"const": "PAIR"}, "first": {"$ref": "#/$defs/type"}, "rest": {"$ref": "#/$defs/type"}}}
+      ]
+    },
+    "artifact": {
+      "type": "object", "additionalProperties": false,
+      "required": ["binary", "hex", "program_sha256", "tree_hash"],
+      "properties": {
+        "binary": {"enum": ["template.clvm", "puzzle.clvm"]},
+        "hex": {"enum": ["template.hex", "puzzle.hex"]},
+        "program_sha256": {"$ref": "#/$defs/hash"},
+        "tree_hash": {"$ref": "#/$defs/hash"}
+      }
+    }
+  }
+}

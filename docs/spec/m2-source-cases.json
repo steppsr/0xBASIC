@@ -1,0 +1,104 @@
+{
+  "schema_version": 1,
+  "status": "Planned M2 acceptance inputs; not compiler test results",
+  "cases": [
+    {
+      "id": "integer-declaration-reference",
+      "requires": "M2-3a",
+      "check": "accept",
+      "source": "CONTRACT Demo()\n DIM height AS INTEGER = 100\n EMIT ASSERT_HEIGHT_ABSOLUTE(HEIGHT)\nEND CONTRACT\n",
+      "execution": {"conditions": [[83, 100]]}
+    },
+    {
+      "id": "reassignment-preserves-prior-emission",
+      "requires": "M2-3b",
+      "check": "accept",
+      "source": "CONTRACT Demo()\n DIM height = 10\n EMIT ASSERT_HEIGHT_ABSOLUTE(height)\n height = height + 5\n EMIT ASSERT_HEIGHT_ABSOLUTE(height)\nEND CONTRACT\n",
+      "execution": {"conditions": [[83, 10], [83, 15]]}
+    },
+    {
+      "id": "arbitrary-integer-intermediate",
+      "requires": "M2-3a",
+      "check": "accept",
+      "source": "CONTRACT Demo()\n DIM huge AS INTEGER = 18446744073709551616\n EMIT ASSERT_HEIGHT_ABSOLUTE(huge - 18446744073709551615)\nEND CONTRACT\n",
+      "execution": {"conditions": [[83, 1]]}
+    },
+    {
+      "id": "initializer-cannot-see-itself",
+      "requires": "M2-3a",
+      "check": "reject",
+      "diagnostic": "E0200",
+      "source": "CONTRACT Demo()\n DIM height AS INTEGER = height\nEND CONTRACT\n"
+    },
+    {
+      "id": "local-cannot-shadow-contract",
+      "requires": "M2-3a",
+      "check": "reject",
+      "diagnostic": "E0201",
+      "source": "CONTRACT Demo()\n DIM demo AS INTEGER = 1\nEND CONTRACT\n"
+    },
+    {
+      "id": "constant-chain",
+      "requires": "M2-3c",
+      "check": "accept",
+      "source": "CONTRACT Demo()\n CONST base AS INTEGER = &H0A\n CONST height = base * 2\n EMIT ASSERT_HEIGHT_ABSOLUTE(height)\nEND CONTRACT\n",
+      "execution": {"conditions": [[83, 20]]}
+    },
+    {
+      "id": "constant-assignment-forbidden",
+      "requires": "M2-3c",
+      "check": "reject",
+      "diagnostic": "E0203",
+      "source": "CONTRACT Demo()\n CONST height = 10\n height = 11\nEND CONTRACT\n"
+    },
+    {
+      "id": "evaluated-height-range-failure",
+      "requires": "M2-2b",
+      "check": "accept",
+      "source": "CONTRACT Demo()\n EMIT ASSERT_HEIGHT_ABSOLUTE(-1)\nEND CONTRACT\n",
+      "execution": {"diagnostic": "E0500"}
+    },
+    {
+      "id": "unused-initializer-still-fails",
+      "requires": "M2-4c",
+      "check": "accept",
+      "source": "CONTRACT Demo()\n DIM unused AS CONDITION = ASSERT_HEIGHT_ABSOLUTE(-1)\nEND CONTRACT\n",
+      "execution": {"diagnostic": "E0500"}
+    },
+    {
+      "id": "unselected-height-range-failure-skipped",
+      "requires": "M2-5a",
+      "check": "accept",
+      "source": "CONTRACT Demo()\n IF FALSE THEN\n EMIT ASSERT_HEIGHT_ABSOLUTE(-1)\n END IF\n EMIT ASSERT_HEIGHT_ABSOLUTE(10)\nEND CONTRACT\n",
+      "execution": {"conditions": [[83, 10]]}
+    },
+    {
+      "id": "unselected-branch-still-type-checked",
+      "requires": "M2-5a",
+      "check": "reject",
+      "diagnostic": "E0202",
+      "source": "CONTRACT Demo()\n IF FALSE THEN\n EMIT ASSERT_HEIGHT_ABSOLUTE(TRUE)\n END IF\nEND CONTRACT\n"
+    },
+    {
+      "id": "branch-retains-incoming-local",
+      "requires": "M2-5a",
+      "check": "accept",
+      "source": "CONTRACT Demo()\n DIM height = 10\n IF FALSE THEN\n height = 99\n END IF\n EMIT ASSERT_HEIGHT_ABSOLUTE(height)\nEND CONTRACT\n",
+      "execution": {"conditions": [[83, 10]]}
+    },
+    {
+      "id": "elseif-emission-order",
+      "requires": "M2-5b",
+      "check": "accept",
+      "source": "CONTRACT Demo()\n EMIT ASSERT_HEIGHT_ABSOLUTE(1)\n IF FALSE THEN\n EMIT ASSERT_HEIGHT_ABSOLUTE(99)\n ELSEIF TRUE THEN\n EMIT ASSERT_HEIGHT_ABSOLUTE(2)\n ELSE\n EMIT ASSERT_HEIGHT_ABSOLUTE(98)\n END IF\n EMIT ASSERT_HEIGHT_ABSOLUTE(3)\nEND CONTRACT\n",
+      "execution": {"conditions": [[83, 1], [83, 2], [83, 3]]}
+    },
+    {
+      "id": "return-skips-later-runtime-failure",
+      "requires": "M2-6b",
+      "check": "accept",
+      "source": "FUNCTION Height() AS INTEGER\n RETURN 10\n ASSERT FALSE\nEND FUNCTION\nCONTRACT Demo()\n EMIT ASSERT_HEIGHT_ABSOLUTE(Height())\nEND CONTRACT\n",
+      "execution": {"conditions": [[83, 10]]}
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "source": "CONTRACT HeightFixture()\n    EMIT ASSERT_HEIGHT_ABSOLUTE(100)\nEND CONTRACT\n",
+  "template_hex": "ff02ffff03ffff07ff0180ffff01ff02ffff03ffff09ff02ffff018080ffff01ff02ffff03ffff09ff03ffff018080ffff01ff01ffff53ff648080ffff01ff088080ff0180ffff01ff088080ff0180ffff01ff088080ff0180",
+  "puzzle_hex": "ff02ffff01ff02ffff03ffff07ff0180ffff01ff02ffff03ffff09ff02ffff018080ffff01ff02ffff03ffff09ff03ffff018080ffff01ff01ffff53ff648080ffff01ff088080ff0180ffff01ff088080ff0180ffff01ff088080ff0180ffff04ffff0180ff018080",
+  "template_tree_hash": "e787b99cdcb93689f6ea433791a90e2714e4ddd8b0e2c278842f8306ad00f9c3",
+  "puzzle_tree_hash": "930c99bde18d09742899932243d754a69a45e58e61f71207e01d294c5f65f469",
+  "result_hex": "ffff53ff648080",
+  "cost": "1309"
+}

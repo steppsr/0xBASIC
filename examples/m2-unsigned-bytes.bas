@@ -1,0 +1,11 @@
+CONTRACT UnsignedBytesFixture()
+    DIM small AS BYTES = U32BE(128)
+    DIM large AS BYTES = Encode(18446744073709551615)
+    ASSERT small = 0x00000080
+    ASSERT large = 0xffffffffffffffff
+    EMIT ASSERT_HEIGHT_ABSOLUTE(BYTE_LENGTH(CONCAT(small, large)))
+END CONTRACT
+
+FUNCTION Encode(value AS INTEGER) AS BYTES
+    RETURN U64BE(value)
+END FUNCTION

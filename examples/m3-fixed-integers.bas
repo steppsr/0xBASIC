@@ -1,0 +1,4 @@
+CONTRACT FixedHeight(base AS INTEGER)
+    INPUT offset AS INTEGER
+    EMIT ASSERT_HEIGHT_ABSOLUTE(base + offset)
+END CONTRACT

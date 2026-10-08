@@ -1,0 +1,129 @@
+{
+  "schema_version": 1,
+  "checkpoint": "M2-8",
+  "m0": [
+    {
+      "id": "empty-contract",
+      "status": "active"
+    },
+    {
+      "id": "case-and-crlf",
+      "status": "active"
+    },
+    {
+      "id": "precedence",
+      "status": "active"
+    },
+    {
+      "id": "branch-assignment",
+      "status": "active"
+    },
+    {
+      "id": "emission-order",
+      "status": "deferred",
+      "reason": "Requires AS_AMOUNT and ASSERT_MY_AMOUNT (M3)."
+    },
+    {
+      "id": "short-circuit",
+      "status": "active"
+    },
+    {
+      "id": "pure-function",
+      "status": "active"
+    },
+    {
+      "id": "input-shape",
+      "status": "deferred",
+      "reason": "Requires nonempty INPUT declarations and solution decoding (M3)."
+    },
+    {
+      "id": "pair-and-list",
+      "status": "active"
+    },
+    {
+      "id": "doubled-quotes",
+      "status": "active"
+    },
+    {
+      "id": "full-payment",
+      "status": "deferred",
+      "reason": "Requires fixed bindings, domain types and signature/payment conditions (M3), then spend validation (M4)."
+    },
+    {
+      "id": "odd-byte-literal",
+      "status": "active"
+    },
+    {
+      "id": "decimal-leading-zero",
+      "status": "active"
+    },
+    {
+      "id": "float-literal",
+      "status": "active"
+    },
+    {
+      "id": "unknown-name",
+      "status": "active"
+    },
+    {
+      "id": "case-collision",
+      "status": "active"
+    },
+    {
+      "id": "wrong-emit-type",
+      "status": "active"
+    },
+    {
+      "id": "no-truthiness",
+      "status": "active"
+    },
+    {
+      "id": "immutable-binding",
+      "status": "deferred",
+      "reason": "Requires fixed contract parameters; generic unsupported syntax does not establish the specified E0203 immutability rule (M3)."
+    },
+    {
+      "id": "missing-return",
+      "status": "active"
+    },
+    {
+      "id": "function-emission",
+      "status": "active"
+    },
+    {
+      "id": "recursive-call",
+      "status": "active"
+    },
+    {
+      "id": "empty-list-inference",
+      "status": "active"
+    },
+    {
+      "id": "branch-local-escape",
+      "status": "active"
+    },
+    {
+      "id": "chained-comparison",
+      "status": "active"
+    },
+    {
+      "id": "contract-return",
+      "status": "active"
+    },
+    {
+      "id": "condition-input",
+      "status": "deferred",
+      "reason": "Requires INPUT schema validation; generic E0205 rejection does not establish the specific CONDITION boundary prohibition (M3)."
+    },
+    {
+      "id": "wrong-arity",
+      "status": "active"
+    },
+    {
+      "id": "second-contract",
+      "status": "active"
+    }
+  ],
+  "m2": "all 14 cases active",
+  "collections": "31 active; list-const-deferred is historical and superseded"
+}

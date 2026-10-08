@@ -1,0 +1,231 @@
+{
+  "schema_version": 1,
+  "status": "M3-1 active source, JSON solution and raw solution conformance cases",
+  "cases": [
+    {
+      "id": "raw-unused-zero",
+      "requires": "M3-1",
+      "route": "raw-solution",
+      "source": "CONTRACT Demo()\nINPUT n AS INTEGER\nASSERT TRUE\nEND CONTRACT\n",
+      "solution_hex": "ff8080",
+      "execution": {
+        "conditions": []
+      }
+    },
+    {
+      "id": "raw-unused-negative-one",
+      "requires": "M3-1",
+      "route": "raw-solution",
+      "source": "CONTRACT Demo()\nINPUT n AS INTEGER\nASSERT TRUE\nEND CONTRACT\n",
+      "solution_hex": "ff81ff80",
+      "execution": {
+        "conditions": []
+      }
+    },
+    {
+      "id": "raw-unused-missing",
+      "requires": "M3-1",
+      "route": "raw-solution",
+      "source": "CONTRACT Demo()\nINPUT n AS INTEGER\nASSERT TRUE\nEND CONTRACT\n",
+      "solution_hex": "80",
+      "execution": {
+        "diagnostic": "E0500"
+      }
+    },
+    {
+      "id": "raw-unused-extra",
+      "requires": "M3-1",
+      "route": "raw-solution",
+      "source": "CONTRACT Demo()\nINPUT n AS INTEGER\nASSERT TRUE\nEND CONTRACT\n",
+      "solution_hex": "ff01ff0280",
+      "execution": {
+        "diagnostic": "E0500"
+      }
+    },
+    {
+      "id": "raw-unused-noncanonical-zero",
+      "requires": "M3-1",
+      "route": "raw-solution",
+      "source": "CONTRACT Demo()\nINPUT n AS INTEGER\nASSERT TRUE\nEND CONTRACT\n",
+      "solution_hex": "ff0080",
+      "execution": {
+        "diagnostic": "E0500"
+      }
+    },
+    {
+      "id": "raw-unused-noncanonical-positive",
+      "requires": "M3-1",
+      "route": "raw-solution",
+      "source": "CONTRACT Demo()\nINPUT n AS INTEGER\nASSERT TRUE\nEND CONTRACT\n",
+      "solution_hex": "ff82000180",
+      "execution": {
+        "diagnostic": "E0500"
+      }
+    },
+    {
+      "id": "raw-unused-pair-element",
+      "requires": "M3-1",
+      "route": "raw-solution",
+      "source": "CONTRACT Demo()\nINPUT n AS INTEGER\nASSERT TRUE\nEND CONTRACT\n",
+      "solution_hex": "ffff018080",
+      "execution": {
+        "diagnostic": "E0500"
+      }
+    },
+    {
+      "id": "raw-unused-improper-tail",
+      "requires": "M3-1",
+      "route": "raw-solution",
+      "source": "CONTRACT Demo()\nINPUT n AS INTEGER\nASSERT TRUE\nEND CONTRACT\n",
+      "solution_hex": "ff0102",
+      "execution": {
+        "diagnostic": "E0500"
+      }
+    },
+    {
+      "id": "json-canonical",
+      "requires": "M3-1",
+      "route": "json-solution",
+      "source": "CONTRACT Demo()\nINPUT n AS INTEGER\nASSERT TRUE\nEND CONTRACT\n",
+      "solution_json_text": "{\"N\":\"7\"}",
+      "execution": {
+        "conditions": []
+      }
+    },
+    {
+      "id": "json-large-integer",
+      "requires": "M3-1",
+      "route": "json-solution",
+      "source": "CONTRACT Demo()\nINPUT n AS INTEGER\nASSERT TRUE\nEND CONTRACT\n",
+      "solution_json_text": "{\"n\":\"18446744073709551616\"}",
+      "execution": {
+        "conditions": []
+      }
+    },
+    {
+      "id": "json-number",
+      "requires": "M3-1",
+      "route": "json-solution",
+      "source": "CONTRACT Demo()\nINPUT n AS INTEGER\nASSERT TRUE\nEND CONTRACT\n",
+      "solution_json_text": "{\"n\":7}",
+      "execution": {
+        "diagnostic": "E0300"
+      }
+    },
+    {
+      "id": "json-negative-zero",
+      "requires": "M3-1",
+      "route": "json-solution",
+      "source": "CONTRACT Demo()\nINPUT n AS INTEGER\nASSERT TRUE\nEND CONTRACT\n",
+      "solution_json_text": "{\"n\":\"-0\"}",
+      "execution": {
+        "diagnostic": "E0300"
+      }
+    },
+    {
+      "id": "json-missing",
+      "requires": "M3-1",
+      "route": "json-solution",
+      "source": "CONTRACT Demo()\nINPUT n AS INTEGER\nASSERT TRUE\nEND CONTRACT\n",
+      "solution_json_text": "{}",
+      "execution": {
+        "diagnostic": "E0300"
+      }
+    },
+    {
+      "id": "json-extra",
+      "requires": "M3-1",
+      "route": "json-solution",
+      "source": "CONTRACT Demo()\nINPUT n AS INTEGER\nASSERT TRUE\nEND CONTRACT\n",
+      "solution_json_text": "{\"n\":\"7\",\"extra\":\"1\"}",
+      "execution": {
+        "diagnostic": "E0300"
+      }
+    },
+    {
+      "id": "json-duplicate",
+      "requires": "M3-1",
+      "route": "json-solution",
+      "source": "CONTRACT Demo()\nINPUT n AS INTEGER\nASSERT TRUE\nEND CONTRACT\n",
+      "solution_json_text": "{\"n\":\"7\",\"n\":\"8\"}",
+      "execution": {
+        "diagnostic": "E0300"
+      }
+    },
+    {
+      "id": "json-case-collision",
+      "requires": "M3-1",
+      "route": "json-solution",
+      "source": "CONTRACT Demo()\nINPUT n AS INTEGER\nASSERT TRUE\nEND CONTRACT\n",
+      "solution_json_text": "{\"n\":\"7\",\"N\":\"8\"}",
+      "execution": {
+        "diagnostic": "E0300"
+      }
+    },
+    {
+      "id": "json-escaped-collision",
+      "requires": "M3-1",
+      "route": "json-solution",
+      "source": "CONTRACT Demo()\nINPUT n AS INTEGER\nASSERT TRUE\nEND CONTRACT\n",
+      "solution_json_text": "{\"n\":\"7\",\"\\u006e\":\"8\"}",
+      "execution": {
+        "diagnostic": "E0300"
+      }
+    },
+    {
+      "id": "source-immutable",
+      "requires": "M3-1",
+      "route": "source",
+      "source": "CONTRACT Demo()\nINPUT n AS INTEGER\nn = 2\nEND CONTRACT\n",
+      "check": "reject",
+      "diagnostic": "E0203"
+    },
+    {
+      "id": "source-late",
+      "requires": "M3-1",
+      "route": "source",
+      "source": "CONTRACT Demo()\nASSERT TRUE\nINPUT n AS INTEGER\nEND CONTRACT\n",
+      "check": "reject",
+      "diagnostic": "E0205"
+    },
+    {
+      "id": "source-duplicate",
+      "requires": "M3-1",
+      "route": "source",
+      "source": "CONTRACT Demo()\nINPUT n AS INTEGER\nINPUT N AS INTEGER\nEND CONTRACT\n",
+      "check": "reject",
+      "diagnostic": "E0201"
+    },
+    {
+      "id": "source-constant-dependency",
+      "requires": "M3-1",
+      "route": "source",
+      "source": "CONTRACT Demo()\nINPUT n AS INTEGER\nCONST x = n\nEND CONTRACT\n",
+      "check": "reject",
+      "diagnostic": "E0205"
+    },
+    {
+      "id": "source-nested-condition",
+      "requires": "M3-1",
+      "route": "source",
+      "source": "CONTRACT Demo()\nINPUT n AS LIST OF CONDITION\nEND CONTRACT\n",
+      "check": "reject",
+      "diagnostic": "E0205"
+    },
+    {
+      "id": "declaration-order",
+      "requires": "M3-1",
+      "route": "json-solution",
+      "source": "CONTRACT Demo()\nINPUT left AS INTEGER\nINPUT right AS INTEGER\nEMIT ASSERT_HEIGHT_ABSOLUTE(left - right)\nEND CONTRACT\n",
+      "solution_json_text": "{\"RIGHT\":\"2\",\"LEFT\":\"9\"}",
+      "execution": {
+        "conditions": [
+          [
+            83,
+            7
+          ]
+        ]
+      }
+    }
+  ]
+}

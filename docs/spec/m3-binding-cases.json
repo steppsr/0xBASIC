@@ -1,0 +1,119 @@
+{
+  "schema_version": 1,
+  "source": "CONTRACT Demo(base AS INTEGER, step AS INTEGER)\nINPUT offset AS INTEGER\nEMIT ASSERT_HEIGHT_ABSOLUTE(base + step + offset)\nEND CONTRACT\n",
+  "solution": {
+    "offset": "7"
+  },
+  "cases": [
+    {
+      "id": "normal",
+      "bindings_json": "{\"base\":\"100\",\"step\":\"2\"}",
+      "execution": {
+        "conditions": [
+          [
+            83,
+            109
+          ]
+        ]
+      }
+    },
+    {
+      "id": "case-and-order",
+      "bindings_json": "{\"STEP\":\"2\",\"BASE\":\"100\"}",
+      "execution": {
+        "conditions": [
+          [
+            83,
+            109
+          ]
+        ]
+      }
+    },
+    {
+      "id": "changed",
+      "bindings_json": "{\"base\":\"101\",\"step\":\"2\"}",
+      "execution": {
+        "conditions": [
+          [
+            83,
+            110
+          ]
+        ]
+      }
+    },
+    {
+      "id": "negative",
+      "bindings_json": "{\"base\":\"-9\",\"step\":\"2\"}",
+      "execution": {
+        "conditions": [
+          [
+            83,
+            0
+          ]
+        ]
+      }
+    },
+    {
+      "id": "height-range",
+      "bindings_json": "{\"base\":\"4294967295\",\"step\":\"2\"}",
+      "execution": {
+        "diagnostic": "E0500"
+      }
+    },
+    {
+      "id": "missing",
+      "bindings_json": "{}",
+      "diagnostic": "E0301"
+    },
+    {
+      "id": "missing-field",
+      "bindings_json": "{\"base\":\"100\"}",
+      "diagnostic": "E0301"
+    },
+    {
+      "id": "extra",
+      "bindings_json": "{\"base\":\"100\",\"step\":\"2\",\"extra\":\"3\"}",
+      "diagnostic": "E0301"
+    },
+    {
+      "id": "number",
+      "bindings_json": "{\"base\":100,\"step\":\"2\"}",
+      "diagnostic": "E0301"
+    },
+    {
+      "id": "negative-zero",
+      "bindings_json": "{\"base\":\"-0\",\"step\":\"2\"}",
+      "diagnostic": "E0301"
+    },
+    {
+      "id": "leading-zero",
+      "bindings_json": "{\"base\":\"0100\",\"step\":\"2\"}",
+      "diagnostic": "E0301"
+    },
+    {
+      "id": "plus",
+      "bindings_json": "{\"base\":\"+100\",\"step\":\"2\"}",
+      "diagnostic": "E0301"
+    },
+    {
+      "id": "duplicate",
+      "bindings_json": "{\"base\":\"100\",\"step\":\"2\",\"base\":\"101\"}",
+      "diagnostic": "E0301"
+    },
+    {
+      "id": "case-collision",
+      "bindings_json": "{\"base\":\"100\",\"step\":\"2\",\"BASE\":\"101\"}",
+      "diagnostic": "E0301"
+    },
+    {
+      "id": "escaped-collision",
+      "bindings_json": "{\"base\":\"100\",\"step\":\"2\",\"\\u0062ase\":\"101\"}",
+      "diagnostic": "E0301"
+    },
+    {
+      "id": "shape",
+      "bindings_json": "[]",
+      "diagnostic": "E0301"
+    }
+  ]
+}

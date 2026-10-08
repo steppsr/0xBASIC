@@ -1,0 +1,86 @@
+{
+  "assessment_date": "2026-10-04",
+  "purpose": "M0 source-level dependency and semantics review; not build or simulator pass evidence",
+  "sources": [
+    {
+      "file": "clvmr-metadata.json",
+      "url": "https://crates.io/api/v1/crates/clvmr",
+      "sha256": "abad1de3dd32586da53f6c7ffd57e228f41f61b25b4251e79004a9ad4e52e435"
+    },
+    {
+      "file": "chia-pyproject.toml",
+      "url": "https://raw.githubusercontent.com/Chia-Network/chia-blockchain/98aba3d176b24b5814e84a33f9d1c11af67a9cdc/pyproject.toml",
+      "sha256": "3f0ecaa253c608f8bc7a80a349f0a2c0ccfef54eb5bb2042336be857b7c90dd9"
+    },
+    {
+      "file": "chia-default-constants.py",
+      "url": "https://raw.githubusercontent.com/Chia-Network/chia-blockchain/98aba3d176b24b5814e84a33f9d1c11af67a9cdc/chia/consensus/default_constants.py",
+      "sha256": "76c087c518e6765d1e38322f02b7f9c56d5feba004433eac724be2c188c17bd0"
+    },
+    {
+      "file": "chia-spend-sim.py",
+      "url": "https://raw.githubusercontent.com/Chia-Network/chia-blockchain/98aba3d176b24b5814e84a33f9d1c11af67a9cdc/chia/_tests/util/spend_sim.py",
+      "sha256": "23ca69d24e5196c41dcb0ec7d43181076b83cee9be675ea299af2877ee54a054"
+    },
+    {
+      "file": "chia-mempool-manager.py",
+      "url": "https://raw.githubusercontent.com/Chia-Network/chia-blockchain/98aba3d176b24b5814e84a33f9d1c11af67a9cdc/chia/full_node/mempool_manager.py",
+      "sha256": "61c501fa89183e065844a80a1bfba4a0dd677163c4882dea88e691cfb5425fa1"
+    },
+    {
+      "file": "chia-commit.json",
+      "url": "https://api.github.com/repos/Chia-Network/chia-blockchain/commits/2.7.4",
+      "sha256": "46539d1ae824cf6384cddde370ecaa695a0f2f484f867b8c9b527738e3652dcf"
+    },
+    {
+      "file": "chia-rs-commit.json",
+      "url": "https://api.github.com/repos/Chia-Network/chia_rs/commits/0.48.0",
+      "sha256": "e73afa47b75ec11fd2b8d5f7e2e29396298e3f0a4eedf4c10c0df5926c66bf9d"
+    },
+    {
+      "file": "chia-rs-tree.json",
+      "url": "https://api.github.com/repos/Chia-Network/chia_rs/git/trees/0.48.0?recursive=1",
+      "sha256": "b8bf623f864b76d2174b49e6bb1e661e5e8eeaa80229d64f4983ef8da5025280"
+    },
+    {
+      "file": "clvmr-0.19.0.crate",
+      "url": "https://static.crates.io/crates/clvmr/clvmr-0.19.0.crate",
+      "sha256": "3a9d2342687e3210c4b7f8556966ee80e4106d451dd4d8b14b1e446412c640a4"
+    },
+    {
+      "file": "chia-rs-Cargo.toml",
+      "url": "https://raw.githubusercontent.com/Chia-Network/chia_rs/e11b3c8aa97af8f5d0915d72d4ac7b3c3da00cc2/Cargo.toml",
+      "sha256": "2a7425e492471f314da979c6da6894928b60c374896cfccbeb7b6c857c10afea"
+    },
+    {
+      "file": "chia-rs-conditions.rs",
+      "url": "https://raw.githubusercontent.com/Chia-Network/chia_rs/e11b3c8aa97af8f5d0915d72d4ac7b3c3da00cc2/crates/chia-consensus/src/conditions.rs",
+      "sha256": "81a7b70dd53744f2388d11f6c3023fab930ff07454428b961c7c04f4c05b63a5"
+    },
+    {
+      "file": "chia-rs-flags.rs",
+      "url": "https://raw.githubusercontent.com/Chia-Network/chia_rs/e11b3c8aa97af8f5d0915d72d4ac7b3c3da00cc2/crates/chia-consensus/src/flags.rs",
+      "sha256": "71c21e8de75b774926446f42b732e986e60415e70623587d6833c009f2748cd5"
+    },
+    {
+      "file": "chia-rs-coin.rs",
+      "url": "https://raw.githubusercontent.com/Chia-Network/chia_rs/e11b3c8aa97af8f5d0915d72d4ac7b3c3da00cc2/crates/chia-protocol/src/coin.rs",
+      "sha256": "f21862ad7bd538fe9f66f120a1842f252f85964a178650d6087d194defdafb8e"
+    },
+    {
+      "file": "chia-rs-public-key.rs",
+      "url": "https://raw.githubusercontent.com/Chia-Network/chia_rs/e11b3c8aa97af8f5d0915d72d4ac7b3c3da00cc2/crates/chia-bls/src/public_key.rs",
+      "sha256": "26dd2c85109826c792d43d0cb6cb98c4c5fe077603096c0fab6a57baa34e0e03"
+    },
+    {
+      "file": "chia-rs-time-locks.rs",
+      "url": "https://raw.githubusercontent.com/Chia-Network/chia_rs/e11b3c8aa97af8f5d0915d72d4ac7b3c3da00cc2/crates/chia-consensus/src/check_time_locks.rs",
+      "sha256": "8be0b8c559094687f5e40b529f2394efbaad4082a80aa52eb3efcf9b460fb568"
+    },
+    {
+      "file": "chia-rs-spend-validation.rs",
+      "url": "https://raw.githubusercontent.com/Chia-Network/chia_rs/e11b3c8aa97af8f5d0915d72d4ac7b3c3da00cc2/crates/chia-consensus/src/spendbundle_validation.rs",
+      "sha256": "c33f95bccae0f179223c69c17b06578030235587a9c1862d9d16aa59ce40551e"
+    }
+  ]
+}

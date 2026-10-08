@@ -1,0 +1,309 @@
+{
+  "schema_version": 1,
+  "status": "Active collection conformance cases; superseded cases retain historical expectations",
+  "cases": [
+    {
+      "id": "pair-components",
+      "requires": "M2-7b2",
+      "check": "accept",
+      "source": "CONTRACT Demo()\nDIM p AS PAIR OF (INTEGER, BYTES) = PAIR(7,0x0001)\nEMIT ASSERT_HEIGHT_ABSOLUTE(FIRST(p))\nASSERT REST(p) = 0x0001\nEND CONTRACT\n",
+      "execution": {
+        "conditions": [
+          [
+            83,
+            7
+          ]
+        ]
+      }
+    },
+    {
+      "id": "nested-pair",
+      "requires": "M2-7b2",
+      "check": "accept",
+      "source": "CONTRACT Demo()\nDIM p = PAIR(PAIR(1,TRUE),\"hi\")\nASSERT FIRST(FIRST(p)) = 1\nASSERT REST(FIRST(p))\nASSERT REST(p) = \"hi\"\nEND CONTRACT\n",
+      "execution": {
+        "conditions": []
+      }
+    },
+    {
+      "id": "pair-return-and-branch",
+      "requires": "M2-7b2",
+      "check": "accept",
+      "source": "CONTRACT Demo()\nDIM p = Make(4)\nIF TRUE THEN\np = PAIR(5,0x00)\nEND IF\nEMIT ASSERT_HEIGHT_ABSOLUTE(FIRST(p))\nEND CONTRACT\nFUNCTION Make(n AS INTEGER) AS PAIR OF (INTEGER, BYTES)\nRETURN PAIR(n,0x)\nEND FUNCTION\n",
+      "execution": {
+        "conditions": [
+          [
+            83,
+            5
+          ]
+        ]
+      }
+    },
+    {
+      "id": "pair-argument-eager",
+      "requires": "M2-7b2",
+      "check": "accept",
+      "source": "CONTRACT Demo()\nDIM p = PAIR(1,ASSERT_HEIGHT_ABSOLUTE(-1))\nEND CONTRACT\n",
+      "execution": {
+        "diagnostic": "E0500"
+      }
+    },
+    {
+      "id": "pair-condition-projection",
+      "requires": "M2-7b2",
+      "check": "accept",
+      "source": "CONTRACT Demo()\nDIM p = PAIR(ASSERT_HEIGHT_ABSOLUTE(7),TRUE)\nEMIT FIRST(p)\nEND CONTRACT\n",
+      "execution": {
+        "conditions": [
+          [
+            83,
+            7
+          ]
+        ]
+      }
+    },
+    {
+      "id": "pair-equality-forbidden",
+      "requires": "M2-7b2",
+      "check": "reject",
+      "source": "CONTRACT Demo()\nASSERT PAIR(1,2) = PAIR(1,2)\nEND CONTRACT\n",
+      "diagnostic": "E0202"
+    },
+    {
+      "id": "scalar-access-forbidden",
+      "requires": "M2-7b2",
+      "check": "reject",
+      "source": "CONTRACT Demo()\nDIM n = FIRST(1)\nEND CONTRACT\n",
+      "diagnostic": "E0202"
+    },
+    {
+      "id": "pair-const-call-forbidden",
+      "requires": "M2-7b2",
+      "check": "reject",
+      "source": "CONTRACT Demo()\nCONST p = PAIR(1,2)\nEND CONTRACT\n",
+      "diagnostic": "E0205"
+    },
+    {
+      "id": "typed-empty-list",
+      "requires": "M2-7b3",
+      "check": "accept",
+      "source": "CONTRACT Demo()\nDIM xs AS LIST OF INTEGER = []\nEND CONTRACT\n",
+      "execution": {
+        "conditions": []
+      }
+    },
+    {
+      "id": "inferred-homogeneous-list",
+      "requires": "M2-7b3",
+      "check": "accept",
+      "source": "CONTRACT Demo()\nDIM xs = [1,2,3]\nEND CONTRACT\n",
+      "execution": {
+        "conditions": []
+      }
+    },
+    {
+      "id": "untyped-empty-list",
+      "requires": "M2-7b3",
+      "check": "reject",
+      "source": "CONTRACT Demo()\nDIM xs = []\nEND CONTRACT\n",
+      "diagnostic": "E0202"
+    },
+    {
+      "id": "heterogeneous-list",
+      "requires": "M2-7b3",
+      "check": "reject",
+      "source": "CONTRACT Demo()\nDIM xs = [1,TRUE]\nEND CONTRACT\n",
+      "diagnostic": "E0202"
+    },
+    {
+      "id": "nested-contextual-empty-list",
+      "requires": "M2-7b3",
+      "check": "accept",
+      "source": "CONTRACT Demo()\nDIM xs AS LIST OF LIST OF INTEGER = [[],[1]]\nEND CONTRACT\n",
+      "execution": {
+        "conditions": []
+      }
+    },
+    {
+      "id": "no-later-sibling-inference",
+      "requires": "M2-7b3",
+      "check": "reject",
+      "source": "CONTRACT Demo()\nDIM xs = [[],[1]]\nEND CONTRACT\n",
+      "diagnostic": "E0202"
+    },
+    {
+      "id": "empty-list-assignment-return-argument",
+      "requires": "M2-7b3",
+      "check": "accept",
+      "source": "CONTRACT Demo()\nDIM xs AS LIST OF INTEGER = [1]\nxs = []\nDIM ys = Echo([])\nEND CONTRACT\nFUNCTION Echo(xs AS LIST OF INTEGER) AS LIST OF INTEGER\nRETURN []\nEND FUNCTION\n",
+      "execution": {
+        "conditions": []
+      }
+    },
+    {
+      "id": "pair-context-propagates",
+      "requires": "M2-7b3",
+      "check": "accept",
+      "source": "CONTRACT Demo()\nDIM p AS PAIR OF (LIST OF INTEGER, BYTES) = PAIR([],0x)\nEND CONTRACT\n",
+      "execution": {
+        "conditions": []
+      }
+    },
+    {
+      "id": "list-invariance",
+      "requires": "M2-7b3",
+      "check": "reject",
+      "source": "CONTRACT Demo()\nDIM xs AS LIST OF BYTES = [\"a\"]\nEND CONTRACT\n",
+      "diagnostic": "E0202"
+    },
+    {
+      "id": "list-equality-forbidden",
+      "requires": "M2-7b3",
+      "check": "reject",
+      "source": "CONTRACT Demo()\nASSERT [1] = [1]\nEND CONTRACT\n",
+      "diagnostic": "E0202"
+    },
+    {
+      "id": "emit-list-forbidden",
+      "requires": "M2-7b3",
+      "check": "reject",
+      "source": "CONTRACT Demo()\nEMIT [ASSERT_HEIGHT_ABSOLUTE(1)]\nEND CONTRACT\n",
+      "diagnostic": "E0202"
+    },
+    {
+      "id": "list-element-eager",
+      "requires": "M2-7b3",
+      "check": "accept",
+      "source": "CONTRACT Demo()\nDIM xs = [ASSERT_HEIGHT_ABSOLUTE(-1)]\nEND CONTRACT\n",
+      "execution": {
+        "diagnostic": "E0500"
+      }
+    },
+    {
+      "id": "list-const-deferred",
+      "requires": "M2-7b3",
+      "check": "reject",
+      "source": "CONTRACT Demo()\nCONST xs AS LIST OF INTEGER = []\nEND CONTRACT\n",
+      "diagnostic": "E0205",
+      "superseded_by": "M2-7b5"
+    },
+    {
+      "id": "list-access-and-cons",
+      "requires": "M2-7b4",
+      "check": "accept",
+      "source": "CONTRACT Demo()\nDIM xs AS LIST OF INTEGER = []\nxs = CONS(7,xs)\nEMIT ASSERT_HEIGHT_ABSOLUTE(FIRST(xs))\nASSERT LIST_LENGTH(REST(xs)) = 0\nEND CONTRACT\n",
+      "execution": {
+        "conditions": [
+          [
+            83,
+            7
+          ]
+        ]
+      }
+    },
+    {
+      "id": "first-empty-runtime",
+      "requires": "M2-7b4",
+      "check": "accept",
+      "source": "CONTRACT Demo()\nDIM xs AS LIST OF INTEGER = []\nDIM n = FIRST(xs)\nEND CONTRACT\n",
+      "execution": {
+        "diagnostic": "E0500"
+      }
+    },
+    {
+      "id": "rest-empty-runtime",
+      "requires": "M2-7b4",
+      "check": "accept",
+      "source": "CONTRACT Demo()\nDIM xs AS LIST OF INTEGER = []\nDIM ys = REST(xs)\nEND CONTRACT\n",
+      "execution": {
+        "diagnostic": "E0500"
+      }
+    },
+    {
+      "id": "skipped-empty-access",
+      "requires": "M2-7b4",
+      "check": "accept",
+      "source": "CONTRACT Demo()\nDIM xs AS LIST OF INTEGER = []\nASSERT TRUE OR FIRST(xs) = 1\nASSERT NOT (FALSE AND FIRST(xs) = 1)\nEND CONTRACT\n",
+      "execution": {
+        "conditions": []
+      }
+    },
+    {
+      "id": "cons-empty-tail-inference",
+      "requires": "M2-7b4",
+      "check": "accept",
+      "source": "CONTRACT Demo()\nDIM xs = CONS(1,[])\nASSERT LIST_LENGTH(xs) = 1\nEND CONTRACT\n",
+      "execution": {
+        "conditions": []
+      }
+    },
+    {
+      "id": "list-constants",
+      "requires": "M2-7b5",
+      "check": "accept",
+      "source": "CONTRACT Demo()\nCONST xs AS LIST OF LIST OF INTEGER = [[],[7]]\nCONST alias = xs\nEMIT ASSERT_HEIGHT_ABSOLUTE(FIRST(FIRST(REST(alias))))\nEND CONTRACT\n",
+      "execution": {
+        "conditions": [
+          [
+            83,
+            7
+          ]
+        ]
+      }
+    },
+    {
+      "id": "list-constant-calls-forbidden",
+      "requires": "M2-7b5",
+      "check": "reject",
+      "source": "CONTRACT Demo()\nCONST xs = [FIRST(PAIR(1,2))]\nEND CONTRACT\n",
+      "diagnostic": "E0205"
+    },
+    {
+      "id": "mixed-condition-flow",
+      "requires": "M2-7b6",
+      "check": "accept",
+      "source": "CONTRACT CollectionFlow()\n    CONST saved AS LIST OF LIST OF INTEGER = [[], [7, 20]]\n    DIM bundle = Package(FIRST(REST(saved)))\n    EMIT FIRST(FIRST(bundle))\n    DIM original = bundle\n    IF LIST_LENGTH(FIRST(bundle)) = 2 THEN\n        bundle = PAIR(REST(FIRST(bundle)), \"remaining\")\n    ELSE\n        bundle = PAIR([], \"empty\")\n    END IF\n    EMIT FIRST(FIRST(bundle))\n    EMIT ASSERT_HEIGHT_ABSOLUTE(LIST_LENGTH(FIRST(original)))\n    ASSERT REST(bundle) = \"remaining\"\nEND CONTRACT\nFUNCTION Package(heights AS LIST OF INTEGER) AS PAIR OF (LIST OF CONDITION, STRING)\n    IF LIST_LENGTH(heights) = 0 THEN\n        RETURN PAIR([], \"empty\")\n    END IF\n    RETURN PAIR([ASSERT_HEIGHT_ABSOLUTE(FIRST(heights)), ASSERT_HEIGHT_ABSOLUTE(FIRST(REST(heights)))], \"ready\")\nEND FUNCTION\n",
+      "execution": {
+        "conditions": [
+          [
+            83,
+            7
+          ],
+          [
+            83,
+            20
+          ],
+          [
+            83,
+            2
+          ]
+        ]
+      }
+    },
+    {
+      "id": "nested-empty-function-return",
+      "requires": "M2-7b6",
+      "check": "accept",
+      "source": "CONTRACT Demo()\nDIM p = Empty(TRUE)\nASSERT LIST_LENGTH(FIRST(p)) = 0\nASSERT NOT REST(p)\nEND CONTRACT\nFUNCTION Empty(flag AS BOOLEAN) AS PAIR OF (LIST OF LIST OF INTEGER, BOOLEAN)\nIF flag THEN\nRETURN PAIR([],FALSE)\nEND IF\nASSERT FALSE\nRETURN PAIR([[1]],TRUE)\nEND FUNCTION\n",
+      "execution": {
+        "conditions": []
+      }
+    },
+    {
+      "id": "proper-pair-is-not-list",
+      "requires": "M2-7b6",
+      "check": "reject",
+      "source": "CONTRACT Demo()\nDIM xs AS LIST OF INTEGER = PAIR(1, [2])\nEND CONTRACT\n",
+      "diagnostic": "E0202"
+    },
+    {
+      "id": "nested-unused-condition-failure",
+      "requires": "M2-7b6",
+      "check": "accept",
+      "source": "CONTRACT Demo()\nDIM unused = [PAIR([ASSERT_HEIGHT_ABSOLUTE(-1)],TRUE)]\nEND CONTRACT\n",
+      "execution": {
+        "diagnostic": "E0500"
+      }
+    }
+  ]
+}

@@ -1,0 +1,440 @@
+{
+  "baseline": "0.1.0-m2.4c before ordered-statement refactor",
+  "cases": [
+    {
+      "source": "examples/m1-empty.bas",
+      "source_sha256": "62a06ac56a692ec25b5f03e13fbf134cab34e3598fd2ac0fee64c526efeb04f5",
+      "template_sha256": "d0d871fcf3e7ecff6eb6efd22b21446e13e066f6eee69286f8574be23854e650",
+      "puzzle_sha256": "27ea887a79e3e7c4e32d1ee6229170af01d9aaacc33c74d0f49a71244ef9abe2",
+      "tree_hash": "b9ed1605dd59aa5b8ec3c2fc079d937d2250967d8b33cca4062184f3ab2d2d1b",
+      "cost": "1309",
+      "tree": {
+        "atom": ""
+      }
+    },
+    {
+      "source": "examples/m1-height.bas",
+      "source_sha256": "4bf70bcd18deeea6d3a76bd05a9efcf1ebe8dc3f565f5ab38e6b0bed192ec745",
+      "template_sha256": "8d9700b618b91a41f5e370361cea635f1f3ee1a0ef070eae6c2954ac473d42b3",
+      "puzzle_sha256": "76cc910ba2b562eb262dfddb5beb6825dddddb539d9579f988882ce8979217eb",
+      "tree_hash": "930c99bde18d09742899932243d754a69a45e58e61f71207e01d294c5f65f469",
+      "cost": "1309",
+      "tree": {
+        "pair": [
+          {
+            "pair": [
+              {
+                "atom": "53"
+              },
+              {
+                "pair": [
+                  {
+                    "atom": "64"
+                  },
+                  {
+                    "atom": ""
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "atom": ""
+          }
+        ]
+      }
+    },
+    {
+      "source": "examples/m2-booleans.bas",
+      "source_sha256": "f6cd57858702c8bf8f2727d7e19c92a4882a1a62af7708c656e734b8bc595760",
+      "template_sha256": "7b30efd0a4e76a6bb4b6b3585febcaf5792082dba34a85efc74544028ce4154c",
+      "puzzle_sha256": "a894bffcdc99fa286653bad3a9f8ed9d7af387a5c69e2688d5046f691e605b99",
+      "tree_hash": "9c8de6cdabfff1c7ec639ca6411dd100855f546145b87e9ca1a90d809c4f236f",
+      "cost": "9209",
+      "tree": {
+        "pair": [
+          {
+            "pair": [
+              {
+                "atom": "53"
+              },
+              {
+                "pair": [
+                  {
+                    "atom": "78"
+                  },
+                  {
+                    "atom": ""
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "atom": ""
+          }
+        ]
+      }
+    },
+    {
+      "source": "examples/m2-conditions.bas",
+      "source_sha256": "9a01c2173d0b3d1ed570696e016a3216b5f38d528d5c92ed9606a393a98b95c9",
+      "template_sha256": "48852b3d325046d5cb007ebdb8088f69410ceddc148d6e3bd25db83ef7f8a939",
+      "puzzle_sha256": "a9ce74177a1b8d31888833442c0570e08fa90a4edeccc1f3f4e9cecc7835b309",
+      "tree_hash": "797e8489bc773645ce89b03f5c7240c7df68a397034da01aad9796e1bb0a7e12",
+      "cost": "7600",
+      "tree": {
+        "pair": [
+          {
+            "pair": [
+              {
+                "atom": "53"
+              },
+              {
+                "pair": [
+                  {
+                    "atom": "64"
+                  },
+                  {
+                    "atom": ""
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "pair": [
+              {
+                "pair": [
+                  {
+                    "atom": "53"
+                  },
+                  {
+                    "pair": [
+                      {
+                        "atom": "78"
+                      },
+                      {
+                        "atom": ""
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "pair": [
+                  {
+                    "pair": [
+                      {
+                        "atom": "53"
+                      },
+                      {
+                        "pair": [
+                          {
+                            "atom": "64"
+                          },
+                          {
+                            "atom": ""
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "atom": ""
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "source": "examples/m2-constants.bas",
+      "source_sha256": "0bcdbf8f2c7f3f81fb3f8342185a079b025e7c0296cca08aa76c5d257c0241b0",
+      "template_sha256": "9b835c910d5eb48d70a10a9f2c517b0737b363c441148d60499c8f7e8497c88e",
+      "puzzle_sha256": "d919b5fa81925bf8f15e6d44d1ae1ac505ebacc76d6f20cb6ad3fc2e835d0dee",
+      "tree_hash": "c7333fc443a79b53430ebd618bb2175081eb282954b05cf4d7d0363938a7a116",
+      "cost": "7481",
+      "tree": {
+        "pair": [
+          {
+            "pair": [
+              {
+                "atom": "53"
+              },
+              {
+                "pair": [
+                  {
+                    "atom": "14"
+                  },
+                  {
+                    "atom": ""
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "pair": [
+              {
+                "pair": [
+                  {
+                    "atom": "53"
+                  },
+                  {
+                    "pair": [
+                      {
+                        "atom": "19"
+                      },
+                      {
+                        "atom": ""
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "atom": ""
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "source": "examples/m2-integer-height.bas",
+      "source_sha256": "e86318f94b8b93a1795d1fe0556b23efe3213a70b119dfda68619d9eb8e1cb2b",
+      "template_sha256": "3a078858d065d9153b60ba6829c97b979a80adcddd46b9df9e2f80450ab873d4",
+      "puzzle_sha256": "55fe54217ef5ea5d2421c362cabc235cc4d12fb577c6dfdc597899f44e881870",
+      "tree_hash": "175b350fb4edf72703b287a07661f5b095e097e0a032badc33ef226e5ee46c26",
+      "cost": "14459",
+      "tree": {
+        "pair": [
+          {
+            "pair": [
+              {
+                "atom": "53"
+              },
+              {
+                "pair": [
+                  {
+                    "atom": "0e"
+                  },
+                  {
+                    "atom": ""
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "pair": [
+              {
+                "pair": [
+                  {
+                    "atom": "53"
+                  },
+                  {
+                    "pair": [
+                      {
+                        "atom": "01"
+                      },
+                      {
+                        "atom": ""
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "pair": [
+                  {
+                    "pair": [
+                      {
+                        "atom": "53"
+                      },
+                      {
+                        "pair": [
+                          {
+                            "atom": "0080"
+                          },
+                          {
+                            "atom": ""
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "atom": ""
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "source": "examples/m2-local-height.bas",
+      "source_sha256": "1ab439f19be6682ce97a4524749d94606f97af2fd58b3b8682bbe698cee7b8bc",
+      "template_sha256": "dd7f8ff6cad9e08b99d6c1854a5e50c790415c2803ae08e8ddbbce472a8ebf7f",
+      "puzzle_sha256": "40d37a03784e7ee6803a7ea806e03374c875ecb4b9eb6eb7b4be6bfd52437b82",
+      "tree_hash": "22b3d608a4a0a7b94297a5c0052d8a106ec47122231009e33c5564ff4677afc3",
+      "cost": "8497",
+      "tree": {
+        "pair": [
+          {
+            "pair": [
+              {
+                "atom": "53"
+              },
+              {
+                "pair": [
+                  {
+                    "atom": "0f"
+                  },
+                  {
+                    "atom": ""
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "pair": [
+              {
+                "pair": [
+                  {
+                    "atom": "53"
+                  },
+                  {
+                    "pair": [
+                      {
+                        "atom": "1e"
+                      },
+                      {
+                        "atom": ""
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "atom": ""
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "source": "examples/m2-reassignment.bas",
+      "source_sha256": "a9bcef0e013555fedd753e8dd6d9e44d9c9512fb723063282ad93c48c14d3afe",
+      "template_sha256": "1a421ae117eba6bedcdd533a18d2c1b864c128e512baed0d4298654dab2c0b05",
+      "puzzle_sha256": "c995f4c45af0f0d67018ce498a1cb588e3720a5018231dd281b533438164eb95",
+      "tree_hash": "e5eba730188a32e130619078062e0a3ce8dc68aa0c08c976c167ca5c65146a30",
+      "cost": "9354",
+      "tree": {
+        "pair": [
+          {
+            "pair": [
+              {
+                "atom": "53"
+              },
+              {
+                "pair": [
+                  {
+                    "atom": "0a"
+                  },
+                  {
+                    "atom": ""
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "pair": [
+              {
+                "pair": [
+                  {
+                    "atom": "53"
+                  },
+                  {
+                    "pair": [
+                      {
+                        "atom": "0f"
+                      },
+                      {
+                        "atom": ""
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "pair": [
+                  {
+                    "pair": [
+                      {
+                        "atom": "53"
+                      },
+                      {
+                        "pair": [
+                          {
+                            "atom": "0a"
+                          },
+                          {
+                            "atom": ""
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "atom": ""
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "source": "examples/m2-short-circuit.bas",
+      "source_sha256": "ed45e721fa39732332168b09bfadb80808814fc77d7d6ad607e77f5c92e44f13",
+      "template_sha256": "92711c5f6a55720be87e681974ee9f676b78d5443c9d4de48fa53d31ac60ca97",
+      "puzzle_sha256": "9262a82b2fdb67254a03f127dbb88436fffaffb00c698d619b898b9cad791f5d",
+      "tree_hash": "be1d8a4d5b3547121e56f63fbfb7673d15a693e42c5feea95e33832021ed7169",
+      "cost": "8133",
+      "tree": {
+        "pair": [
+          {
+            "pair": [
+              {
+                "atom": "53"
+              },
+              {
+                "pair": [
+                  {
+                    "atom": "78"
+                  },
+                  {
+                    "atom": ""
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "atom": ""
+          }
+        ]
+      }
+    }
+  ]
+}

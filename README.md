@@ -1,1 +1,67 @@
 # 0xBASIC
+
+![0xBASIC logo](0xBASIC-logo.jpg)
+
+**Structured BASIC for Chia smart contracts. Compiled directly to CLVM.**
+
+0xBASIC brings the readable, beginner-friendly style of Microsoft QuickBASIC 4.5 to smart contract development on the Chia blockchain. It uses named functions, structured conditionals, explicit types, and `EMIT` statements—no line numbers. A Rust compiler translates familiar BASIC constructs into functional CLVM code.
+
+The goal is to make contract development easier to learn without hiding how Chia's coin and condition model works.
+
+**Early development · compiler `0.1.0-m3.2` · Apache-2.0**
+
+The compiler and local runner work today, but the language is incomplete and has not been audited for production use. Current execution checks CLVM behavior; it does not validate a blockchain spend. Do not use this development version to secure funds.
+
+## A small working example
+
+```basic
+CONTRACT FixedHeight(base AS INTEGER)
+    INPUT offset AS INTEGER
+    EMIT ASSERT_HEIGHT_ABSOLUTE(base + offset)
+END CONTRACT
+```
+
+`base` is fixed when the contract is bound into a puzzle; `offset` comes from the spender's solution. With `base = 100` and `offset = 7`, this contract returns a condition requiring an absolute height of at least 107. `EMIT` adds a condition to the result; the blockchain enforces that condition when validating a spend.
+
+## What works today
+
+- Case-insensitive names, `AS` declarations, constants, local reassignment, assertions, and `IF` / `ELSEIF` / `ELSE`.
+- Pure, nonrecursive functions and typed INTEGER, BOOLEAN, BYTES, STRING, PAIR, LIST, and CONDITION values inside programs.
+- Byte operations, SHA256, integer encodings, strict UTF-8 conversion, and collection operations.
+- INTEGER fixed parameters and solution inputs, with JSON conversion and generated CLVM boundary validation.
+- `check`, `build`, and `run` commands; reproducible artifacts, tree hashes, structured diagnostics, and execution-cost reporting.
+
+Only `ASSERT_HEIGHT_ABSOLUTE` is currently implemented as a blockchain condition constructor. Other boundary types, payment conditions, signatures, and simulator spend validation are upcoming work. The specifications describe the intended language as well as features still being implemented; see the [status and roadmap](docs/development.md).
+
+## Try it
+
+You need Git, Rust installed through rustup, and a native C/C++ build toolchain. On Windows, use Visual Studio Build Tools with **Desktop development with C++**; on Linux, install your distribution's C compiler and build tools. The repository pins Rust **1.95.0**. Windows and Linux are tested; macOS has not yet been verified.
+
+```text
+git clone https://github.com/steppsr/0xBASIC.git
+cd 0xBASIC
+cargo build --workspace --locked
+cargo run --locked -p oxbasic-cli -- check examples/m3-fixed-integers.bas
+cargo run --locked -p oxbasic-cli -- build examples/m3-fixed-integers.bas --bindings examples/m3-fixed-integers.bindings.json --out fixed-build
+cargo run --locked -p oxbasic-cli -- run fixed-build/manifest.json --solution examples/m3-fixed-integers.solution.json --json
+```
+
+These commands work in PowerShell and Linux shells. The output directory `fixed-build` must not already exist. A build produces binary CLVM, hex files, and a manifest recording the template and bound puzzle identities. The runner returns the raw condition tree corresponding to `((83 107))` and labels its result `clvm-execution-only`.
+
+Dependency downloads require internet access initially. Compilation and local execution then work with cached dependencies; no wallet or running Chia node is required. Python is only needed for the verification scripts.
+
+## Explore and contribute
+
+- [Examples](examples): small programs demonstrating implemented features. `height-locked-payment.bas` is a future conformance example and does not compile yet.
+- [Architecture](docs/architecture.md) and [language specification](docs/language-v0.1.md).
+- [ABI](docs/spec/abi-v1.md), [CLI and artifact format](docs/spec/cli-v1.md), and [pinned target profile](docs/spec/target-profile.md).
+- [Development status and roadmap](docs/development.md).
+- [Contribution and testing guide](CONTRIBUTING.md).
+
+Feedback, bug reports, and small focused contributions are welcome through [GitHub issues](https://github.com/steppsr/0xBASIC/issues) and pull requests. Language and artifact formats may change during development.
+
+Visit [0xBASIC.com](https://0xbasic.com/) for the project introduction.
+
+## License
+
+[Apache License 2.0](LICENSE). 0xBASIC is an independent project and is not affiliated with or endorsed by Chia Network or Microsoft.

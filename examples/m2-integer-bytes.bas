@@ -1,0 +1,10 @@
+CONTRACT IntegerBytesFixture()
+    CONST height AS INTEGER = 128
+    DIM encoded AS BYTES = INT_BYTES(height)
+    ASSERT encoded = 0x0080
+    EMIT ASSERT_HEIGHT_ABSOLUTE(Decode(encoded))
+END CONTRACT
+
+FUNCTION Decode(value AS BYTES) AS INTEGER
+    RETURN INT_FROM_BYTES(value)
+END FUNCTION

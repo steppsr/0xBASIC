@@ -1,0 +1,7 @@
+CONTRACT ListOperationsFixture()
+    DIM heights AS LIST OF INTEGER = [20, 30]
+    heights = CONS(10, heights)
+    EMIT ASSERT_HEIGHT_ABSOLUTE(FIRST(heights))
+    EMIT ASSERT_HEIGHT_ABSOLUTE(FIRST(REST(heights)))
+    EMIT ASSERT_HEIGHT_ABSOLUTE(LIST_LENGTH(heights))
+END CONTRACT

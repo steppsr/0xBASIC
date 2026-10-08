@@ -1,0 +1,236 @@
+{
+  "schema_version": 1,
+  "provenance": {
+    "generator": "tools/verify_m0.py",
+    "signature_reference": "chia_rs 0.42.1",
+    "warning": "Public test key only; synthetic puzzle hash is not compiled output."
+  },
+  "integers": [
+    {
+      "decimal": "0",
+      "atom_hex": "",
+      "serialized_hex": "80"
+    },
+    {
+      "decimal": "1",
+      "atom_hex": "01",
+      "serialized_hex": "01"
+    },
+    {
+      "decimal": "-1",
+      "atom_hex": "ff",
+      "serialized_hex": "81ff"
+    },
+    {
+      "decimal": "127",
+      "atom_hex": "7f",
+      "serialized_hex": "7f"
+    },
+    {
+      "decimal": "128",
+      "atom_hex": "0080",
+      "serialized_hex": "820080"
+    },
+    {
+      "decimal": "255",
+      "atom_hex": "00ff",
+      "serialized_hex": "8200ff"
+    },
+    {
+      "decimal": "256",
+      "atom_hex": "0100",
+      "serialized_hex": "820100"
+    },
+    {
+      "decimal": "-128",
+      "atom_hex": "80",
+      "serialized_hex": "8180"
+    },
+    {
+      "decimal": "-129",
+      "atom_hex": "ff7f",
+      "serialized_hex": "82ff7f"
+    },
+    {
+      "decimal": "9223372036854775808",
+      "atom_hex": "008000000000000000",
+      "serialized_hex": "89008000000000000000"
+    },
+    {
+      "decimal": "18446744073709551615",
+      "atom_hex": "00ffffffffffffffff",
+      "serialized_hex": "8900ffffffffffffffff"
+    },
+    {
+      "decimal": "1208925819614629174706176",
+      "atom_hex": "0100000000000000000000",
+      "serialized_hex": "8b0100000000000000000000"
+    }
+  ],
+  "noncanonical_integer_atoms": [
+    "00",
+    "0000",
+    "0001",
+    "007f",
+    "ffff",
+    "ff80"
+  ],
+  "valid_boolean_atoms": [
+    "",
+    "01"
+  ],
+  "invalid_boolean_atoms": [
+    "00",
+    "02",
+    "ff",
+    "0001"
+  ],
+  "valid_utf8_atoms": [
+    "",
+    "00",
+    "61",
+    "c2a2",
+    "e282ac",
+    "f09f9880",
+    "f48fbfbf"
+  ],
+  "invalid_utf8_atoms": [
+    "80",
+    "c080",
+    "c2",
+    "eda080",
+    "f4908080",
+    "ff"
+  ],
+  "invalid_public_key_atoms": [
+    "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "c00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+    "0101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101"
+  ],
+  "serialization": [
+    {
+      "name": "nil",
+      "serialized_hex": "80",
+      "tree_hash": "4bf5122f344554c53bde2ebb8cd2b7e3d1600ad631c385a5d7cce23c7785459a"
+    },
+    {
+      "name": "one",
+      "serialized_hex": "01",
+      "tree_hash": "9dcf97a184f32623d11a73124ceb99a5709b083721e878a16d78f596718ba7b2"
+    },
+    {
+      "name": "zero-byte",
+      "serialized_hex": "00",
+      "tree_hash": "47dc540c94ceb704a23875c11273e16bb0b8a87aed84de911f2133568115f254"
+    },
+    {
+      "name": "pair",
+      "serialized_hex": "ff0180",
+      "tree_hash": "ba4484b961b7a2369d948d06c55b64bdbfaffb326bc13b490ab1215dd33d8d46"
+    }
+  ],
+  "binding": {
+    "template_hex": "01",
+    "fixed_values_hex": "ff2a80",
+    "solution_hex": "ff82dead80",
+    "bound_program_hex": "ff02ffff0101ffff04ffff01ff2a80ff018080",
+    "result_hex": "ffff2a80ff82dead80",
+    "bound_tree_hash": "277a3763e458bdf19936e3d49ed14c54d2aa0c8e82ee83d4d606594a2d392090"
+  },
+  "payment": {
+    "test_secret_scalar": "1",
+    "owner_hex": "97f1d3a73197d7942695638c4fa9ac0fc3688c4f9774b905a14e3a3f171bac586c55e83ff97a1aeffb3af00adb22c6bb",
+    "recipient_hex": "1111111111111111111111111111111111111111111111111111111111111111",
+    "amount": "1000",
+    "earliest_height": "10",
+    "parent_coin_id_hex": "2222222222222222222222222222222222222222222222222222222222222222",
+    "synthetic_puzzle_hash_hex": "3333333333333333333333333333333333333333333333333333333333333333",
+    "agg_sig_me_additional_data_hex": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "preimage_hex": "307842415349432f7061796d656e742f76310097f1d3a73197d7942695638c4fa9ac0fc3688c4f9774b905a14e3a3f171bac586c55e83ff97a1aeffb3af00adb22c6bb111111111111111111111111111111111111111111111111111111111111111100000000000003e80000000a",
+    "preimage_length": 111,
+    "application_message_hex": "1b882dfcb8d7291c35b6ac73897228ed89b073c344d68435010bbc30a2959660",
+    "coin_id_hex": "16fbc4f43dc1f8140ddfb334aa3c1ec8d039810e19c39b319c29b01bf834149c",
+    "final_signing_message_hex": "1b882dfcb8d7291c35b6ac73897228ed89b073c344d68435010bbc30a295966016fbc4f43dc1f8140ddfb334aa3c1ec8d039810e19c39b319c29b01bf834149caaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "conditions_serialized_hex": "ffff49ff8203e880ffff53ff0a80ffff32ffb097f1d3a73197d7942695638c4fa9ac0fc3688c4f9774b905a14e3a3f171bac586c55e83ff97a1aeffb3af00adb22c6bbffa01b882dfcb8d7291c35b6ac73897228ed89b073c344d68435010bbc30a295966080ffff33ffa01111111111111111111111111111111111111111111111111111111111111111ff8203e88080",
+    "augmented_signature_hex": "98e40e55b6626e978b80c7bdf1851a078e48378556f71abb433ce703a21d18ae3a88e1ee25fdbf5c01ca402be35884340780fd4ea5c0f89acf85381516174e8ccb370c99fcb0c0495fe8194a52b0dd636a2a62fb5e216b06410605a777a6dc1e"
+  },
+  "boundary_cases": [
+    {
+      "name": "empty-solution",
+      "schema": [],
+      "serialized_solution_hex": "80",
+      "valid": true
+    },
+    {
+      "name": "extra-solution-field",
+      "schema": [],
+      "serialized_solution_hex": "ff0180",
+      "valid": false
+    },
+    {
+      "name": "missing-field",
+      "schema": [
+        "INTEGER"
+      ],
+      "serialized_solution_hex": "80",
+      "valid": false
+    },
+    {
+      "name": "integer-zero",
+      "schema": [
+        "INTEGER"
+      ],
+      "serialized_solution_hex": "ff8080",
+      "valid": true
+    },
+    {
+      "name": "noncanonical-zero",
+      "schema": [
+        "INTEGER"
+      ],
+      "serialized_solution_hex": "ff0080",
+      "valid": false
+    },
+    {
+      "name": "improper-solution",
+      "schema": [
+        "INTEGER"
+      ],
+      "serialized_solution_hex": "ff0102",
+      "valid": false
+    },
+    {
+      "name": "negative-amount",
+      "schema": [
+        "AMOUNT"
+      ],
+      "serialized_solution_hex": "ff81ff80",
+      "valid": false
+    },
+    {
+      "name": "oversized-amount",
+      "schema": [
+        "AMOUNT"
+      ],
+      "serialized_solution_hex": "ff8901000000000000000080",
+      "valid": false
+    },
+    {
+      "name": "short-hash",
+      "schema": [
+        "PUZZLEHASH"
+      ],
+      "serialized_solution_hex": "ff9f6161616161616161616161616161616161616161616161616161616161616180",
+      "valid": false
+    },
+    {
+      "name": "leading-zero-bytes",
+      "schema": [
+        "BYTES"
+      ],
+      "serialized_solution_hex": "ff82000180",
+      "valid": true
+    }
+  ]
+}

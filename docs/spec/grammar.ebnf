@@ -1,0 +1,41 @@
+(* Grammar over tokens; ASCII case-insensitive keywords.
+   NL only outside parentheses/brackets. EOF synthesizes NL after a nonempty
+   unterminated final statement. IDENT, DECIMAL, HEXINT, BYTES, STRING, NL, EOF
+   are lexical terminals. Exactly one contract is a semantic constraint. *)
+program = { NL | declaration }, EOF ;
+declaration = contract | function ;
+contract = "CONTRACT", IDENT, "(", [ parameters ], ")", NL,
+           { NL }, { input, { NL } }, block, "END", "CONTRACT", NL ;
+function = "FUNCTION", IDENT, "(", [ parameters ], ")", "AS", type, NL,
+           block, "END", "FUNCTION", NL ;
+parameters = parameter, { ",", parameter } ;
+parameter = IDENT, "AS", type ;
+input = "INPUT", IDENT, "AS", type, NL ;
+type = "INTEGER" | "BOOLEAN" | "BYTES" | "STRING" | "PUZZLEHASH"
+     | "PUBLICKEY" | "AMOUNT" | "CONDITION"
+     | "LIST", "OF", type
+     | "PAIR", "OF", "(", type, ",", type, ")" ;
+block = { NL | statement } ;
+statement = local | assignment | conditional | emit | assertion | return ;
+local = ( "DIM" | "CONST" ), IDENT, [ "AS", type ], "=", expression, NL ;
+assignment = IDENT, "=", expression, NL ;
+conditional = "IF", expression, "THEN", NL, block,
+              { "ELSEIF", expression, "THEN", NL, block },
+              [ "ELSE", NL, block ], "END", "IF", NL ;
+emit = "EMIT", expression, NL ;
+assertion = "ASSERT", expression, NL ;
+return = "RETURN", expression, NL ;
+expression = or_expression ;
+or_expression = and_expression, { "OR", and_expression } ;
+and_expression = not_expression, { "AND", not_expression } ;
+not_expression = "NOT", not_expression | comparison ;
+comparison = sum, [ ( "=" | "<>" | "<" | "<=" | ">" | ">=" ), sum ] ;
+sum = product, { ( "+" | "-" ), product } ;
+product = unary, { "*", unary } ;
+unary = ( "+" | "-" ), unary | primary ;
+primary = DECIMAL | HEXINT | BYTES | STRING | "TRUE" | "FALSE"
+        | IDENT, [ "(", [ arguments ], ")" ]
+        | "PAIR", "(", arguments, ")"
+        | "[", [ arguments ], "]"
+        | "(", expression, ")" ;
+arguments = expression, { ",", expression } ;
