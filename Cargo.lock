@@ -669,7 +669,7 @@ checksum = "9f7c3e4beb33f85d45ae3e3a1792185706c8e16d043238c593331cc7cd313b50"
 
 [[package]]
 name = "oxbasic-cli"
-version = "0.1.0-m3.2"
+version = "0.1.0-m3.2.1"
 dependencies = [
  "hex",
  "oxbasic-compiler",
@@ -682,7 +682,7 @@ dependencies = [
 
 [[package]]
 name = "oxbasic-compiler"
-version = "0.1.0-m3.2"
+version = "0.1.0-m3.2.1"
 dependencies = [
  "clvmr",
  "hex",

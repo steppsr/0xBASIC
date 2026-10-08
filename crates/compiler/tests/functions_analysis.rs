@@ -129,7 +129,7 @@ fn purity_and_constant_expression_restrictions() {
         &function("EMIT ASSERT_HEIGHT_ABSOLUTE(1)\nRETURN 1\n"),
         "E0205",
     );
-    error(&function("INPUT n AS INTEGER\nRETURN 1\n"), "E0205");
+    error(&function("SOLUTION n AS INTEGER\nRETURN 1\n"), "E0205");
     error("CONTRACT Demo()\nRETURN 1\nEND CONTRACT\n", "E0205");
     for body in [
         "CONST n = Helper(TRUE)\nRETURN n\n",

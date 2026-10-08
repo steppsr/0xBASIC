@@ -214,7 +214,7 @@ fn formatting_does_not_change_program_identity() {
 #[test]
 fn unsupported_and_invalid_source_is_rejected_with_locations() {
     for body in [
-        "INPUT x AS BOOLEAN\n",
+        "SOLUTION x AS BOOLEAN\n",
         "ELSEIF TRUE THEN\n",
         "EMIT CREATE_COIN(0x, 1)\n",
         "EMIT ASSERT_HEIGHT_ABSOLUTE(TRUE)\n",

@@ -24,13 +24,13 @@ Literals:
 
 ```basic
 CONTRACT MinimumPayment(recipient AS PUZZLEHASH)
-    INPUT requested AS INTEGER
+    SOLUTION requested AS INTEGER
     ASSERT requested > 0
     EMIT CREATE_COIN(recipient, AS_AMOUNT(requested))
 END CONTRACT
 ```
 
-This illustrates inputs, not an ownership-secured contract. Contract-header parameters are fixed bindings. `INPUT name AS type` declarations occur only at the start of a contract, before executable statements, and name untrusted solution fields in declaration order. `INPUT` never prompts a terminal. Generated entry code validates the entire input shape and every value before the body, even for unused inputs. Fixed parameters are immutable within source.
+This illustrates inputs, not an ownership-secured contract. Contract-header parameters are fixed bindings. `SOLUTION name AS type` declarations occur only at the start of a contract, before executable statements, and name untrusted solution fields in declaration order. `SOLUTION` is a declaration of spend-supplied data, not an interactive operation. The former `INPUT` declaration spelling is no longer accepted. Generated entry code validates the entire input shape and every value before the body, even for unused inputs. Fixed parameters are immutable within source.
 
 ```basic
 FUNCTION AddExtra(value AS INTEGER, enabled AS BOOLEAN) AS INTEGER
@@ -42,7 +42,7 @@ FUNCTION AddExtra(value AS INTEGER, enabled AS BOOLEAN) AS INTEGER
 END FUNCTION
 ```
 
-Functions have mandatory parameter/return annotations and are pure. Function parameters are immutable; declare a local accumulator when needed. Functions cannot access contract parameters, inputs, or locals without receiving arguments. Every reachable normal exit returns a compatible value. `RETURN` is forbidden in contracts; `EMIT` and `INPUT` are forbidden in functions. Declarations cannot nest. Expression statements and discarded calls are unsupported.
+Functions have mandatory parameter/return annotations and are pure. Function parameters are immutable; declare a local accumulator when needed. Functions cannot access contract parameters, inputs, or locals without receiving arguments. Every reachable normal exit returns a compatible value. `RETURN` is forbidden in contracts; `EMIT` and `SOLUTION` are forbidden in functions. Declarations cannot nest. Expression statements and discarded calls are unsupported.
 
 ## Declarations, scope, and assignment
 
@@ -50,7 +50,7 @@ Functions have mandatory parameter/return annotations and are pure. Function par
 
 No uninitialized declarations. A name is unavailable in its own initializer. Duplicate names after case folding are errors. Locals cannot shadow visible enclosing names, module callable names, or built-ins. Sibling branches have separate scopes. Different functions may reuse local names.
 
-Assignment updates an existing `DIM` local only, with a compatible type. INPUT values are immutable too; copy one to a DIM local to update it. Branches may update outer locals; a branch not assigning one retains its incoming value. Branch-local declarations do not escape. Lower assignments into fresh immutable bindings and branch results. Initializers and assignments evaluate eagerly even if the value is never read; a possibly failing evaluation cannot simply be removed.
+Assignment updates an existing `DIM` local only, with a compatible type. SOLUTION values are immutable too; copy one to a DIM local to update it. Branches may update outer locals; a branch not assigning one retains its incoming value. Branch-local declarations do not escape. Lower assignments into fresh immutable bindings and branch results. Initializers and assignments evaluate eagerly even if the value is never read; a possibly failing evaluation cannot simply be removed.
 
 ## Types
 

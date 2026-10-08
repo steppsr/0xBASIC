@@ -7,6 +7,30 @@ fn execute(text: &str, solution: &[u8]) -> oxbasic_compiler::Result<clvm::Execut
     clvm::execute(&program.puzzle, solution, clvm::DEFAULT_MAX_COST)
 }
 #[test]
+fn solution_declaration_is_case_insensitive_and_replaces_input() {
+    for keyword in ["SOLUTION", "solution", "SoLuTiOn"] {
+        let text = source(&format!(
+            "{keyword} height AS INTEGER\nEMIT ASSERT_HEIGHT_ABSOLUTE(height)\n"
+        ));
+        assert_eq!(
+            hex::encode(execute(&text, &[0xff, 100, 0x80]).unwrap().bytes),
+            "ffff53ff648080"
+        );
+    }
+    for keyword in ["INPUT", "input", "InPuT"] {
+        let text = source(&format!("{keyword} height AS INTEGER\n"));
+        assert!(check("old-keyword.bas", text.as_bytes()).is_err());
+        assert!(analyze("old-keyword.bas", text.as_bytes()).is_err());
+    }
+    // The former keyword is now an ordinary identifier.
+    execute(
+        &source("DIM input = 100\nEMIT ASSERT_HEIGHT_ABSOLUTE(input)\n"),
+        &[0x80],
+    )
+    .unwrap();
+    assert!(check("reserved.bas", source("DIM solution = 1\n").as_bytes()).is_err());
+}
+#[test]
 fn planned_input_cases_execute_or_reject_at_the_correct_boundary() {
     let cases: serde_json::Value =
         serde_json::from_str(include_str!("../../../docs/spec/m3-boundary-cases.json")).unwrap();
@@ -77,25 +101,31 @@ fn planned_input_cases_execute_or_reject_at_the_correct_boundary() {
 #[test]
 fn inputs_are_immutable_scoped_and_explicitly_limited() {
     for (body, code) in [
-        ("INPUT n AS INTEGER\nDIM N = 1\n", "E0201"),
-        ("INPUT demo AS INTEGER\n", "E0201"),
-        ("INPUT n AS INTEGER\nIF TRUE THEN\nn = 2\nEND IF\n", "E0203"),
-        ("INPUT n AS BOOLEAN\n", "E0205"),
-        ("INPUT n AS PAIR OF (INTEGER,LIST OF CONDITION)\n", "E0205"),
+        ("SOLUTION n AS INTEGER\nDIM N = 1\n", "E0201"),
+        ("SOLUTION demo AS INTEGER\n", "E0201"),
+        (
+            "SOLUTION n AS INTEGER\nIF TRUE THEN\nn = 2\nEND IF\n",
+            "E0203",
+        ),
+        ("SOLUTION n AS BOOLEAN\n", "E0205"),
+        (
+            "SOLUTION n AS PAIR OF (INTEGER,LIST OF CONDITION)\n",
+            "E0205",
+        ),
     ] {
         let t = source(body);
         assert_eq!(check("bad.bas", t.as_bytes()).unwrap_err().code, code);
     }
     for function in [
         "FUNCTION F() AS INTEGER\nRETURN n\nEND FUNCTION\n",
-        "FUNCTION F() AS INTEGER\nINPUT n AS INTEGER\nRETURN n\nEND FUNCTION\n",
+        "FUNCTION F() AS INTEGER\nSOLUTION n AS INTEGER\nRETURN n\nEND FUNCTION\n",
     ] {
-        let text = format!("{}{function}", source("INPUT n AS INTEGER\n"));
+        let text = format!("{}{function}", source("SOLUTION n AS INTEGER\n"));
         assert!(check("scope.bas", text.as_bytes()).is_err());
     }
     let mut body = String::new();
     for i in 0..32 {
-        body.push_str(&format!("INPUT n{i} AS INTEGER\n"));
+        body.push_str(&format!("SOLUTION n{i} AS INTEGER\n"));
     }
     let text = source(&body);
     let checked = check("limit.bas", text.as_bytes()).unwrap();
@@ -105,7 +135,7 @@ fn inputs_are_immutable_scoped_and_explicitly_limited() {
     let solution =
         abi::encode_solution(&checked.inputs, &serde_json::to_vec(&json).unwrap()).unwrap();
     execute(&text, &solution).unwrap();
-    body.push_str("INPUT overflow AS INTEGER\n");
+    body.push_str("SOLUTION overflow AS INTEGER\n");
     assert_eq!(
         check("limit.bas", source(&body).as_bytes())
             .unwrap_err()
@@ -118,7 +148,7 @@ fn field_slots_survive_functions_branches_and_local_updates() {
     let text = format!(
         "{}FUNCTION Difference(a AS INTEGER,b AS INTEGER) AS INTEGER\nRETURN a-b\nEND FUNCTION\n",
         source(
-            "INPUT first AS INTEGER\nINPUT second AS INTEGER\nDIM saved = first\nDIM n = Difference(first,second)\nIF second > 0 THEN\nn = n + 1\nELSE\nn = 0\nEND IF\nASSERT saved = first\nEMIT ASSERT_HEIGHT_ABSOLUTE(n)\nEMIT ASSERT_HEIGHT_ABSOLUTE(second)\n"
+            "SOLUTION first AS INTEGER\nSOLUTION second AS INTEGER\nDIM saved = first\nDIM n = Difference(first,second)\nIF second > 0 THEN\nn = n + 1\nELSE\nn = 0\nEND IF\nASSERT saved = first\nEMIT ASSERT_HEIGHT_ABSOLUTE(n)\nEMIT ASSERT_HEIGHT_ABSOLUTE(second)\n"
         )
     );
     // FIRST is reserved; use ordinary identifiers in the fixture.
@@ -144,7 +174,7 @@ fn raw_guards_do_not_depend_on_canonical_integer_flags() {
     use clvmr::{Allocator, ChiaDialect, ClvmFlags, run_program, serde::node_from_bytes};
     let p = compile(
         "unused.bas",
-        source("INPUT n AS INTEGER\nASSERT TRUE\n").as_bytes(),
+        source("SOLUTION n AS INTEGER\nASSERT TRUE\n").as_bytes(),
     )
     .unwrap();
     for (hex, valid) in [
@@ -178,7 +208,7 @@ fn raw_guards_do_not_depend_on_canonical_integer_flags() {
     let work = vec!["9".repeat(500); 8].join(" * ");
     let busy = compile(
         "busy.bas",
-        source(&format!("INPUT n AS INTEGER\nDIM work = {work}\n")).as_bytes(),
+        source(&format!("SOLUTION n AS INTEGER\nDIM work = {work}\n")).as_bytes(),
     )
     .unwrap();
     assert_eq!(
@@ -209,7 +239,7 @@ fn raw_guards_do_not_depend_on_canonical_integer_flags() {
 fn original_integer_vectors_match_host_and_generated_validation() {
     let v: serde_json::Value =
         serde_json::from_str(include_str!("../../../docs/spec/vectors.json")).unwrap();
-    let text = source("INPUT n AS INTEGER\n");
+    let text = source("SOLUTION n AS INTEGER\n");
     let checked = check("vectors.bas", text.as_bytes()).unwrap();
     for integer in v["integers"].as_array().unwrap() {
         let json = serde_json::json!({"n":integer["decimal"]});
@@ -231,7 +261,7 @@ fn original_integer_vectors_match_host_and_generated_validation() {
 }
 #[test]
 fn json_conversion_preserves_large_values_and_rejects_wrong_shapes() {
-    let c = check("json.bas", source("INPUT n AS INTEGER\n").as_bytes()).unwrap();
+    let c = check("json.bas", source("SOLUTION n AS INTEGER\n").as_bytes()).unwrap();
     for text in [
         r#"{"n":"+1"}"#,
         r#"{"n":"01"}"#,
@@ -253,7 +283,7 @@ fn json_conversion_preserves_large_values_and_rejects_wrong_shapes() {
     let large = "9".repeat(5000);
     let text = format!(r#"{{"n":"{large}"}}"#);
     let value = abi::encode_solution(&c.inputs, text.as_bytes()).unwrap();
-    execute(&source("INPUT n AS INTEGER\n"), &value).unwrap();
+    execute(&source("SOLUTION n AS INTEGER\n"), &value).unwrap();
     assert_eq!(
         abi::encode_solution(&c.inputs, &vec![b' '; 1048577])
             .unwrap_err()

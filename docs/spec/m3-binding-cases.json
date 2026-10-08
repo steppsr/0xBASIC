@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "source": "CONTRACT Demo(base AS INTEGER, step AS INTEGER)\nINPUT offset AS INTEGER\nEMIT ASSERT_HEIGHT_ABSOLUTE(base + step + offset)\nEND CONTRACT\n",
+  "source": "CONTRACT Demo(base AS INTEGER, step AS INTEGER)\nSOLUTION offset AS INTEGER\nEMIT ASSERT_HEIGHT_ABSOLUTE(base + step + offset)\nEND CONTRACT\n",
   "solution": {
     "offset": "7"
   },

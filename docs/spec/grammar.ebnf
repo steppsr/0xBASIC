@@ -5,12 +5,12 @@
 program = { NL | declaration }, EOF ;
 declaration = contract | function ;
 contract = "CONTRACT", IDENT, "(", [ parameters ], ")", NL,
-           { NL }, { input, { NL } }, block, "END", "CONTRACT", NL ;
+           { NL }, { solution, { NL } }, block, "END", "CONTRACT", NL ;
 function = "FUNCTION", IDENT, "(", [ parameters ], ")", "AS", type, NL,
            block, "END", "FUNCTION", NL ;
 parameters = parameter, { ",", parameter } ;
 parameter = IDENT, "AS", type ;
-input = "INPUT", IDENT, "AS", type, NL ;
+solution = "SOLUTION", IDENT, "AS", type, NL ;
 type = "INTEGER" | "BOOLEAN" | "BYTES" | "STRING" | "PUZZLEHASH"
      | "PUBLICKEY" | "AMOUNT" | "CONDITION"
      | "LIST", "OF", type

@@ -2,13 +2,19 @@
 
 ## Current checkpoint
 
-M3-2 is complete. Compiler `0.1.0-m3.2` has been verified on Windows (197 Rust tests) and Linux (198 Rust tests, including a Unix-specific filesystem test). Independent conformance scripts also check artifact bytes, hashes, runtime results, and costs. This evidence covers compiler and local CLVM execution behavior, not consensus validation or a security audit.
+M3-2 is complete. The M3-2 baseline was verified on Windows (197 Rust tests) and Linux (198 Rust tests, including a Unix-specific filesystem test). Independent conformance scripts also check artifact bytes, hashes, runtime results, and costs. This evidence covers compiler and local CLVM execution behavior, not consensus validation or a security audit.
 
 The typed BASIC core supports scalar and collection values, local assignment, structured branches, pure nonrecursive functions, byte/string operations, and explicit condition emission. Contract boundaries currently accept only INTEGER fixed parameters and INTEGER solution inputs (up to 32 of each). Their JSON values are canonical decimal strings. Generated CLVM validates raw boundary values, including unused fields.
 
 `check`, `build`, and `run` are implemented. `build --template-only` produces an unbound template. Bound artifacts distinguish the template hash from the puzzle hash. Only `ASSERT_HEIGHT_ABSOLUTE` is currently available as a condition constructor. No node, wallet, signing, or transaction submission integration is implemented.
 
 The [language specification](language-v0.1.md), [ABI](spec/abi-v1.md), and [CLI specification](spec/cli-v1.md) include planned capabilities. Their status notes and this page distinguish those capabilities from the executable subset.
+
+## Source keyword clarification
+
+Compiler `0.1.0-m3.2.1` renames the solution-field declaration to `SOLUTION name AS type`. The former `INPUT` keyword is no longer accepted as a declaration. Contracts do not prompt, read a keyboard, or wait for user interaction. Fixed parameters are still declared in the contract header; solution fields are supplied by the spender.
+
+Update older source declarations and rebuild artifacts with the current compiler. The ABI and generated boundary semantics are unchanged; manifests still require the matching compiler version. The README uses a fixed height-lock example without solution fields. Windows verification passes 199 Rust tests, including new keyword and README-example regressions.
 
 ## Roadmap
 

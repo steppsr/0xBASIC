@@ -1,0 +1,3 @@
+CONTRACT HeightLock(earliestHeight AS INTEGER)
+    EMIT ASSERT_HEIGHT_ABSOLUTE(earliestHeight)
+END CONTRACT

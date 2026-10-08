@@ -220,7 +220,7 @@ fn failed_build_never_publishes_or_overwrites() {
     let dir = dir.path();
     fs::write(
         dir.join("invalid.bas"),
-        "CONTRACT Broken()\nINPUT x AS BOOLEAN\nEND CONTRACT",
+        "CONTRACT Broken()\nSOLUTION x AS BOOLEAN\nEND CONTRACT",
     )
     .unwrap();
     invoke(dir, &["build", "invalid.bas", "--out", "failed"], 1);

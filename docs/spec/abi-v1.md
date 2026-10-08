@@ -4,7 +4,7 @@ Status: normative M0 baseline. Language `0.1`, ABI `1`. Runtime tree values, ser
 
 ## Calling convention
 
-Let P be the unbound template, F the proper list of fixed values in header order, and S the proper list of solution values in INPUT order. The template environment is the dotted pair `(F . S)`. Generated entry validation checks both lists, exact arity, and all types before the body.
+Let P be the unbound template, F the proper list of fixed values in header order, and S the proper list of solution values in SOLUTION order. The template environment is the dotted pair `(F . S)`. Generated entry validation checks both lists, exact arity, and all types before the body.
 
 The bound puzzle is ordinary CLVM currying of **one** argument, the list F:
 

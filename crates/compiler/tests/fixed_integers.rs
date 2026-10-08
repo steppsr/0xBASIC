@@ -3,6 +3,26 @@ fn source(parameters: &str, body: &str) -> String {
     format!("CONTRACT Demo({parameters})\n{body}END CONTRACT\n")
 }
 #[test]
+fn readme_height_lock_binds_height_without_solution_fields() {
+    let text = include_bytes!("../../../examples/height-lock.bas");
+    let template = compile_template("height-lock.bas", text).unwrap();
+    assert!(template.contract.inputs.is_empty());
+    let program = template
+        .bind(include_bytes!(
+            "../../../examples/height-lock.bindings.json"
+        ))
+        .unwrap();
+    assert_eq!(
+        hex::encode(
+            clvm::execute(&program.puzzle, &[0x80], clvm::DEFAULT_MAX_COST)
+                .unwrap()
+                .bytes
+        ),
+        "ffff53ff648080"
+    );
+    assert!(clvm::execute(&program.puzzle, &[0xff, 1, 0x80], clvm::DEFAULT_MAX_COST).is_err());
+}
+#[test]
 fn template_compilation_and_binding_have_distinct_requirements_and_identities() {
     let text = source("height AS INTEGER", "EMIT ASSERT_HEIGHT_ABSOLUTE(height)\n");
     analyze("fixed.bas", text.as_bytes()).unwrap();
@@ -51,7 +71,7 @@ fn fixed_names_are_immutable_isolated_and_not_constants() {
         ("n AS INTEGER", "n = 2\n", "E0203"),
         ("n AS INTEGER", "IF TRUE THEN\nn = 2\nEND IF\n", "E0203"),
         ("n AS INTEGER,N AS INTEGER", "", "E0201"),
-        ("n AS INTEGER", "INPUT N AS INTEGER\n", "E0201"),
+        ("n AS INTEGER", "SOLUTION N AS INTEGER\n", "E0201"),
         ("demo AS INTEGER", "", "E0201"),
         ("n AS INTEGER", "DIM N = 3\n", "E0201"),
         ("n AS INTEGER", "CONST x = n\n", "E0205"),
@@ -96,7 +116,7 @@ fn fixed_and_input_slots_keep_order_through_functions_and_branches() {
         "{}FUNCTION Sum(a AS INTEGER,b AS INTEGER) AS INTEGER\nRETURN a+b\nEND FUNCTION\n",
         source(
             "base AS INTEGER, step AS INTEGER",
-            "INPUT offset AS INTEGER\nINPUT flag AS INTEGER\nDIM saved = base\nDIM n = Sum(base,offset)\nIF flag = 1 THEN\nn = n + step\nELSE\nn = 0\nEND IF\nASSERT saved = base\nEMIT ASSERT_HEIGHT_ABSOLUTE(n)\nEMIT ASSERT_HEIGHT_ABSOLUTE(offset)\n"
+            "SOLUTION offset AS INTEGER\nSOLUTION flag AS INTEGER\nDIM saved = base\nDIM n = Sum(base,offset)\nIF flag = 1 THEN\nn = n + step\nELSE\nn = 0\nEND IF\nASSERT saved = base\nEMIT ASSERT_HEIGHT_ABSOLUTE(n)\nEMIT ASSERT_HEIGHT_ABSOLUTE(offset)\n"
         )
     );
     let t = compile_template("slots.bas", text.as_bytes()).unwrap();
@@ -130,7 +150,7 @@ fn malformed_unused_fixed_values_fail_before_body_without_runner_flags() {
     use clvmr::{Allocator, ChiaDialect, ClvmFlags, run_program, serde::node_from_bytes};
     let t = compile_template(
         "unused.bas",
-        source("n AS INTEGER", "INPUT value AS INTEGER\n").as_bytes(),
+        source("n AS INTEGER", "SOLUTION value AS INTEGER\n").as_bytes(),
     )
     .unwrap();
     for raw in [
@@ -197,7 +217,7 @@ fn binding_json_and_combined_field_limits_are_bounded() {
         .collect::<Vec<_>>()
         .join(",");
     let mut body = (0..32)
-        .map(|i| format!("INPUT s{i} AS INTEGER\n"))
+        .map(|i| format!("SOLUTION s{i} AS INTEGER\n"))
         .collect::<String>();
     body.push_str("EMIT ASSERT_HEIGHT_ABSOLUTE(f0+f31+s0+s31)\n");
     let t = compile_template("max.bas", source(&fixed, &body).as_bytes()).unwrap();

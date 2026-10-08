@@ -1,4 +1,4 @@
-"""INTEGER INPUT source/JSON/raw conformance and optional independent Python CLVM."""
+"""INTEGER SOLUTION source/JSON/raw conformance and optional independent Python CLVM."""
 import argparse
 import io
 import json
@@ -107,7 +107,7 @@ def main():
                     height="(f 1)" if c["id"]=="example" else "(- (f 1) (f (r 1)))"
                     reference=f"(c (c (q . 83) (c {height} (q . ()))) (q . ()))"
                 upstream((out/"puzzle.clvm").read_bytes(),solution,expected,result,reference)
-    print("26 INTEGER INPUT cases passed; repeated artifacts identical." + (" Python CLVM results, references and successful generated costs matched." if args.with_upstream else ""))
+    print("26 INTEGER SOLUTION cases passed; repeated artifacts identical." + (" Python CLVM results, references and successful generated costs matched." if args.with_upstream else ""))
 
 
 if __name__=="__main__": main()

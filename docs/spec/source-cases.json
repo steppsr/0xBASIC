@@ -9,7 +9,7 @@
     {"id":"emission-order","accept":true,"source":"CONTRACT Demo()\n EMIT ASSERT_HEIGHT_ABSOLUTE(10)\n IF FALSE THEN\n EMIT ASSERT_HEIGHT_ABSOLUTE(99)\n END IF\n EMIT ASSERT_MY_AMOUNT(AS_AMOUNT(1000))\nEND CONTRACT\n","expected_conditions":[[83,10],[73,1000]]},
     {"id":"short-circuit","accept":true,"source":"CONTRACT Demo()\n DIM values AS LIST OF INTEGER = []\n ASSERT TRUE OR FIRST(values) = 1\n ASSERT NOT (FALSE AND FIRST(values) = 1)\nEND CONTRACT\n","expected_conditions":[]},
     {"id":"pure-function","accept":true,"source":"FUNCTION Twice(n AS INTEGER) AS INTEGER\n RETURN n * 2\nEND FUNCTION\nCONTRACT Demo()\n ASSERT Twice(3) = 6\nEND CONTRACT\n","expected_conditions":[]},
-    {"id":"input-shape","accept":true,"source":"CONTRACT Demo()\n INPUT count AS INTEGER\n ASSERT count >= 0\nEND CONTRACT\n","solution":{"count":"3"},"expected_conditions":[]},
+    {"id":"input-shape","accept":true,"source":"CONTRACT Demo()\n SOLUTION count AS INTEGER\n ASSERT count >= 0\nEND CONTRACT\n","solution":{"count":"3"},"expected_conditions":[]},
     {"id":"pair-and-list","accept":true,"source":"CONTRACT Demo()\n DIM p AS PAIR OF (INTEGER, BYTES) = PAIR(7, 0x0001)\n DIM xs AS LIST OF INTEGER = [FIRST(p), 8]\n ASSERT LIST_LENGTH(xs) = 2\n ASSERT BYTE_LENGTH(REST(p)) = 2\nEND CONTRACT\n","expected_conditions":[]},
     {"id":"doubled-quotes","accept":true,"source":"CONTRACT Demo()\n DIM text AS STRING = \"a\"\"b\"\n ASSERT BYTE_LENGTH(UTF8(text)) = 3\nEND CONTRACT\n","expected_conditions":[]},
     {"id":"full-payment","accept":true,"source_file":"../../examples/height-locked-payment.bas","note":"Runtime/signature expectations are in ABI/payment vectors and M4 scenarios."},
@@ -28,7 +28,7 @@
     {"id":"branch-local-escape","accept":false,"diagnostic":"E0200","source":"CONTRACT Demo()\n IF TRUE THEN\n DIM x = 1\n END IF\n ASSERT x = 1\nEND CONTRACT\n"},
     {"id":"chained-comparison","accept":false,"diagnostic":"E0100","source":"CONTRACT Demo()\n ASSERT 1 < 2 < 3\nEND CONTRACT\n"},
     {"id":"contract-return","accept":false,"diagnostic":"E0205","source":"CONTRACT Demo()\n RETURN []\nEND CONTRACT\n"},
-    {"id":"condition-input","accept":false,"diagnostic":"E0205","source":"CONTRACT Demo()\n INPUT arbitrary AS CONDITION\nEND CONTRACT\n"},
+    {"id":"condition-input","accept":false,"diagnostic":"E0205","source":"CONTRACT Demo()\n SOLUTION arbitrary AS CONDITION\nEND CONTRACT\n"},
     {"id":"wrong-arity","accept":false,"diagnostic":"E0202","source":"CONTRACT Demo()\n DIM x = SHA256(0x01, 0x02)\nEND CONTRACT\n"},
     {"id":"second-contract","accept":false,"diagnostic":"E0101","source":"CONTRACT A()\nEND CONTRACT\nCONTRACT B()\nEND CONTRACT\n"}
   ]

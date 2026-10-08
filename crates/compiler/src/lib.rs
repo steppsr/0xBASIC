@@ -16,7 +16,7 @@ pub const LANGUAGE_VERSION: &str = "0.1";
 pub const ABI_VERSION: u32 = 1;
 pub const TARGET_PROFILE: &str = "chia-clvm-0.19-strict-v1";
 pub const COMPILER_VERSION: &str = env!("CARGO_PKG_VERSION");
-pub const IMPLEMENTED_SUBSET: &str = "m3.2: contracts with INTEGER fixed parameters and INPUTs, INTEGER/BOOLEAN/BYTES/STRING/CONDITION locals and functions, INTEGER/BOOLEAN/BYTES/STRING/LIST constants, BYTE_LENGTH, CONCAT, SHA256, INT_BYTES, INT_FROM_BYTES, U32BE, U64BE, UTF8, STRING_FROM_UTF8, short-circuit logic, ASSERT, height constructors, typed EMIT, scoped IF/ELSEIF/ELSE, early and branch RETURN, typed PAIR construction and FIRST/REST, contextual LIST literals, list FIRST/REST, CONS, LIST_LENGTH; bounded list constants; domain conversions are not implemented yet";
+pub const IMPLEMENTED_SUBSET: &str = "m3.2: contracts with INTEGER fixed parameters and SOLUTIONs, INTEGER/BOOLEAN/BYTES/STRING/CONDITION locals and functions, INTEGER/BOOLEAN/BYTES/STRING/LIST constants, BYTE_LENGTH, CONCAT, SHA256, INT_BYTES, INT_FROM_BYTES, U32BE, U64BE, UTF8, STRING_FROM_UTF8, short-circuit logic, ASSERT, height constructors, typed EMIT, scoped IF/ELSEIF/ELSE, early and branch RETURN, typed PAIR construction and FIRST/REST, contextual LIST literals, list FIRST/REST, CONS, LIST_LENGTH; bounded list constants; domain conversions are not implemented yet";
 
 pub type Result<T> = std::result::Result<T, Box<Diagnostic>>;
 

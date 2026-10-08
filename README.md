@@ -8,20 +8,19 @@
 
 The goal is to make contract development easier to learn without hiding how Chia's coin and condition model works.
 
-**Early development · compiler `0.1.0-m3.2` · Apache-2.0**
+**Early development · compiler `0.1.0-m3.2.1` · Apache-2.0**
 
 The compiler and local runner work today, but the language is incomplete and has not been audited for production use. Current execution checks CLVM behavior; it does not validate a blockchain spend. Do not use this development version to secure funds.
 
 ## A small working example
 
 ```basic
-CONTRACT FixedHeight(base AS INTEGER)
-    INPUT offset AS INTEGER
-    EMIT ASSERT_HEIGHT_ABSOLUTE(base + offset)
+CONTRACT HeightLock(earliestHeight AS INTEGER)
+    EMIT ASSERT_HEIGHT_ABSOLUTE(earliestHeight)
 END CONTRACT
 ```
 
-`base` is fixed when the contract is bound into a puzzle; `offset` comes from the spender's solution. With `base = 100` and `offset = 7`, this contract returns a condition requiring an absolute height of at least 107. `EMIT` adds a condition to the result; the blockchain enforces that condition when validating a spend.
+`earliestHeight` is fixed when the contract is bound into a puzzle. With `earliestHeight = 100`, this contract returns a condition requiring an absolute height of at least 100. Contracts execute using supplied data; they never prompt or wait for interactive input. `EMIT` adds a condition to the result; the blockchain enforces that condition when validating a spend.
 
 ## What works today
 
@@ -41,12 +40,12 @@ You need Git, Rust installed through rustup, and a native C/C++ build toolchain.
 git clone https://github.com/steppsr/0xBASIC.git
 cd 0xBASIC
 cargo build --workspace --locked
-cargo run --locked -p oxbasic-cli -- check examples/m3-fixed-integers.bas
-cargo run --locked -p oxbasic-cli -- build examples/m3-fixed-integers.bas --bindings examples/m3-fixed-integers.bindings.json --out fixed-build
-cargo run --locked -p oxbasic-cli -- run fixed-build/manifest.json --solution examples/m3-fixed-integers.solution.json --json
+cargo run --locked -p oxbasic-cli -- check examples/height-lock.bas
+cargo run --locked -p oxbasic-cli -- build examples/height-lock.bas --bindings examples/height-lock.bindings.json --out height-lock-build
+cargo run --locked -p oxbasic-cli -- run height-lock-build/manifest.json --json
 ```
 
-These commands work in PowerShell and Linux shells. The output directory `fixed-build` must not already exist. A build produces binary CLVM, hex files, and a manifest recording the template and bound puzzle identities. The runner returns the raw condition tree corresponding to `((83 107))` and labels its result `clvm-execution-only`.
+These commands work in PowerShell and Linux shells. The output directory `height-lock-build` must not already exist. A build produces binary CLVM, hex files, and a manifest recording the template and bound puzzle identities. The runner returns the raw condition tree corresponding to `((83 100))` and labels its result `clvm-execution-only`.
 
 Dependency downloads require internet access initially. Compilation and local execution then work with cached dependencies; no wallet or running Chia node is required. Python is only needed for the verification scripts.
 

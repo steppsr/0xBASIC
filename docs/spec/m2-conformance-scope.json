@@ -34,7 +34,7 @@
     {
       "id": "input-shape",
       "status": "deferred",
-      "reason": "Requires nonempty INPUT declarations and solution decoding (M3)."
+      "reason": "Requires nonempty SOLUTION declarations and solution decoding (M3)."
     },
     {
       "id": "pair-and-list",
@@ -113,7 +113,7 @@
     {
       "id": "condition-input",
       "status": "deferred",
-      "reason": "Requires INPUT schema validation; generic E0205 rejection does not establish the specific CONDITION boundary prohibition (M3)."
+      "reason": "Requires SOLUTION schema validation; generic E0205 rejection does not establish the specific CONDITION boundary prohibition (M3)."
     },
     {
       "id": "wrong-arity",
