@@ -39,7 +39,7 @@ struct Manifest {
     fixed_parameters: Vec<compiler::abi::Field>,
     inputs: Vec<compiler::abi::Field>,
     #[serde(deserialize_with = "required_option")]
-    bindings: Option<compiler::abi::IntegerObject>,
+    bindings: Option<compiler::abi::BoundaryObject>,
     template: Artifact,
     #[serde(deserialize_with = "required_option")]
     puzzle: Option<Artifact>,
@@ -190,7 +190,7 @@ pub struct Loaded {
 pub fn load(path: &Path) -> Result<Loaded> {
     let bytes = read(path)?;
     // Deserialize into structs directly: duplicate and unknown fields are errors.
-    let manifest: Manifest = serde_json::from_slice(&bytes).map_err(io)?;
+    let manifest: Manifest = compiler::abi::decode_json(&bytes).map_err(|e| io(e.message))?;
     if manifest.schema_version != 1
         || manifest.language_version != compiler::LANGUAGE_VERSION
         || manifest.abi_version != compiler::ABI_VERSION

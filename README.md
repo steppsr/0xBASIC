@@ -8,7 +8,7 @@
 
 The goal is to make contract development easier to learn without hiding how Chia's coin and condition model works.
 
-**Early development · compiler `0.1.0-m3.2.1` · Apache-2.0**
+**Early development · compiler `0.1.0-m3.6b` · Apache-2.0**
 
 The compiler and local runner work today, but the language is incomplete and has not been audited for production use. Current execution checks CLVM behavior; it does not validate a blockchain spend. Do not use this development version to secure funds.
 
@@ -25,12 +25,12 @@ END CONTRACT
 ## What works today
 
 - Case-insensitive names, `AS` declarations, constants, local reassignment, assertions, and `IF` / `ELSEIF` / `ELSE`.
-- Pure, nonrecursive functions and typed INTEGER, BOOLEAN, BYTES, STRING, PAIR, LIST, and CONDITION values inside programs.
+- Pure, nonrecursive functions and typed INTEGER, BOOLEAN, BYTES, STRING, AMOUNT, PUZZLEHASH, PUBLICKEY, PAIR, LIST, and CONDITION values inside programs.
 - Byte operations, SHA256, integer encodings, strict UTF-8 conversion, and collection operations.
-- INTEGER fixed parameters and solution inputs, with JSON conversion and generated CLVM boundary validation.
+- INTEGER, BOOLEAN, BYTES, STRING, AMOUNT, PUZZLEHASH, PUBLICKEY, and nested PAIR/LIST fixed parameters and solution fields, with JSON conversion and generated CLVM boundary validation.
 - `check`, `build`, and `run` commands; reproducible artifacts, tree hashes, structured diagnostics, and execution-cost reporting.
 
-Only `ASSERT_HEIGHT_ABSOLUTE` is currently implemented as a blockchain condition constructor. Other boundary types, payment conditions, signatures, and simulator spend validation are upcoming work. The specifications describe the intended language as well as features still being implemented; see the [status and roadmap](docs/development.md).
+Only `ASSERT_HEIGHT_ABSOLUTE` is currently implemented as a blockchain condition constructor. Payment conditions, signatures, and simulator spend validation are upcoming work. The specifications describe the intended language as well as features still being implemented; see the [status and roadmap](docs/development.md).
 
 ## Try it
 

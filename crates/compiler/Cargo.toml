@@ -7,6 +7,7 @@ publish.workspace = true
 
 [dependencies]
 clvmr.workspace = true
+chia-bls.workspace = true
 num-bigint.workspace = true
 hex.workspace = true
 serde.workspace = true

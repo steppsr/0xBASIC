@@ -76,8 +76,8 @@ fn bytes_have_strict_types_and_no_implicit_numeric_interpretation() {
 }
 
 #[test]
-fn byte_conversions_stay_explicitly_deferred() {
-    error("DIM value = AS_AMOUNT(0)\n", "E0205");
+fn conversions_require_correct_types_and_unreachable_returns_are_checked() {
+    error("DIM value = AS_PUBLICKEY(0)\n", "E0202");
     let text =
         "CONTRACT Demo()\nEND CONTRACT\nFUNCTION F() AS BYTES\nRETURN 0x\nRETURN 0\nEND FUNCTION\n";
     assert_eq!(

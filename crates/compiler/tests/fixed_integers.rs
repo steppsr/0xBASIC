@@ -76,7 +76,7 @@ fn fixed_names_are_immutable_isolated_and_not_constants() {
         ("n AS INTEGER", "DIM N = 3\n", "E0201"),
         ("n AS INTEGER", "CONST x = n\n", "E0205"),
         ("n AS LIST OF CONDITION", "", "E0205"),
-        ("n AS BOOLEAN", "", "E0205"),
+        ("n AS DOUBLE", "", "E0205"),
     ] {
         let text = source(parameters, body);
         for e in [

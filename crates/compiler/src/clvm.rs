@@ -95,30 +95,13 @@ pub fn generate(contract: &Contract) -> Result<Vec<u8>> {
         }
         let body = quote(&mut a, program)?;
         program = op(&mut a, 2, &[body, frame])?;
-        program = guard_integer_fields(&mut a, solution, contract.inputs.len(), program)?;
-        program = guard_integer_fields(&mut a, fixed, contract.fixed.len(), program)?;
+        program = guard_fields(&mut a, solution, &contract.inputs, program)?;
+        program = guard_fields(&mut a, fixed, &contract.fixed, program)?;
     } else if !contract.inputs.is_empty() {
         let solution = a.new_small_number(3).map_err(internal)?;
         let body = quote(&mut a, program)?;
         program = op(&mut a, 2, &[body, solution])?;
-        let mut spines = Vec::new();
-        let mut spine = solution;
-        for _ in &contract.inputs {
-            spines.push(spine);
-            spine = op(&mut a, 6, &[spine])?;
-        }
-        let end = op(&mut a, 9, &[spine, nil])?;
-        program = choose(&mut a, end, program, fail)?;
-        for spine in spines.into_iter().rev() {
-            let head = op(&mut a, 5, &[spine])?;
-            let canonical = op(&mut a, 16, &[head])?;
-            let valid = op(&mut a, 9, &[head, canonical])?;
-            program = choose(&mut a, valid, program, fail)?;
-            let pair = op(&mut a, 7, &[head])?;
-            program = choose(&mut a, pair, fail, program)?;
-            let pair = op(&mut a, 7, &[spine])?;
-            program = choose(&mut a, pair, program, fail)?;
-        }
+        program = guard_fields(&mut a, solution, &contract.inputs, program)?;
     }
     let paths: &[u32] = if !contract.fixed.is_empty() {
         &[]
@@ -143,33 +126,129 @@ pub fn generate(contract: &Contract) -> Result<Vec<u8>> {
     })
 }
 
-fn guard_integer_fields(
+fn guard_fields(
     a: &mut Allocator,
     value: NodePtr,
-    count: usize,
+    fields: &[crate::abi::Field],
     mut body: NodePtr,
 ) -> Result<NodePtr> {
     let nil = quote(a, NodePtr::NIL)?;
     let fail = op(a, 8, &[])?;
     let mut spines = Vec::new();
     let mut spine = value;
-    for _ in 0..count {
+    for _ in fields {
         spines.push(spine);
         spine = op(a, 6, &[spine])?;
     }
     let end = op(a, 9, &[spine, nil])?;
     body = choose(a, end, body, fail)?;
-    for spine in spines.into_iter().rev() {
+    for (spine, field) in spines.into_iter().zip(fields).rev() {
         let head = op(a, 5, &[spine])?;
-        let canonical = op(a, 16, &[head])?;
-        let valid = op(a, 9, &[head, canonical])?;
-        body = choose(a, valid, body, fail)?;
-        let pair = op(a, 7, &[head])?;
-        body = choose(a, pair, fail, body)?;
+        body = guard_value(a, head, &field.value_type, body)?;
         let pair = op(a, 7, &[spine])?;
         body = choose(a, pair, body, fail)?;
     }
     Ok(body)
+}
+
+fn guard_value(
+    a: &mut Allocator,
+    head: NodePtr,
+    schema: &crate::abi::SchemaType,
+    mut body: NodePtr,
+) -> Result<NodePtr> {
+    let nil = quote(a, NodePtr::NIL)?;
+    let fail = op(a, 8, &[])?;
+    if let crate::abi::SchemaType::List { element } = schema {
+        let valid = validate_list(a, head, element)?;
+        return choose(a, valid, body, fail);
+    }
+    if let crate::abi::SchemaType::Pair { first, rest } = schema {
+        let a_head = op(a, 5, &[head])?;
+        let a_rest = op(a, 6, &[head])?;
+        body = guard_value(a, a_rest, rest, body)?;
+        body = guard_value(a, a_head, first, body)?;
+        let pair = op(a, 7, &[head])?;
+        return choose(a, pair, body, fail);
+    }
+    match schema {
+        crate::abi::SchemaType::Integer | crate::abi::SchemaType::Amount => {
+            if matches!(schema, crate::abi::SchemaType::Amount) {
+                let checked = checked_domain(a, head, true)?;
+                let valid = op(a, 9, &[checked, head])?;
+                body = choose(a, valid, body, fail)?;
+            }
+            let canonical = op(a, 16, &[head])?;
+            let valid = op(a, 9, &[head, canonical])?;
+            body = choose(a, valid, body, fail)?;
+        }
+        crate::abi::SchemaType::Boolean => {
+            let one = a.new_small_number(1).map_err(internal)?;
+            let one = quote(a, one)?;
+            let is_true = op(a, 9, &[head, one])?;
+            let is_false = op(a, 9, &[head, nil])?;
+            let valid = choose(a, is_false, one, is_true)?;
+            body = choose(a, valid, body, fail)?;
+        }
+        crate::abi::SchemaType::String => {
+            let validated = utf8::validate(a, head)?;
+            // Force validation even for unused or empty strings, without treating
+            // an empty valid string as a false validation result.
+            let valid = op(a, 9, &[validated, head])?;
+            body = choose(a, valid, body, fail)?;
+        }
+        crate::abi::SchemaType::PublicKey => {
+            let checked = checked_public_key(a, head)?;
+            let valid = op(a, 9, &[checked, head])?;
+            body = choose(a, valid, body, fail)?;
+        }
+        crate::abi::SchemaType::PuzzleHash => {
+            let checked = checked_domain(a, head, false)?;
+            let valid = op(a, 9, &[checked, head])?;
+            body = choose(a, valid, body, fail)?;
+        }
+        crate::abi::SchemaType::Bytes => {}
+        crate::abi::SchemaType::Pair { .. } | crate::abi::SchemaType::List { .. } => {
+            unreachable!("handled above")
+        }
+    }
+    let pair = op(a, 7, &[head])?;
+    body = choose(a, pair, fail, body)?;
+    Ok(body)
+}
+
+// Compiler-private tail loop environment [self, remaining-list]. Each element is
+// validated before advancing, and the final atom must be nil, not just false-ish.
+fn validate_list(
+    a: &mut Allocator,
+    value: NodePtr,
+    element: &crate::abi::SchemaType,
+) -> Result<NodePtr> {
+    let this = a.new_small_number(2).map_err(internal)?;
+    let tail = a.new_small_number(5).map_err(internal)?;
+    let nil = quote(a, NodePtr::NIL)?;
+    let fail = op(a, 8, &[])?;
+    let one = a.new_small_number(1).map_err(internal)?;
+    let yes = quote(a, one)?;
+    let rest = op(a, 6, &[tail])?;
+    let env = op(a, 4, &[rest, nil])?;
+    let env = op(a, 4, &[this, env])?;
+    let step = op(a, 2, &[this, env])?;
+    let head = op(a, 5, &[tail])?;
+    let step = guard_value(a, head, element, step)?;
+    let end = op(a, 9, &[tail, nil])?;
+    let end = choose(a, end, yes, fail)?;
+    let pair = op(a, 7, &[tail])?;
+    let program = choose(a, pair, step, end)?;
+    let program = quote(a, program)?;
+    let env = op(a, 4, &[value, nil])?;
+    let env = op(a, 4, &[program, env])?;
+    // Bootstrap through the self slot so nested list validators are serialized
+    // once, rather than duplicating an entire element validator at each level.
+    let current_env = a.new_small_number(1).map_err(internal)?;
+    let start = op(a, 2, &[this, current_env])?;
+    let start = quote(a, start)?;
+    op(a, 2, &[start, env])
 }
 
 fn literal_heights(contract: &Contract) -> Option<Vec<&[u8]>> {
@@ -220,6 +299,41 @@ fn value_path(a: &mut Allocator, id: usize, slots: &[usize], count: usize) -> Re
         .get(id)
         .ok_or_else(|| internal("forward or invalid integer value reference"))?;
     slot_path(a, *slot, count)
+}
+
+// Strict point_add checks canonical G1 encoding and subgroup membership even
+// with empty runner flags. Equality preserves representation; infinity is not a key.
+fn checked_public_key(a: &mut Allocator, value: NodePtr) -> Result<NodePtr> {
+    let canonical = op(a, 29, &[value])?;
+    let valid = op(a, 9, &[canonical, value])?;
+    let mut infinity = [0u8; 48];
+    infinity[0] = 0xc0;
+    let infinity = a.new_atom(&infinity).map_err(internal)?;
+    let infinity = quote(a, infinity)?;
+    let is_infinity = op(a, 9, &[value, infinity])?;
+    let fail = op(a, 8, &[])?;
+    let checked = choose(a, is_infinity, fail, value)?;
+    choose(a, valid, checked, fail)
+}
+
+fn checked_domain(a: &mut Allocator, value: NodePtr, amount: bool) -> Result<NodePtr> {
+    let fail = op(a, 8, &[])?;
+    if amount {
+        let upper = a.new_atom(&[1, 0, 0, 0, 0, 0, 0, 0, 0]).map_err(internal)?;
+        let upper = quote(a, upper)?;
+        let lower = a.new_atom(&[0xff]).map_err(internal)?;
+        let lower = quote(a, lower)?;
+        let low_ok = op(a, 21, &[value, lower])?;
+        let high_ok = op(a, 21, &[upper, value])?;
+        let checked = choose(a, high_ok, value, fail)?;
+        choose(a, low_ok, checked, fail)
+    } else {
+        let length = op(a, 13, &[value])?;
+        let expected = a.new_small_number(32).map_err(internal)?;
+        let expected = quote(a, expected)?;
+        let valid = op(a, 9, &[length, expected])?;
+        choose(a, valid, value, fail)
+    }
 }
 
 // Add a sentinel above the checked unsigned range. Its canonical atom has
@@ -567,6 +681,15 @@ fn scalar_expression(
         IntegerValueKind::UnsignedBytes { operand, width } => {
             let value = value_path(a, *operand, value_slots, count)?;
             unsigned_bytes(a, value, *width)?
+        }
+        IntegerValueKind::AsAmount { operand } | IntegerValueKind::AsPuzzleHash { operand } => {
+            let amount = matches!(value.kind, IntegerValueKind::AsAmount { .. });
+            let value = value_path(a, *operand, value_slots, count)?;
+            checked_domain(a, value, amount)?
+        }
+        IntegerValueKind::AsPublicKey { operand } => {
+            let value = value_path(a, *operand, value_slots, count)?;
+            checked_public_key(a, value)?
         }
         IntegerValueKind::StringFromUtf8 { operand } => {
             let value = value_path(a, *operand, value_slots, count)?;

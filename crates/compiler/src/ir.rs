@@ -50,6 +50,15 @@ pub enum IntegerValueKind {
         operand: usize,
         first: bool,
     },
+    AsPublicKey {
+        operand: usize,
+    },
+    AsAmount {
+        operand: usize,
+    },
+    AsPuzzleHash {
+        operand: usize,
+    },
     StringFromUtf8 {
         operand: usize,
     },
@@ -239,6 +248,7 @@ fn lower_contract(name: &str, parsed: ParsedContract, functions: &Callables) -> 
         )
     {
         let key = input.name.to_ascii_lowercase();
+        let field = crate::abi::Field::from_type(key.clone(), &input.value_type)?;
         let value = push(
             name,
             &mut lowerer.values,
@@ -258,9 +268,9 @@ fn lower_contract(name: &str, parsed: ParsedContract, functions: &Callables) -> 
             span: input.span,
         });
         if is_fixed {
-            fixed.push(crate::abi::Field::integer(key));
+            fixed.push(field);
         } else {
-            inputs.push(crate::abi::Field::integer(key));
+            inputs.push(field);
         }
     }
     let emissions = lowerer.block(parsed.statements, &mut names, &mut BTreeMap::new())?;

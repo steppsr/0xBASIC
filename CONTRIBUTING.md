@@ -15,6 +15,12 @@ python tools/verify_m0.py
 python tools/verify_m1.py
 python tools/verify_m3_inputs.py
 python tools/verify_m3_bindings.py
+python tools/verify_m3_scalars.py
+python tools/verify_m3_strings.py
+python tools/verify_m3_pairs.py
+python tools/verify_m3_lists.py
+python tools/verify_m3_domains.py
+python tools/verify_m3_publickeys.py
 ```
 
 On Linux, use `python3` if `python` is unavailable. The [CI workflow](.github/workflows/ci.yml) lists the complete conformance commands, including earlier language features. Run checks relevant to your change; CI runs the full matrix on Windows and Linux.

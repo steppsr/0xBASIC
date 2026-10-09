@@ -107,7 +107,7 @@ fn inputs_are_immutable_scoped_and_explicitly_limited() {
             "SOLUTION n AS INTEGER\nIF TRUE THEN\nn = 2\nEND IF\n",
             "E0203",
         ),
-        ("SOLUTION n AS BOOLEAN\n", "E0205"),
+        ("SOLUTION n AS DOUBLE\n", "E0205"),
         (
             "SOLUTION n AS PAIR OF (INTEGER,LIST OF CONDITION)\n",
             "E0205",

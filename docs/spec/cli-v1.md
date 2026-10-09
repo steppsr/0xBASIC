@@ -1,6 +1,6 @@
 # CLI, artifacts, and diagnostics v1
 
-Status: normative interface specification. `check`, `build`, and `run` support the [M3-2 subset](../development.md): the typed BASIC core plus INTEGER fixed parameters and SOLUTIONs, JSON binding/solution conversion and generated raw-tree validation. Other boundary types and `explain` remain planned. Program name: `0xbasic`; internal Rust package names use `oxbasic` because Rust identifiers cannot begin with a digit.
+Status: normative interface specification. `check`, `build`, and `run` support the [M3-6b subset](../development.md): the typed BASIC core plus scalar and recursive PAIR/LIST fixed parameters and SOLUTION fields, JSON binding/solution conversion and generated raw-tree validation. AMOUNT, PUZZLEHASH and PUBLICKEY boundaries and explicit conversions are supported; `explain` remains planned. Program name: `0xbasic`; internal Rust package names use `oxbasic` because Rust identifiers cannot begin with a digit.
 
 ## Commands
 

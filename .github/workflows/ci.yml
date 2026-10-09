@@ -48,3 +48,9 @@ jobs:
       - run: python tools/verify_m2.py
       - run: python tools/verify_m3_inputs.py
       - run: python tools/verify_m3_bindings.py
+      - run: python tools/verify_m3_scalars.py
+      - run: python tools/verify_m3_strings.py
+      - run: python tools/verify_m3_pairs.py
+      - run: python tools/verify_m3_lists.py
+      - run: python tools/verify_m3_domains.py
+      - run: python tools/verify_m3_publickeys.py

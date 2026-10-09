@@ -465,6 +465,12 @@ impl Parser<'_> {
             crate::ValueType::Condition
         } else if self.word("STRING") {
             crate::ValueType::String
+        } else if self.word("AMOUNT") {
+            crate::ValueType::Amount
+        } else if self.word("PUBLICKEY") {
+            crate::ValueType::PublicKey
+        } else if self.word("PUZZLEHASH") {
+            crate::ValueType::PuzzleHash
         } else if self.word("BYTES") {
             crate::ValueType::Bytes
         } else {
@@ -530,10 +536,24 @@ impl Parser<'_> {
                 span,
             ));
         }
-        if value_type != crate::ValueType::Integer {
+        fn supported(ty: &crate::ValueType) -> bool {
+            match ty {
+                crate::ValueType::Pair(a, b) => supported(a) && supported(b),
+                crate::ValueType::List(element) => supported(element),
+                crate::ValueType::Integer
+                | crate::ValueType::Boolean
+                | crate::ValueType::Amount
+                | crate::ValueType::PublicKey
+                | crate::ValueType::PuzzleHash
+                | crate::ValueType::Bytes
+                | crate::ValueType::String => true,
+                _ => false,
+            }
+        }
+        if !supported(&value_type) {
             return Err(Diagnostic::at(
                 "E0205",
-                "Only INTEGER boundary fields are implemented in this checkpoint",
+                "Only scalar, PAIR and LIST boundary fields are implemented in this checkpoint",
                 self.name,
                 span,
             ));

@@ -1,0 +1,81 @@
+{
+  "schema_version": 1,
+  "type": "PAIR OF (BOOLEAN, PAIR OF (STRING, BYTES))",
+  "cases": [
+    {
+      "id": "valid",
+      "json": "{\"value\":{\"first\":true,\"rest\":{\"first\":\"\\u0000\",\"rest\":{\"hex\":\"00Af\"}}}}",
+      "valid": true
+    },
+    {
+      "id": "reordered",
+      "json": "{\"VALUE\":{\"rest\":{\"rest\":{\"hex\":\"\"},\"first\":\"\"},\"first\":false}}",
+      "valid": true
+    },
+    {
+      "id": "missing",
+      "json": "{\"value\":{\"first\":true}}",
+      "valid": false
+    },
+    {
+      "id": "extra",
+      "json": "{\"value\":{\"first\":true,\"rest\":{\"first\":\"\",\"rest\":{\"hex\":\"\"}},\"extra\":false}}",
+      "valid": false
+    },
+    {
+      "id": "wrong-case",
+      "json": "{\"value\":{\"First\":true,\"rest\":{\"first\":\"\",\"rest\":{\"hex\":\"\"}}}}",
+      "valid": false
+    },
+    {
+      "id": "duplicate",
+      "json": "{\"value\":{\"first\":true,\"first\":false,\"rest\":{\"first\":\"\",\"rest\":{\"hex\":\"\"}}}}",
+      "valid": false
+    },
+    {
+      "id": "escaped-duplicate",
+      "json": "{\"value\":{\"first\":true,\"f\\u0069rst\":false,\"rest\":{\"first\":\"\",\"rest\":{\"hex\":\"\"}}}}",
+      "valid": false
+    },
+    {
+      "id": "nested-duplicate",
+      "json": "{\"value\":{\"first\":true,\"rest\":{\"first\":\"\",\"first\":\"x\",\"rest\":{\"hex\":\"\"}}}}",
+      "valid": false
+    },
+    {
+      "id": "hex-duplicate",
+      "json": "{\"value\":{\"first\":true,\"rest\":{\"first\":\"\",\"rest\":{\"hex\":\"\",\"hex\":\"00\"}}}}",
+      "valid": false
+    },
+    {
+      "id": "bad-bool",
+      "json": "{\"value\":{\"first\":1,\"rest\":{\"first\":\"\",\"rest\":{\"hex\":\"\"}}}}",
+      "valid": false
+    },
+    {
+      "id": "bad-string",
+      "json": "{\"value\":{\"first\":true,\"rest\":{\"first\":\"\\ud800\",\"rest\":{\"hex\":\"\"}}}}",
+      "valid": false
+    },
+    {
+      "id": "bad-bytes",
+      "json": "{\"value\":{\"first\":true,\"rest\":{\"first\":\"\",\"rest\":\"00\"}}}",
+      "valid": false
+    },
+    {
+      "id": "mixed",
+      "json": "{\"value\":{\"hex\":\"00\",\"first\":true,\"rest\":false}}",
+      "valid": false
+    },
+    {
+      "id": "null",
+      "json": "{\"value\":null}",
+      "valid": false
+    },
+    {
+      "id": "array",
+      "json": "{\"value\":[]}",
+      "valid": false
+    }
+  ]
+}

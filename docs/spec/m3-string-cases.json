@@ -1,0 +1,149 @@
+{
+  "schema_version": 1,
+  "cases": [
+    {
+      "hex": "",
+      "valid": true
+    },
+    {
+      "hex": "00",
+      "valid": true
+    },
+    {
+      "hex": "7f",
+      "valid": true
+    },
+    {
+      "hex": "c280",
+      "valid": true
+    },
+    {
+      "hex": "dfbf",
+      "valid": true
+    },
+    {
+      "hex": "e0a080",
+      "valid": true
+    },
+    {
+      "hex": "ed9fbf",
+      "valid": true
+    },
+    {
+      "hex": "ee8080",
+      "valid": true
+    },
+    {
+      "hex": "efbfbf",
+      "valid": true
+    },
+    {
+      "hex": "f0908080",
+      "valid": true
+    },
+    {
+      "hex": "f48fbfbf",
+      "valid": true
+    },
+    {
+      "hex": "efbbbf",
+      "valid": true
+    },
+    {
+      "hex": "61cc81",
+      "valid": true
+    },
+    {
+      "hex": "c3a9",
+      "valid": true
+    },
+    {
+      "hex": "48656c6c6f00f09fa680",
+      "valid": true
+    },
+    {
+      "hex": "80",
+      "valid": false
+    },
+    {
+      "hex": "bf",
+      "valid": false
+    },
+    {
+      "hex": "c0af",
+      "valid": false
+    },
+    {
+      "hex": "c180",
+      "valid": false
+    },
+    {
+      "hex": "c2",
+      "valid": false
+    },
+    {
+      "hex": "c241",
+      "valid": false
+    },
+    {
+      "hex": "e08080",
+      "valid": false
+    },
+    {
+      "hex": "e09fbf",
+      "valid": false
+    },
+    {
+      "hex": "eda080",
+      "valid": false
+    },
+    {
+      "hex": "edbfbf",
+      "valid": false
+    },
+    {
+      "hex": "e180",
+      "valid": false
+    },
+    {
+      "hex": "e18041",
+      "valid": false
+    },
+    {
+      "hex": "f0808080",
+      "valid": false
+    },
+    {
+      "hex": "f08fbfbf",
+      "valid": false
+    },
+    {
+      "hex": "f4908080",
+      "valid": false
+    },
+    {
+      "hex": "f5808080",
+      "valid": false
+    },
+    {
+      "hex": "fe",
+      "valid": false
+    },
+    {
+      "hex": "ff",
+      "valid": false
+    },
+    {
+      "hex": "f18080",
+      "valid": false
+    },
+    {
+      "hex": "f1808041",
+      "valid": false
+    },
+    {
+      "hex": "61c280ff",
+      "valid": false
+    }
+  ]
+}

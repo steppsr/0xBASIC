@@ -1,0 +1,75 @@
+{
+  "description": "BLS12-381 compressed G1 vectors. Generator and double from chia_rs G1Element; sign toggled for negative. Non-subgroup point uses x=4 with y^2=x^3+4; off-curve x=1. Rust tests require unchecked decoding of the former to succeed and checked decoding to fail. No private keys are used.",
+  "cases": [
+    {
+      "id": "generator",
+      "hex": "97f1d3a73197d7942695638c4fa9ac0fc3688c4f9774b905a14e3a3f171bac586c55e83ff97a1aeffb3af00adb22c6bb",
+      "valid": true
+    },
+    {
+      "id": "double-generator",
+      "hex": "a572cbea904d67468808c8eb50a9450c9721db309128012543902d0ac358a62ae28f75bb8f1c7c42c39a8c5529bf0f4e",
+      "valid": true
+    },
+    {
+      "id": "negative-generator",
+      "hex": "b7f1d3a73197d7942695638c4fa9ac0fc3688c4f9774b905a14e3a3f171bac586c55e83ff97a1aeffb3af00adb22c6bb",
+      "valid": true
+    },
+    {
+      "id": "infinity",
+      "hex": "c00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "valid": false
+    },
+    {
+      "id": "infinity-sign",
+      "hex": "e00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "valid": false
+    },
+    {
+      "id": "infinity-payload",
+      "hex": "c00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001",
+      "valid": false
+    },
+    {
+      "id": "uncompressed-flag",
+      "hex": "17f1d3a73197d7942695638c4fa9ac0fc3688c4f9774b905a14e3a3f171bac586c55e83ff97a1aeffb3af00adb22c6bb",
+      "valid": false
+    },
+    {
+      "id": "all-zero",
+      "hex": "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "valid": false
+    },
+    {
+      "id": "not-on-curve",
+      "hex": "800000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001",
+      "valid": false
+    },
+    {
+      "id": "not-in-subgroup",
+      "hex": "800000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000004",
+      "valid": false
+    },
+    {
+      "id": "coordinate-modulus",
+      "hex": "9a0111ea397fe69a4b1ba7b6434bacd764774b84f38512bf6730d2a0f6b0f6241eabfffeb153ffffb9feffffffffaaab",
+      "valid": false
+    },
+    {
+      "id": "short",
+      "hex": "97f1d3a73197d7942695638c4fa9ac0fc3688c4f9774b905a14e3a3f171bac586c55e83ff97a1aeffb3af00adb22c6",
+      "valid": false
+    },
+    {
+      "id": "long",
+      "hex": "97f1d3a73197d7942695638c4fa9ac0fc3688c4f9774b905a14e3a3f171bac586c55e83ff97a1aeffb3af00adb22c6bb00",
+      "valid": false
+    },
+    {
+      "id": "empty",
+      "hex": "",
+      "valid": false
+    }
+  ]
+}

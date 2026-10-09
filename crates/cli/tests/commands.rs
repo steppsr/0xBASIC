@@ -220,7 +220,7 @@ fn failed_build_never_publishes_or_overwrites() {
     let dir = dir.path();
     fs::write(
         dir.join("invalid.bas"),
-        "CONTRACT Broken()\nSOLUTION x AS BOOLEAN\nEND CONTRACT",
+        "CONTRACT Broken()\nSOLUTION x AS DOUBLE\nEND CONTRACT",
     )
     .unwrap();
     invoke(dir, &["build", "invalid.bas", "--out", "failed"], 1);
@@ -676,4 +676,649 @@ fn fixed_binding_artifacts_template_only_and_integrity_are_enforced() {
         4,
     );
     assert!(!dir.join("oversized-manifest").exists());
+}
+
+#[test]
+fn scalar_boundaries_round_trip_and_reject_tampered_manifests() {
+    let tmp = fixture();
+    let dir = tmp.path();
+    fs::write(
+        dir.join("source file.bas"),
+        include_bytes!("../../../examples/m3-scalar-boundaries.bas"),
+    )
+    .unwrap();
+    fs::write(
+        dir.join("bindings.json"),
+        r#"{"ENABLED":true,"PREFIX":{"hex":"00Af"},"base":"100"}"#,
+    )
+    .unwrap();
+    fs::write(
+        dir.join("solution.json"),
+        include_bytes!("../../../examples/m3-scalar-boundaries.solution.json"),
+    )
+    .unwrap();
+    for out in ["bound", "repeat"] {
+        invoke(
+            dir,
+            &[
+                "build",
+                "source file.bas",
+                "--out",
+                out,
+                "--bindings",
+                "bindings.json",
+            ],
+            0,
+        );
+    }
+    for file in ["manifest.json", "puzzle.clvm", "template.clvm"] {
+        assert_eq!(
+            fs::read(dir.join("bound").join(file)).unwrap(),
+            fs::read(dir.join("repeat").join(file)).unwrap()
+        );
+    }
+    let path = dir.join("bound/manifest.json");
+    let original: Value = serde_json::from_slice(&fs::read(&path).unwrap()).unwrap();
+    assert_eq!(original["bindings"]["prefix"], json!({"hex":"00af"}));
+    assert_eq!(original["fixed_parameters"][0]["type"]["kind"], "BOOLEAN");
+    assert_eq!(original["inputs"][1]["type"]["kind"], "BYTES");
+    invoke(
+        dir,
+        &["run", "bound/manifest.json", "--solution", "solution.json"],
+        0,
+    );
+    for value in [
+        json!({"hex":"00AF"}),
+        json!({"hex":"af"}),
+        json!("00af"),
+        json!(false),
+    ] {
+        let mut altered = original.clone();
+        altered["bindings"]["prefix"] = value;
+        fs::write(&path, serde_json::to_vec(&altered).unwrap()).unwrap();
+        invoke(
+            dir,
+            &["run", "bound/manifest.json", "--solution", "solution.json"],
+            4,
+        );
+    }
+    let serialized = serde_json::to_string(&original).unwrap();
+    let duplicate = serialized.replace(r#""hex":"00af""#, r#""hex":"00af","h\u0065x":"00af""#);
+    assert_ne!(serialized, duplicate);
+    fs::write(&path, duplicate).unwrap();
+    invoke(
+        dir,
+        &["run", "bound/manifest.json", "--solution", "solution.json"],
+        4,
+    );
+    // Consistent metadata cannot disable checks in the compiled template.
+    let mut forged = original.clone();
+    forged["inputs"][0]["type"]["kind"] = json!("BYTES");
+    fs::write(&path, serde_json::to_vec(&forged).unwrap()).unwrap();
+    fs::write(
+        dir.join("solution.json"),
+        r#"{"approved":{"hex":"02"},"payload":{"hex":""}}"#,
+    )
+    .unwrap();
+    assert_eq!(
+        invoke(
+            dir,
+            &["run", "bound/manifest.json", "--solution", "solution.json"],
+            3
+        )["diagnostics"][0]["code"],
+        "E0500"
+    );
+    fs::write(&path, serialized).unwrap();
+    fs::write(
+        dir.join("solution.json"),
+        r#"{"approved":true,"payload":{"hex":"00","hex":"01"}}"#,
+    )
+    .unwrap();
+    assert_eq!(
+        invoke(
+            dir,
+            &["run", "bound/manifest.json", "--solution", "solution.json"],
+            1
+        )["diagnostics"][0]["code"],
+        "E0300"
+    );
+}
+
+#[test]
+fn string_artifacts_preserve_unicode_and_reject_forged_boundary_metadata() {
+    let tmp = fixture();
+    let dir = tmp.path();
+    fs::write(
+        dir.join("source file.bas"),
+        include_bytes!("../../../examples/m3-string-boundaries.bas"),
+    )
+    .unwrap();
+    fs::write(
+        dir.join("bindings.json"),
+        include_bytes!("../../../examples/m3-string-boundaries.bindings.json"),
+    )
+    .unwrap();
+    fs::write(
+        dir.join("solution.json"),
+        include_bytes!("../../../examples/m3-string-boundaries.solution.json"),
+    )
+    .unwrap();
+    for out in ["bound", "repeat"] {
+        invoke(
+            dir,
+            &[
+                "build",
+                "source file.bas",
+                "--bindings",
+                "bindings.json",
+                "--out",
+                out,
+            ],
+            0,
+        );
+    }
+    for file in ["manifest.json", "template.clvm", "puzzle.clvm"] {
+        assert_eq!(
+            fs::read(dir.join("bound").join(file)).unwrap(),
+            fs::read(dir.join("repeat").join(file)).unwrap()
+        );
+    }
+    let result = invoke(
+        dir,
+        &["run", "bound/manifest.json", "--solution", "solution.json"],
+        0,
+    );
+    assert_eq!(
+        result["result"]["tree"]["pair"][0]["pair"][1]["pair"][0]["atom"],
+        "6b"
+    );
+    let path = dir.join("bound/manifest.json");
+    let original: Value = serde_json::from_slice(&fs::read(&path).unwrap()).unwrap();
+    assert_eq!(original["bindings"]["prefix"], "é");
+    assert_eq!(original["inputs"][0]["type"]["kind"], "STRING");
+    let mut altered = original.clone();
+    altered["bindings"]["prefix"] = json!("e\u{301}");
+    fs::write(&path, serde_json::to_vec(&altered).unwrap()).unwrap();
+    invoke(
+        dir,
+        &["run", "bound/manifest.json", "--solution", "solution.json"],
+        4,
+    );
+    altered = original.clone();
+    altered["inputs"][0]["type"]["kind"] = json!("BYTES");
+    fs::write(&path, serde_json::to_vec(&altered).unwrap()).unwrap();
+    fs::write(dir.join("solution.json"), r#"{"message":{"hex":"eda080"}}"#).unwrap();
+    assert_eq!(
+        invoke(
+            dir,
+            &["run", "bound/manifest.json", "--solution", "solution.json"],
+            3
+        )["diagnostics"][0]["code"],
+        "E0500"
+    );
+    let serialized = serde_json::to_string(&original).unwrap();
+    let invalid = serialized.replace("é", r#"\ud800"#);
+    assert_ne!(invalid, serialized);
+    fs::write(&path, invalid).unwrap();
+    invoke(dir, &["run", "bound/manifest.json"], 4);
+    fs::write(&path, serialized).unwrap();
+    fs::write(dir.join("solution.json"), r#"{"message":"\ud800"}"#).unwrap();
+    assert_eq!(
+        invoke(
+            dir,
+            &["run", "bound/manifest.json", "--solution", "solution.json"],
+            1
+        )["diagnostics"][0]["code"],
+        "E0300"
+    );
+    fs::write(
+        dir.join("bindings.json"),
+        r#"{"prefix":"\udc00","base":"100"}"#,
+    )
+    .unwrap();
+    assert_eq!(
+        invoke(
+            dir,
+            &[
+                "build",
+                "source file.bas",
+                "--bindings",
+                "bindings.json",
+                "--out",
+                "invalid"
+            ],
+            1
+        )["diagnostics"][0]["code"],
+        "E0301"
+    );
+    assert!(!dir.join("invalid").exists());
+}
+
+#[test]
+fn pair_artifacts_round_trip_and_recursive_metadata_cannot_disable_guards() {
+    let tmp = fixture();
+    let dir = tmp.path();
+    fs::write(
+        dir.join("source file.bas"),
+        include_bytes!("../../../examples/m3-pair-boundaries.bas"),
+    )
+    .unwrap();
+    fs::write(
+        dir.join("bindings.json"),
+        include_bytes!("../../../examples/m3-pair-boundaries.bindings.json"),
+    )
+    .unwrap();
+    fs::write(
+        dir.join("solution.json"),
+        include_bytes!("../../../examples/m3-pair-boundaries.solution.json"),
+    )
+    .unwrap();
+    for out in ["bound", "repeat"] {
+        invoke(
+            dir,
+            &[
+                "build",
+                "source file.bas",
+                "--bindings",
+                "bindings.json",
+                "--out",
+                out,
+            ],
+            0,
+        );
+    }
+    for file in ["manifest.json", "template.clvm", "puzzle.clvm"] {
+        assert_eq!(
+            fs::read(dir.join("bound").join(file)).unwrap(),
+            fs::read(dir.join("repeat").join(file)).unwrap()
+        );
+    }
+    let path = dir.join("bound/manifest.json");
+    let original: Value = serde_json::from_slice(&fs::read(&path).unwrap()).unwrap();
+    assert_eq!(
+        original["fixed_parameters"][0]["type"],
+        json!({"kind":"PAIR","first":{"kind":"INTEGER"},"rest":{"kind":"BOOLEAN"}})
+    );
+    let result = invoke(
+        dir,
+        &["run", "bound/manifest.json", "--solution", "solution.json"],
+        0,
+    );
+    assert_eq!(
+        result["result"]["tree"]["pair"][0]["pair"][1]["pair"][0]["atom"],
+        "68"
+    );
+    let mut altered = original.clone();
+    altered["bindings"]["config"]["rest"] = json!(false);
+    fs::write(&path, serde_json::to_vec(&altered).unwrap()).unwrap();
+    invoke(
+        dir,
+        &["run", "bound/manifest.json", "--solution", "solution.json"],
+        4,
+    );
+    altered = original.clone();
+    altered["inputs"][0]["type"]["first"] = json!({"kind":"BYTES"});
+    fs::write(&path, serde_json::to_vec(&altered).unwrap()).unwrap();
+    fs::write(
+        dir.join("solution.json"),
+        r#"{"payload":{"first":{"hex":"ff"},"rest":{"hex":""}}}"#,
+    )
+    .unwrap();
+    assert_eq!(
+        invoke(
+            dir,
+            &["run", "bound/manifest.json", "--solution", "solution.json"],
+            3
+        )["diagnostics"][0]["code"],
+        "E0500"
+    );
+    let serialized = serde_json::to_string(&original).unwrap();
+    let duplicate = serialized.replace(r#""first":"100""#, r#""first":"100","f\u0069rst":"100""#);
+    assert_ne!(duplicate, serialized);
+    fs::write(&path, duplicate).unwrap();
+    invoke(dir, &["run", "bound/manifest.json"], 4);
+    let bad_schema = serialized.replace(r#""kind":"INTEGER""#, r#""kind":"INTEGER","first":null"#);
+    assert_ne!(bad_schema, serialized);
+    fs::write(&path, bad_schema).unwrap();
+    invoke(dir, &["run", "bound/manifest.json"], 4);
+    let mut schema = json!({"kind":"INTEGER"});
+    for _ in 0..33 {
+        schema = json!({"kind":"PAIR","first":{"kind":"INTEGER"},"rest":schema});
+    }
+    altered = original.clone();
+    altered["inputs"][0]["type"] = schema;
+    fs::write(&path, serde_json::to_vec(&altered).unwrap()).unwrap();
+    invoke(dir, &["run", "bound/manifest.json"], 4);
+    fs::write(&path, serialized).unwrap();
+    fs::write(
+        dir.join("bindings.json"),
+        r#"{"config":{"first":"100","rest":true,"rest":false}}"#,
+    )
+    .unwrap();
+    assert_eq!(
+        invoke(
+            dir,
+            &[
+                "build",
+                "source file.bas",
+                "--bindings",
+                "bindings.json",
+                "--out",
+                "invalid"
+            ],
+            1
+        )["diagnostics"][0]["code"],
+        "E0301"
+    );
+    assert!(!dir.join("invalid").exists());
+}
+
+#[test]
+fn list_artifacts_round_trip_and_forged_element_schemas_cannot_disable_guards() {
+    let tmp = fixture();
+    let dir = tmp.path();
+    fs::write(
+        dir.join("source file.bas"),
+        include_bytes!("../../../examples/m3-list-boundaries.bas"),
+    )
+    .unwrap();
+    fs::write(
+        dir.join("bindings.json"),
+        include_bytes!("../../../examples/m3-list-boundaries.bindings.json"),
+    )
+    .unwrap();
+    fs::write(
+        dir.join("solution.json"),
+        include_bytes!("../../../examples/m3-list-boundaries.solution.json"),
+    )
+    .unwrap();
+    for out in ["bound", "repeat"] {
+        invoke(
+            dir,
+            &[
+                "build",
+                "source file.bas",
+                "--bindings",
+                "bindings.json",
+                "--out",
+                out,
+            ],
+            0,
+        );
+    }
+    for file in ["manifest.json", "template.clvm", "puzzle.clvm"] {
+        assert_eq!(
+            fs::read(dir.join("bound").join(file)).unwrap(),
+            fs::read(dir.join("repeat").join(file)).unwrap()
+        );
+    }
+    let path = dir.join("bound/manifest.json");
+    let original: Value = serde_json::from_slice(&fs::read(&path).unwrap()).unwrap();
+    assert_eq!(original["fixed_parameters"][0]["type"]["kind"], "LIST");
+    assert_eq!(original["inputs"][0]["type"]["element"]["kind"], "PAIR");
+    let result = invoke(
+        dir,
+        &["run", "bound/manifest.json", "--solution", "solution.json"],
+        0,
+    );
+    assert_eq!(
+        result["result"]["tree"]["pair"][0]["pair"][1]["pair"][0]["atom"],
+        "68"
+    );
+    let mut altered = original.clone();
+    altered["bindings"]["config"][0]["first"] = json!("101");
+    fs::write(&path, serde_json::to_vec(&altered).unwrap()).unwrap();
+    invoke(
+        dir,
+        &["run", "bound/manifest.json", "--solution", "solution.json"],
+        4,
+    );
+    altered = original.clone();
+    altered["inputs"][0]["type"]["element"]["first"] = json!({"kind":"BYTES"});
+    fs::write(&path, serde_json::to_vec(&altered).unwrap()).unwrap();
+    fs::write(
+        dir.join("solution.json"),
+        r#"{"items":[{"first":{"hex":"ff"},"rest":{"hex":""}}]}"#,
+    )
+    .unwrap();
+    assert_eq!(
+        invoke(
+            dir,
+            &["run", "bound/manifest.json", "--solution", "solution.json"],
+            3
+        )["diagnostics"][0]["code"],
+        "E0500"
+    );
+    altered = original.clone();
+    altered["inputs"][0]["type"]["element"] = Value::Null;
+    fs::write(&path, serde_json::to_vec(&altered).unwrap()).unwrap();
+    invoke(dir, &["run", "bound/manifest.json"], 4);
+    let serialized = serde_json::to_string(&original).unwrap();
+    let duplicate = serialized.replace(r#""first":"100""#, r#""first":"100","f\u0069rst":"100""#);
+    assert_ne!(duplicate, serialized);
+    fs::write(&path, duplicate).unwrap();
+    invoke(dir, &["run", "bound/manifest.json"], 4);
+    fs::write(&path, serialized).unwrap();
+    fs::write(
+        dir.join("solution.json"),
+        r#"{"items":[{"first":"","rest":{"hex":"","hex":"00"}}]}"#,
+    )
+    .unwrap();
+    assert_eq!(
+        invoke(
+            dir,
+            &["run", "bound/manifest.json", "--solution", "solution.json"],
+            1
+        )["diagnostics"][0]["code"],
+        "E0300"
+    );
+    fs::write(
+        dir.join("bindings.json"),
+        r#"{"config":[{"first":"100","rest":true},{"first":"0","rest":1}]}"#,
+    )
+    .unwrap();
+    assert_eq!(
+        invoke(
+            dir,
+            &[
+                "build",
+                "source file.bas",
+                "--bindings",
+                "bindings.json",
+                "--out",
+                "invalid"
+            ],
+            1
+        )["diagnostics"][0]["code"],
+        "E0301"
+    );
+    assert!(!dir.join("invalid").exists());
+}
+
+#[test]
+fn domain_artifacts_normalize_bindings_and_enforce_solution_schemas() {
+    let temp = fixture();
+    let dir = temp.path();
+    fs::write(
+        dir.join("source file.bas"),
+        include_bytes!("../../../examples/m3-domain-boundaries.bas"),
+    )
+    .unwrap();
+    fs::write(
+        dir.join("bindings.json"),
+        include_bytes!("../../../examples/m3-domain-boundaries.bindings.json"),
+    )
+    .unwrap();
+    fs::write(
+        dir.join("solution.json"),
+        include_bytes!("../../../examples/m3-domain-boundaries.solution.json"),
+    )
+    .unwrap();
+    for out in ["domain-a", "domain-b"] {
+        invoke(
+            dir,
+            &[
+                "build",
+                "source file.bas",
+                "--bindings",
+                "bindings.json",
+                "--out",
+                out,
+            ],
+            0,
+        );
+    }
+    assert_eq!(
+        fs::read(dir.join("domain-a/puzzle.clvm")).unwrap(),
+        fs::read(dir.join("domain-b/puzzle.clvm")).unwrap()
+    );
+    let path = dir.join("domain-a/manifest.json");
+    let original = fs::read(&path).unwrap();
+    let mut manifest: Value = serde_json::from_slice(&original).unwrap();
+    assert_eq!(
+        manifest["fixed_parameters"][0]["type"]["kind"],
+        "PUZZLEHASH"
+    );
+    assert_eq!(manifest["fixed_parameters"][1]["type"]["kind"], "AMOUNT");
+    assert_eq!(
+        manifest["bindings"]["recipient"]["hex"],
+        format!("{}af", "00".repeat(31))
+    );
+    let result = invoke(
+        dir,
+        &[
+            "run",
+            "domain-a/manifest.json",
+            "--solution",
+            "solution.json",
+        ],
+        0,
+    );
+    assert_eq!(
+        result["result"]["tree"]["pair"][0]["pair"][1]["pair"][0]["atom"],
+        "64"
+    );
+    manifest["inputs"][0]["type"]["rest"]["element"]["extra"] = json!(true);
+    fs::write(&path, serde_json::to_vec(&manifest).unwrap()).unwrap();
+    invoke(
+        dir,
+        &[
+            "run",
+            "domain-a/manifest.json",
+            "--solution",
+            "solution.json",
+        ],
+        4,
+    );
+    fs::write(&path, original).unwrap();
+    let mut solution: Value = serde_json::from_slice(include_bytes!(
+        "../../../examples/m3-domain-boundaries.solution.json"
+    ))
+    .unwrap();
+    solution["request"]["rest"][1] = json!("-1");
+    fs::write(
+        dir.join("solution.json"),
+        serde_json::to_vec(&solution).unwrap(),
+    )
+    .unwrap();
+    assert_eq!(
+        invoke(
+            dir,
+            &[
+                "run",
+                "domain-a/manifest.json",
+                "--solution",
+                "solution.json"
+            ],
+            1
+        )["diagnostics"][0]["code"],
+        "E0300"
+    );
+}
+
+#[test]
+fn public_key_manifests_are_normalized_and_forged_schemas_cannot_bypass_guards() {
+    let temp = fixture();
+    let dir = temp.path();
+    fs::write(
+        dir.join("source file.bas"),
+        include_bytes!("../../../examples/m3-publickey-boundaries.bas"),
+    )
+    .unwrap();
+    fs::write(
+        dir.join("bindings.json"),
+        include_bytes!("../../../examples/m3-publickey-boundaries.bindings.json"),
+    )
+    .unwrap();
+    fs::write(
+        dir.join("solution.json"),
+        include_bytes!("../../../examples/m3-publickey-boundaries.solution.json"),
+    )
+    .unwrap();
+    for out in ["key-a", "key-b"] {
+        invoke(
+            dir,
+            &[
+                "build",
+                "source file.bas",
+                "--bindings",
+                "bindings.json",
+                "--out",
+                out,
+            ],
+            0,
+        );
+    }
+    assert_eq!(
+        fs::read(dir.join("key-a/puzzle.clvm")).unwrap(),
+        fs::read(dir.join("key-b/puzzle.clvm")).unwrap()
+    );
+    let path = dir.join("key-a/manifest.json");
+    let original = fs::read(&path).unwrap();
+    let mut manifest: Value = serde_json::from_slice(&original).unwrap();
+    assert_eq!(manifest["fixed_parameters"][0]["type"]["kind"], "PUBLICKEY");
+    let normalized = manifest["bindings"]["owner"]["hex"].as_str().unwrap();
+    assert_eq!(normalized, normalized.to_lowercase());
+    let result = invoke(
+        dir,
+        &["run", "key-a/manifest.json", "--solution", "solution.json"],
+        0,
+    );
+    assert_eq!(
+        result["result"]["tree"]["pair"][0]["pair"][1]["pair"][0]["atom"],
+        "64"
+    );
+    manifest["inputs"][0]["type"]["element"]["first"] = json!({"kind":"BYTES"});
+    fs::write(&path, serde_json::to_vec(&manifest).unwrap()).unwrap();
+    let mut solution: Value = serde_json::from_slice(include_bytes!(
+        "../../../examples/m3-publickey-boundaries.solution.json"
+    ))
+    .unwrap();
+    solution["candidates"][0]["first"]["hex"] = json!(format!("c0{}", "00".repeat(47)));
+    fs::write(
+        dir.join("solution.json"),
+        serde_json::to_vec(&solution).unwrap(),
+    )
+    .unwrap();
+    assert_eq!(
+        invoke(
+            dir,
+            &["run", "key-a/manifest.json", "--solution", "solution.json"],
+            3
+        )["diagnostics"][0]["code"],
+        "E0500"
+    );
+    fs::write(&path, &original).unwrap();
+    assert_eq!(
+        invoke(
+            dir,
+            &["run", "key-a/manifest.json", "--solution", "solution.json"],
+            1
+        )["diagnostics"][0]["code"],
+        "E0300"
+    );
+    manifest = serde_json::from_slice(&original).unwrap();
+    manifest["fixed_parameters"][0]["type"]["element"] = json!({"kind":"BYTES"});
+    fs::write(&path, serde_json::to_vec(&manifest).unwrap()).unwrap();
+    invoke(dir, &["run", "key-a/manifest.json"], 4);
 }

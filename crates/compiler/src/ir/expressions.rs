@@ -106,6 +106,12 @@ const MAX_CONSTANT_BYTE_WORK: usize = 8 * 1024 * 1024;
 /// Reserved byte built-ins share exact arity/result rules in both front ends.
 #[derive(Clone, Copy)]
 pub(crate) enum ByteBuiltin {
+    AsAmount,
+    AmountValue,
+    AsPuzzleHash,
+    AsPublicKey,
+    KeyBytes,
+    HashBytes,
     ByteLength,
     Concat,
     Sha256,
@@ -119,6 +125,42 @@ pub(crate) enum ByteBuiltin {
 
 pub(crate) fn byte_builtin(name: &str) -> Option<(ByteBuiltin, usize, ValueType, ValueType)> {
     match name.to_ascii_uppercase().as_str() {
+        "AS_PUBLICKEY" => Some((
+            ByteBuiltin::AsPublicKey,
+            1,
+            ValueType::Bytes,
+            ValueType::PublicKey,
+        )),
+        "KEY_BYTES" => Some((
+            ByteBuiltin::KeyBytes,
+            1,
+            ValueType::PublicKey,
+            ValueType::Bytes,
+        )),
+        "AS_AMOUNT" => Some((
+            ByteBuiltin::AsAmount,
+            1,
+            ValueType::Integer,
+            ValueType::Amount,
+        )),
+        "AMOUNT_VALUE" => Some((
+            ByteBuiltin::AmountValue,
+            1,
+            ValueType::Amount,
+            ValueType::Integer,
+        )),
+        "AS_PUZZLEHASH" => Some((
+            ByteBuiltin::AsPuzzleHash,
+            1,
+            ValueType::Bytes,
+            ValueType::PuzzleHash,
+        )),
+        "HASH_BYTES" => Some((
+            ByteBuiltin::HashBytes,
+            1,
+            ValueType::PuzzleHash,
+            ValueType::Bytes,
+        )),
         "BYTE_LENGTH" => Some((
             ByteBuiltin::ByteLength,
             1,
@@ -493,7 +535,19 @@ pub(super) fn expression_expected(
                     ByteBuiltin::StringFromUtf8 => IntegerValueKind::StringFromUtf8 {
                         operand: operands[0],
                     },
-                    ByteBuiltin::Utf8 => IntegerValueKind::Copy {
+                    ByteBuiltin::AsPublicKey => IntegerValueKind::AsPublicKey {
+                        operand: operands[0],
+                    },
+                    ByteBuiltin::AsAmount => IntegerValueKind::AsAmount {
+                        operand: operands[0],
+                    },
+                    ByteBuiltin::AsPuzzleHash => IntegerValueKind::AsPuzzleHash {
+                        operand: operands[0],
+                    },
+                    ByteBuiltin::AmountValue
+                    | ByteBuiltin::HashBytes
+                    | ByteBuiltin::KeyBytes
+                    | ByteBuiltin::Utf8 => IntegerValueKind::Copy {
                         operand: operands[0],
                     },
                     ByteBuiltin::U32Be => IntegerValueKind::UnsignedBytes {

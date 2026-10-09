@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "type": "LIST OF PAIR OF (BOOLEAN, BYTES)",
+  "cases": [
+    {
+      "id": "empty",
+      "json": "{\"value\":[]}",
+      "valid": true
+    },
+    {
+      "id": "mixed",
+      "json": "{\"value\":[{\"first\":true,\"rest\":{\"hex\":\"00Af\"}},{\"rest\":{\"hex\":\"\"},\"first\":false}]}",
+      "valid": true
+    },
+    {
+      "id": "missing",
+      "json": "{\"value\":[{\"first\":true}]}",
+      "valid": false
+    },
+    {
+      "id": "duplicate",
+      "json": "{\"value\":[{\"first\":true,\"first\":false,\"rest\":{\"hex\":\"\"}}]}",
+      "valid": false
+    },
+    {
+      "id": "escaped-duplicate",
+      "json": "{\"value\":[{\"first\":true,\"f\\u0069rst\":false,\"rest\":{\"hex\":\"\"}}]}",
+      "valid": false
+    },
+    {
+      "id": "hex-duplicate",
+      "json": "{\"value\":[{\"first\":true,\"rest\":{\"hex\":\"\",\"hex\":\"00\"}}]}",
+      "valid": false
+    },
+    {
+      "id": "bad-first",
+      "json": "{\"value\":[{\"first\":1,\"rest\":{\"hex\":\"\"}}]}",
+      "valid": false
+    },
+    {
+      "id": "bad-later",
+      "json": "{\"value\":[{\"first\":true,\"rest\":{\"hex\":\"\"}},{\"first\":\"false\",\"rest\":{\"hex\":\"\"}}]}",
+      "valid": false
+    },
+    {
+      "id": "bad-hex",
+      "json": "{\"value\":[{\"first\":true,\"rest\":{\"hex\":\"0\"}}]}",
+      "valid": false
+    },
+    {
+      "id": "nested-array",
+      "json": "{\"value\":[[]]}",
+      "valid": false
+    },
+    {
+      "id": "null",
+      "json": "{\"value\":null}",
+      "valid": false
+    },
+    {
+      "id": "atom",
+      "json": "{\"value\":\"\"}",
+      "valid": false
+    },
+    {
+      "id": "object",
+      "json": "{\"value\":{\"first\":true,\"rest\":{\"hex\":\"\"}}}",
+      "valid": false
+    }
+  ]
+}

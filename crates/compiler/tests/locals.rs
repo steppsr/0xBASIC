@@ -63,8 +63,8 @@ fn required_initialization_and_deferred_features_remain_explicit() {
         );
     }
     for body in [
-        "DIM value AS AMOUNT = TRUE\n",
-        "CONST value AS AMOUNT = TRUE\n",
+        "DIM value AS DOUBLE = TRUE\n",
+        "CONST value AS DOUBLE = TRUE\n",
     ] {
         assert_eq!(
             check("future.bas", source(body).as_bytes())
