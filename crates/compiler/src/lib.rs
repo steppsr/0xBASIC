@@ -5,6 +5,7 @@ pub mod abi;
 mod analysis;
 pub mod clvm;
 pub mod diagnostic;
+pub mod explain;
 mod ir;
 pub mod syntax;
 
@@ -16,7 +17,7 @@ pub const LANGUAGE_VERSION: &str = "0.1";
 pub const ABI_VERSION: u32 = 1;
 pub const TARGET_PROFILE: &str = "chia-clvm-0.19-strict-v1";
 pub const COMPILER_VERSION: &str = env!("CARGO_PKG_VERSION");
-pub const IMPLEMENTED_SUBSET: &str = "m3.6b: contracts with LIST, PAIR and INTEGER/BOOLEAN/BYTES/STRING fixed parameters and SOLUTION fields, INTEGER/BOOLEAN/BYTES/STRING/CONDITION locals and functions, INTEGER/BOOLEAN/BYTES/STRING/LIST constants, BYTE_LENGTH, CONCAT, SHA256, INT_BYTES, INT_FROM_BYTES, U32BE, U64BE, UTF8, STRING_FROM_UTF8, short-circuit logic, ASSERT, height constructors, typed EMIT, scoped IF/ELSEIF/ELSE, early and branch RETURN, typed PAIR construction and FIRST/REST, contextual LIST literals, list FIRST/REST, CONS, LIST_LENGTH; bounded list constants; AMOUNT/PUZZLEHASH locals, functions and boundaries with AS_AMOUNT, AMOUNT_VALUE, AS_PUZZLEHASH, HASH_BYTES; PUBLICKEY locals, functions and boundaries with AS_PUBLICKEY/KEY_BYTES; payment conditions remain deferred";
+pub const IMPLEMENTED_SUBSET: &str = "m3.8b: contracts with LIST, PAIR and INTEGER/BOOLEAN/BYTES/STRING fixed parameters and SOLUTION fields, INTEGER/BOOLEAN/BYTES/STRING/CONDITION locals and functions, INTEGER/BOOLEAN/BYTES/STRING/LIST constants, BYTE_LENGTH, CONCAT, SHA256, INT_BYTES, INT_FROM_BYTES, U32BE, U64BE, UTF8, STRING_FROM_UTF8, short-circuit logic, ASSERT, height constructors, typed EMIT, scoped IF/ELSEIF/ELSE, early and branch RETURN, typed PAIR construction and FIRST/REST, contextual LIST literals, list FIRST/REST, CONS, LIST_LENGTH; bounded list constants; AMOUNT/PUZZLEHASH locals, functions and boundaries with AS_AMOUNT, AMOUNT_VALUE, AS_PUZZLEHASH, HASH_BYTES; PUBLICKEY locals, functions and boundaries with AS_PUBLICKEY/KEY_BYTES; ASSERT_MY_AMOUNT and CREATE_COIN constructors; AGG_SIG_ME with a 1024-byte application-message limit";
 
 pub type Result<T> = std::result::Result<T, Box<Diagnostic>>;
 

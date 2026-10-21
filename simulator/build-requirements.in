@@ -1,0 +1,11 @@
+# Build-only dependencies for source-only transitive packages.
+setuptools==84.2.1
+wheel==0.48.0
+setuptools-scm==10.3.4
+chialisp-builder==0.1.2
+chialisp-stdlib==0.1.1
+runtime-builder==0.1.5
+clvm-rs==0.21.0
+clvm-tools-rs==0.4.0
+importlib-resources==7.1.0
+packaging==26.3

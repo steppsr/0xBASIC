@@ -2,7 +2,7 @@
 
 ## Current checkpoint
 
-M3-6b PUBLICKEY support is implemented in compiler `0.1.0-m3.6b`. M3-6a is complete on both platforms; the user confirmed all 234 Linux tests. M3-6b passed 240 Windows Rust tests, build, formatting and Clippy. All CI-listed Python verifiers passed, including the 59 PUBLICKEY cases and historical M3 modes with independent Python CLVM result/cost comparisons. The user confirmed all 241 Linux tests passed; M3-6b is complete on both platforms. Development is paused at the user’s request, with M3-7a next upon resumption. This evidence covers compiler and local CLVM execution behavior, not consensus validation or a security audit.
+M3 is complete: Windows passed 274 Rust tests and Linux passed 275. M4-1 now provides an [isolated simulator environment and smoke test](../simulator/README.md). Windows Python 3.13.7 installation, dependency/source checks, and one-block smoke passed, including a clean offline reinstall. Linux dependencies are locked; Linux setup/smoke confirmation is pending. No payment spend or signature-validation scenario has run. Compiler remains `0.1.0-m3.8b`.
 
 The typed BASIC core supports scalar and collection values, local assignment, structured branches, pure nonrecursive functions, byte/string operations, and explicit condition emission. Contract boundaries accept INTEGER, BOOLEAN, BYTES, STRING, AMOUNT, PUZZLEHASH, PUBLICKEY, and nested PAIR/LIST fixed parameters and solution fields (up to 32 of each). INTEGER JSON values are canonical decimal strings, BOOLEAN values are JSON booleans, and BYTES values are exact `{"hex":"..."}` objects. STRING values are JSON strings of Unicode scalars: unpaired surrogate escapes and malformed UTF-8 are rejected. Raw STRING atoms are validated by generated CLVM even when unused. Empty strings, NUL, BOM and noncharacters are preserved without Unicode normalization. Byte leading zeros are preserved; hex is normalized to lowercase. LIST values are JSON arrays of recursively typed elements; generated checks require proper list tails and validate every element. Host conversion allows at most 65,536 tree nodes per complete fixed/solution list, including collection spines and nil tails. This host budget is separate from VM execution limits. PAIR values are exact `{"first":valueA,"rest":valueB}` objects with recursively typed children. Duplicate keys, including inside pair and hex objects, are rejected. Schema depth is limited to 32, schema size to 1024 nodes per field, and host JSON nesting to 96 containers. Generated CLVM validates raw boundary values, including unused fields.
 
@@ -10,7 +10,7 @@ AMOUNT is a distinct type in `0..2^64-1`; PUZZLEHASH is a distinct 32-byte type.
 
 PUBLICKEY requires a canonical 48-byte BLS G1 encoding, subgroup membership, and a non-infinity point. `AS_PUBLICKEY(BYTES)` validates; `KEY_BYTES(PUBLICKEY)` explicitly extracts its encoding. Checked host decoding and generated strict `point_add` validation reject invalid keys even when unused or nested. JSON uses exact hex objects. Public-key validation does not verify ownership or authorize a spend.
 
-`check`, `build`, and `run` are implemented. `build --template-only` produces an unbound template. Bound artifacts distinguish the template hash from the puzzle hash. Only `ASSERT_HEIGHT_ABSOLUTE` is currently available as a condition constructor. No node, wallet, signing, or transaction submission integration is implemented.
+`check`, `build`, `run`, and `explain --stage ast|ir|clvm` are implemented. AST inspection parses without semantic checking; IR inspection uses the checked, lowered program. AST/IR views include source spans and a source digest and require no bindings. The CLVM view applies build's binding rules and shows template/puzzle bytes, hashes and flat trees. All views write no artifacts and perform no CLVM execution. `build --template-only` produces an unbound template. Bound artifacts distinguish the template hash from the puzzle hash. `ASSERT_HEIGHT_ABSOLUTE`, `ASSERT_MY_AMOUNT(AMOUNT)`, `CREATE_COIN(PUZZLEHASH, AMOUNT)`, and `AGG_SIG_ME(PUBLICKEY, BYTES)` are available as condition constructors. CREATE_COIN has no memo argument in this subset. Constructors return CONDITION values; only EMIT adds them to the output. Argument expressions execute left-to-right, with existing AMOUNT/PUZZLEHASH validation. AGG_SIG_ME preserves the application message exactly and rejects messages over 1024 bytes at runtime, including unused calls. It does not append coin/network context or generate/verify a signature. No node, wallet, signing, or transaction submission integration is implemented.
 
 The [language specification](language-v0.1.md), [ABI](spec/abi-v1.md), and [CLI specification](spec/cli-v1.md) include planned capabilities. Their status notes and this page distinguish those capabilities from the executable subset.
 
@@ -27,16 +27,20 @@ Update older source declarations and rebuild artifacts with the current compiler
 | M0 | Syntax, ABI, target profile, and independent vectors | Complete |
 | M1 | Compiler-to-CLVM pipeline, artifact identity, CLI execution | Complete |
 | M2 | Typed BASIC core, functions, bytes, strings, pairs, and lists | Complete |
-| M3 | Contract boundaries, domain types, and condition constructors | In progress |
+| M3 | Contract boundaries, domain types, and condition constructors | Complete |
 | First complete payment | Signature-authorized, exact-value payment with a height lock | Planned |
 | Spend validation | Local simulator success and rejection scenarios, then testnet integration | Planned |
 | Developer experience | Richer explanations, documentation, and potential educational editor tools | Future |
 
-The next implementation slice is ASSERT_MY_AMOUNT and CREATE_COIN (M3-7a). AGG_SIG_ME follows in M3-7b. Each slice must cover host conversion and hostile raw CLVM input, preserve reproducibility, and pass Windows/Linux checks before advancing.
+After Linux confirms M4-1, next is M4-2: simulator funding and one correctly signed, confirmed payment. Signature authorization and consensus spend acceptance remain unimplemented. Each slice must cover host conversion and hostile raw CLVM input, preserve reproducibility, and pass Windows/Linux checks before advancing.
 
 The first complete payment example will bind the owner key, recipient, exact amount, and earliest height. It must require authorization, assert the coin amount, enforce the height lock, and create the intended payment. A local Chia simulator must demonstrate both accepted and rejected spends before testnet work. Wallet discovery, fee selection, and transaction submission are separate concerns.
 
 Loops, user recursion, floating point, a language server, and an IDE are outside the current implementation scope. There is no version 1 release date yet.
+
+The [payment-condition example](../examples/m3-payment-conditions.bas) emits an amount assertion, height lock and payment output using fixed bindings and a pure helper. It does not require a signature and is not the complete authorized-payment example. CLI cost remains CLVM execution cost; it does not include consensus condition costs.
+
+The [height-locked payment example](../examples/height-locked-payment.bas) now compiles and runs with the supplied [bindings](../examples/height-locked-payment.bindings.json), producing the original M0 payment condition vector, including the application-message hash. Its former reserved parameter name `amount` is now `paymentAmount`. Signature and simulator spend validation are still required before claiming an end-to-end payment lifecycle.
 
 ## Verification
 

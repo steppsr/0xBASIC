@@ -103,6 +103,16 @@ pub(crate) struct ConstantBudget {
 
 const MAX_CONSTANT_BYTE_WORK: usize = 8 * 1024 * 1024;
 
+/// Shared signatures keep analyzer and executable lowering in agreement.
+pub(crate) fn payment_builtin(name: &str) -> Option<(u8, Vec<ValueType>)> {
+    match name.to_ascii_uppercase().as_str() {
+        "AGG_SIG_ME" => Some((50, vec![ValueType::PublicKey, ValueType::Bytes])),
+        "ASSERT_MY_AMOUNT" => Some((73, vec![ValueType::Amount])),
+        "CREATE_COIN" => Some((51, vec![ValueType::PuzzleHash, ValueType::Amount])),
+        _ => None,
+    }
+}
+
 /// Reserved byte built-ins share exact arity/result rules in both front ends.
 #[derive(Clone, Copy)]
 pub(crate) enum ByteBuiltin {
@@ -440,6 +450,23 @@ pub(super) fn expression_expected(
             name: callee,
             arguments,
         } => {
+            if let Some((opcode, parameters)) = payment_builtin(&callee) {
+                require_arity(name, arguments.len(), parameters.len(), span)?;
+                let mut operands = Vec::new();
+                for (argument, expected) in arguments.into_iter().zip(&parameters) {
+                    let argument_span = argument.span;
+                    let operand = expression(name, argument, values, names, functions)?;
+                    require_type(name, &values[operand].value_type, expected, argument_span)?;
+                    operands.push(operand);
+                }
+                return push(
+                    name,
+                    values,
+                    IntegerValueKind::PaymentCondition { opcode, operands },
+                    ValueType::Condition,
+                    span,
+                );
+            }
             if callee.eq_ignore_ascii_case("CONS") {
                 require_arity(name, arguments.len(), 2, span)?;
                 let mut args = arguments.into_iter();

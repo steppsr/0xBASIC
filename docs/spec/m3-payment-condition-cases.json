@@ -1,0 +1,219 @@
+{
+  "description": "Condition output vectors independently serialized from expected condition lists. String arguments are raw hex atoms; integers are canonical signed atoms. M0 emission-order source and expectations are unchanged.",
+  "cases": [
+    {
+      "id": "amount-0",
+      "source": "CONTRACT Demo()\nEMIT ASSERT_MY_AMOUNT(AS_AMOUNT(0))\nEMIT CREATE_COIN(AS_PUZZLEHASH(0x00000000000000000000000000000000000000000000000000000000000000af), AS_AMOUNT(0))\nEND CONTRACT\n",
+      "conditions": [
+        [
+          73,
+          0
+        ],
+        [
+          51,
+          "00000000000000000000000000000000000000000000000000000000000000af",
+          0
+        ]
+      ],
+      "expected_hex": "ffff49ff8080ffff33ffa000000000000000000000000000000000000000000000000000000000000000afff808080"
+    },
+    {
+      "id": "amount-1",
+      "source": "CONTRACT Demo()\nEMIT ASSERT_MY_AMOUNT(AS_AMOUNT(1))\nEMIT CREATE_COIN(AS_PUZZLEHASH(0x00000000000000000000000000000000000000000000000000000000000000af), AS_AMOUNT(1))\nEND CONTRACT\n",
+      "conditions": [
+        [
+          73,
+          1
+        ],
+        [
+          51,
+          "00000000000000000000000000000000000000000000000000000000000000af",
+          1
+        ]
+      ],
+      "expected_hex": "ffff49ff0180ffff33ffa000000000000000000000000000000000000000000000000000000000000000afff018080"
+    },
+    {
+      "id": "amount-127",
+      "source": "CONTRACT Demo()\nEMIT ASSERT_MY_AMOUNT(AS_AMOUNT(127))\nEMIT CREATE_COIN(AS_PUZZLEHASH(0x00000000000000000000000000000000000000000000000000000000000000af), AS_AMOUNT(127))\nEND CONTRACT\n",
+      "conditions": [
+        [
+          73,
+          127
+        ],
+        [
+          51,
+          "00000000000000000000000000000000000000000000000000000000000000af",
+          127
+        ]
+      ],
+      "expected_hex": "ffff49ff7f80ffff33ffa000000000000000000000000000000000000000000000000000000000000000afff7f8080"
+    },
+    {
+      "id": "amount-128",
+      "source": "CONTRACT Demo()\nEMIT ASSERT_MY_AMOUNT(AS_AMOUNT(128))\nEMIT CREATE_COIN(AS_PUZZLEHASH(0x00000000000000000000000000000000000000000000000000000000000000af), AS_AMOUNT(128))\nEND CONTRACT\n",
+      "conditions": [
+        [
+          73,
+          128
+        ],
+        [
+          51,
+          "00000000000000000000000000000000000000000000000000000000000000af",
+          128
+        ]
+      ],
+      "expected_hex": "ffff49ff82008080ffff33ffa000000000000000000000000000000000000000000000000000000000000000afff8200808080"
+    },
+    {
+      "id": "amount-9223372036854775808",
+      "source": "CONTRACT Demo()\nEMIT ASSERT_MY_AMOUNT(AS_AMOUNT(9223372036854775808))\nEMIT CREATE_COIN(AS_PUZZLEHASH(0x00000000000000000000000000000000000000000000000000000000000000af), AS_AMOUNT(9223372036854775808))\nEND CONTRACT\n",
+      "conditions": [
+        [
+          73,
+          9223372036854775808
+        ],
+        [
+          51,
+          "00000000000000000000000000000000000000000000000000000000000000af",
+          9223372036854775808
+        ]
+      ],
+      "expected_hex": "ffff49ff8900800000000000000080ffff33ffa000000000000000000000000000000000000000000000000000000000000000afff890080000000000000008080"
+    },
+    {
+      "id": "amount-18446744073709551615",
+      "source": "CONTRACT Demo()\nEMIT ASSERT_MY_AMOUNT(AS_AMOUNT(18446744073709551615))\nEMIT CREATE_COIN(AS_PUZZLEHASH(0x00000000000000000000000000000000000000000000000000000000000000af), AS_AMOUNT(18446744073709551615))\nEND CONTRACT\n",
+      "conditions": [
+        [
+          73,
+          18446744073709551615
+        ],
+        [
+          51,
+          "00000000000000000000000000000000000000000000000000000000000000af",
+          18446744073709551615
+        ]
+      ],
+      "expected_hex": "ffff49ff8900ffffffffffffffff80ffff33ffa000000000000000000000000000000000000000000000000000000000000000afff8900ffffffffffffffff8080"
+    },
+    {
+      "id": "mixed-order",
+      "source": "CONTRACT Demo()\nDIM saved = CREATE_COIN(AS_PUZZLEHASH(0x00000000000000000000000000000000000000000000000000000000000000af), AS_AMOUNT(9))\nEMIT ASSERT_HEIGHT_ABSOLUTE(10)\nEMIT saved\nIF TRUE THEN\nEMIT ASSERT_MY_AMOUNT(AS_AMOUNT(9))\nELSE\nEMIT ASSERT_MY_AMOUNT(AS_AMOUNT(-1))\nEND IF\nEMIT saved\nEND CONTRACT\n",
+      "conditions": [
+        [
+          83,
+          10
+        ],
+        [
+          51,
+          "00000000000000000000000000000000000000000000000000000000000000af",
+          9
+        ],
+        [
+          73,
+          9
+        ],
+        [
+          51,
+          "00000000000000000000000000000000000000000000000000000000000000af",
+          9
+        ]
+      ],
+      "expected_hex": "ffff53ff0a80ffff33ffa000000000000000000000000000000000000000000000000000000000000000afff0980ffff49ff0980ffff33ffa000000000000000000000000000000000000000000000000000000000000000afff098080"
+    },
+    {
+      "id": "negative-unused",
+      "source": "CONTRACT Demo()\nDIM unused = ASSERT_MY_AMOUNT(AS_AMOUNT(-1))\nEND CONTRACT\n",
+      "runtime_diagnostic": "E0500"
+    },
+    {
+      "id": "negative-lazy",
+      "source": "CONTRACT Demo()\nIF FALSE THEN\nDIM unused = ASSERT_MY_AMOUNT(AS_AMOUNT(-1))\nEND IF\nEND CONTRACT\n",
+      "conditions": [],
+      "expected_hex": "80"
+    },
+    {
+      "id": "overflow-unused",
+      "source": "CONTRACT Demo()\nDIM unused = CREATE_COIN(AS_PUZZLEHASH(0x00000000000000000000000000000000000000000000000000000000000000af),AS_AMOUNT(18446744073709551616))\nEND CONTRACT\n",
+      "runtime_diagnostic": "E0500"
+    },
+    {
+      "id": "overflow-lazy",
+      "source": "CONTRACT Demo()\nIF FALSE THEN\nDIM unused = CREATE_COIN(AS_PUZZLEHASH(0x00000000000000000000000000000000000000000000000000000000000000af),AS_AMOUNT(18446744073709551616))\nEND IF\nEND CONTRACT\n",
+      "conditions": [],
+      "expected_hex": "80"
+    },
+    {
+      "id": "hash-length-unused",
+      "source": "CONTRACT Demo()\nDIM unused = CREATE_COIN(AS_PUZZLEHASH(0x00),AS_AMOUNT(1))\nEND CONTRACT\n",
+      "runtime_diagnostic": "E0500"
+    },
+    {
+      "id": "hash-length-lazy",
+      "source": "CONTRACT Demo()\nIF FALSE THEN\nDIM unused = CREATE_COIN(AS_PUZZLEHASH(0x00),AS_AMOUNT(1))\nEND IF\nEND CONTRACT\n",
+      "conditions": [],
+      "expected_hex": "80"
+    },
+    {
+      "id": "wrong-signature-0",
+      "source": "CONTRACT Demo()\nEMIT ASSERT_MY_AMOUNT()\nEND CONTRACT\n",
+      "check_diagnostic": "E0202"
+    },
+    {
+      "id": "wrong-signature-1",
+      "source": "CONTRACT Demo()\nEMIT ASSERT_MY_AMOUNT(1)\nEND CONTRACT\n",
+      "check_diagnostic": "E0202"
+    },
+    {
+      "id": "wrong-signature-2",
+      "source": "CONTRACT Demo()\nEMIT ASSERT_MY_AMOUNT(AS_AMOUNT(1),AS_AMOUNT(2))\nEND CONTRACT\n",
+      "check_diagnostic": "E0202"
+    },
+    {
+      "id": "wrong-signature-3",
+      "source": "CONTRACT Demo()\nEMIT CREATE_COIN()\nEND CONTRACT\n",
+      "check_diagnostic": "E0202"
+    },
+    {
+      "id": "wrong-signature-4",
+      "source": "CONTRACT Demo()\nEMIT CREATE_COIN(0x,AS_AMOUNT(1))\nEND CONTRACT\n",
+      "check_diagnostic": "E0202"
+    },
+    {
+      "id": "wrong-signature-5",
+      "source": "CONTRACT Demo()\nEMIT CREATE_COIN(AS_PUZZLEHASH(0x00000000000000000000000000000000000000000000000000000000000000af),1)\nEND CONTRACT\n",
+      "check_diagnostic": "E0202"
+    },
+    {
+      "id": "wrong-signature-6",
+      "source": "CONTRACT Demo()\nEMIT CREATE_COIN(AS_PUZZLEHASH(0x00000000000000000000000000000000000000000000000000000000000000af),AS_AMOUNT(1),0x)\nEND CONTRACT\n",
+      "check_diagnostic": "E0202"
+    },
+    {
+      "id": "wrong-signature-7",
+      "source": "CONTRACT Demo()\nEMIT CREATE_COIN(AS_AMOUNT(1),AS_AMOUNT(1))\nEND CONTRACT\n",
+      "check_diagnostic": "E0202"
+    },
+    {
+      "id": "const-call",
+      "source": "CONTRACT Demo()\nCONST c = ASSERT_MY_AMOUNT(AS_AMOUNT(1))\nEND CONTRACT\n",
+      "check_diagnostic": "E0205"
+    },
+    {
+      "id": "m0-emission-order",
+      "source": "CONTRACT Demo()\n EMIT ASSERT_HEIGHT_ABSOLUTE(10)\n IF FALSE THEN\n EMIT ASSERT_HEIGHT_ABSOLUTE(99)\n END IF\n EMIT ASSERT_MY_AMOUNT(AS_AMOUNT(1000))\nEND CONTRACT\n",
+      "conditions": [
+        [
+          83,
+          10
+        ],
+        [
+          73,
+          1000
+        ]
+      ],
+      "expected_hex": "ffff53ff0a80ffff49ff8203e88080"
+    }
+  ]
+}

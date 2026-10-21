@@ -159,7 +159,7 @@ fn constructors_have_one_argument_and_preserve_expression_limits() {
     for (body, expected) in [
         ("EMIT []\n", "E0202"),
         ("EMIT [ASSERT_HEIGHT_ABSOLUTE(1)]\n", "E0202"),
-        ("EMIT CREATE_COIN(1, 2)\n", "E0205"),
+        ("EMIT CREATE_COIN(1, 2)\n", "E0202"),
     ] {
         assert_eq!(
             check("condition.bas", source(body).as_bytes())

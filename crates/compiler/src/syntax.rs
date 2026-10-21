@@ -46,7 +46,7 @@ pub(crate) struct ParsedFunction {
     pub statements: Vec<ParsedStatement>,
 }
 
-#[derive(Debug)]
+#[derive(Debug, serde::Serialize)]
 pub(crate) struct ParsedParameter {
     pub name: String,
     pub span: Span,
@@ -87,7 +87,7 @@ struct StatementCounts {
     returns: usize,
 }
 
-#[derive(Debug)]
+#[derive(Debug, serde::Serialize)]
 pub(crate) enum LocalUpdateKind {
     Declaration,
     Constant,

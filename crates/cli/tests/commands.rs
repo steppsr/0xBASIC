@@ -391,13 +391,27 @@ fn concurrent_builds_publish_exactly_once() {
 #[cfg(unix)]
 #[test]
 fn artifact_symlink_cannot_escape_manifest_directory() {
-    let dir = fixture();
-    let dir = dir.path();
-    build(dir, "out");
-    // Move this test's artifact, then point its old name outside the output directory.
-    std::fs::rename(dir.join("out/puzzle.clvm"), dir.join("outside.clvm")).unwrap();
-    std::os::unix::fs::symlink("../outside.clvm", dir.join("out/puzzle.clvm")).unwrap();
-    invoke(dir, &["run", "out/manifest.json"], 4);
+    for name in ["template.clvm", "template.hex", "puzzle.clvm", "puzzle.hex"] {
+        let dir = fixture();
+        let dir = dir.path();
+        build(dir, "out");
+        // A sibling with a shared name prefix must not count as contained.
+        fs::create_dir(dir.join("out-sibling")).unwrap();
+        fs::rename(
+            dir.join("out").join(name),
+            dir.join("out-sibling").join(name),
+        )
+        .unwrap();
+        std::os::unix::fs::symlink(format!("../out-sibling/{name}"), dir.join("out").join(name))
+            .unwrap();
+        let r = invoke(dir, &["run", "out/manifest.json"], 4);
+        assert!(
+            r["diagnostics"][0]["message"]
+                .as_str()
+                .unwrap()
+                .contains("outside the manifest directory")
+        );
+    }
 }
 
 #[test]
@@ -1321,4 +1335,493 @@ fn public_key_manifests_are_normalized_and_forged_schemas_cannot_bypass_guards()
     manifest["fixed_parameters"][0]["type"]["element"] = json!({"kind":"BYTES"});
     fs::write(&path, serde_json::to_vec(&manifest).unwrap()).unwrap();
     invoke(dir, &["run", "key-a/manifest.json"], 4);
+}
+
+#[test]
+fn payment_artifacts_build_reproducibly_and_run_without_spend_validation() {
+    let temp = fixture();
+    let dir = temp.path();
+    fs::write(
+        dir.join("source file.bas"),
+        include_bytes!("../../../examples/m3-payment-conditions.bas"),
+    )
+    .unwrap();
+    fs::write(
+        dir.join("bindings.json"),
+        include_bytes!("../../../examples/m3-payment-conditions.bindings.json"),
+    )
+    .unwrap();
+    for out in ["pay-a", "pay-b"] {
+        invoke(
+            dir,
+            &[
+                "build",
+                "source file.bas",
+                "--bindings",
+                "bindings.json",
+                "--out",
+                out,
+            ],
+            0,
+        );
+    }
+    assert_eq!(
+        fs::read(dir.join("pay-a/puzzle.clvm")).unwrap(),
+        fs::read(dir.join("pay-b/puzzle.clvm")).unwrap()
+    );
+    let result = invoke(dir, &["run", "pay-a/manifest.json"], 0);
+    assert_eq!(result["result"]["validation"], "clvm-execution-only");
+    let tree = &result["result"]["tree"];
+    assert_eq!(tree["pair"][0]["pair"][0]["atom"], "49");
+    assert_eq!(tree["pair"][1]["pair"][0]["pair"][0]["atom"], "53");
+    let coin = &tree["pair"][1]["pair"][1]["pair"][0];
+    assert_eq!(coin["pair"][0]["atom"], "33");
+    assert_eq!(coin["pair"][1]["pair"][1]["pair"][1]["atom"], "");
+    fs::write(
+        dir.join("bindings.json"),
+        format!(
+            r#"{{"recipient":{{"hex":"{}"}},"paymentAmount":"-1","earliestHeight":"100"}}"#,
+            "00".repeat(32)
+        ),
+    )
+    .unwrap();
+    assert_eq!(
+        invoke(
+            dir,
+            &[
+                "build",
+                "source file.bas",
+                "--bindings",
+                "bindings.json",
+                "--out",
+                "bad-payment"
+            ],
+            1
+        )["diagnostics"][0]["code"],
+        "E0301"
+    );
+    assert!(!dir.join("bad-payment").exists());
+}
+
+#[test]
+fn signature_cli_preserves_messages_and_reports_execution_only() {
+    let temp = fixture();
+    let dir = temp.path();
+    let vectors: Value =
+        serde_json::from_slice(include_bytes!("../../../docs/spec/vectors.json")).unwrap();
+    let key = vectors["payment"]["owner_hex"].as_str().unwrap();
+    fs::write(dir.join("source file.bas"),"CONTRACT Demo(owner AS PUBLICKEY)\nSOLUTION message AS BYTES\nDIM pending = AGG_SIG_ME(owner,message)\nEMIT pending\nEND CONTRACT\n").unwrap();
+    fs::write(
+        dir.join("bindings.json"),
+        format!(r#"{{"owner":{{"hex":"{key}"}}}}"#),
+    )
+    .unwrap();
+    for out in ["sig-a", "sig-b"] {
+        invoke(
+            dir,
+            &[
+                "build",
+                "source file.bas",
+                "--bindings",
+                "bindings.json",
+                "--out",
+                out,
+            ],
+            0,
+        );
+    }
+    assert_eq!(
+        fs::read(dir.join("sig-a/puzzle.clvm")).unwrap(),
+        fs::read(dir.join("sig-b/puzzle.clvm")).unwrap()
+    );
+    for n in [1024, 1025] {
+        let message = "00".repeat(n);
+        fs::write(
+            dir.join("solution.json"),
+            format!(r#"{{"message":{{"hex":"{message}"}}}}"#),
+        )
+        .unwrap();
+        fs::write(
+            dir.join("raw.hex"),
+            format!("ffc4{:02x}{message}80", n - 1024),
+        )
+        .unwrap();
+        for (flag, file) in [
+            ("--solution", "solution.json"),
+            ("--solution-hex", "raw.hex"),
+        ] {
+            let r = invoke(
+                dir,
+                &["run", "sig-a/manifest.json", flag, file],
+                if n == 1024 { 0 } else { 3 },
+            );
+            if n == 1024 {
+                assert_eq!(r["result"]["validation"], "clvm-execution-only");
+                let condition = &r["result"]["tree"]["pair"][0];
+                assert_eq!(condition["pair"][0]["atom"], "32");
+                assert_eq!(condition["pair"][1]["pair"][0]["atom"], key);
+                assert_eq!(condition["pair"][1]["pair"][1]["pair"][0]["atom"], message);
+            } else {
+                assert_eq!(r["diagnostics"][0]["code"], "E0500");
+            }
+        }
+    }
+    fs::write(
+        dir.join("source file.bas"),
+        include_bytes!("../../../examples/height-locked-payment.bas"),
+    )
+    .unwrap();
+    fs::write(
+        dir.join("bindings.json"),
+        include_bytes!("../../../examples/height-locked-payment.bindings.json"),
+    )
+    .unwrap();
+    invoke(
+        dir,
+        &[
+            "build",
+            "source file.bas",
+            "--bindings",
+            "bindings.json",
+            "--out",
+            "full-payment",
+        ],
+        0,
+    );
+    let r = invoke(dir, &["run", "full-payment/manifest.json"], 0);
+    assert_eq!(r["result"]["validation"], "clvm-execution-only");
+}
+
+#[test]
+fn explain_is_repeatable_read_only_and_has_no_binding_requirement() {
+    let dir = fixture();
+    let dir = dir.path();
+    fs::write(
+        dir.join("source file.bas"),
+        "CONTRACT Demo(n AS INTEGER)\nSOLUTION x AS BYTES\nASSERT FALSE\nEND CONTRACT\n",
+    )
+    .unwrap();
+    let before: Vec<_> = fs::read_dir(dir)
+        .unwrap()
+        .map(|p| p.unwrap().file_name())
+        .collect();
+    for stage in ["ast", "ir"] {
+        let args = ["explain", "source file.bas", "--stage", stage];
+        let result = invoke(dir, &args, 0);
+        assert_eq!(result, invoke(dir, &args, 0));
+        assert_eq!(result["command"], "explain");
+        assert_eq!(result["result"]["stage"], stage);
+        assert_eq!(result["result"]["source"]["name"], "source file.bas");
+        assert_eq!(
+            result["result"]["compiler_version"],
+            env!("CARGO_PKG_VERSION")
+        );
+    }
+    let after: Vec<_> = fs::read_dir(dir)
+        .unwrap()
+        .map(|p| p.unwrap().file_name())
+        .collect();
+    assert_eq!(before, after);
+}
+
+#[test]
+fn explain_rejects_invalid_options_and_distinguishes_parse_and_check() {
+    let dir = fixture();
+    let dir = dir.path();
+    for args in [
+        vec!["explain", "absent.bas"],
+        vec!["explain", "absent.bas", "--stage", "CLVM"],
+        vec!["explain", "absent.bas", "--stage", "unknown"],
+        vec!["explain", "absent.bas", "--stage", "ast", "--stage", "ir"],
+        vec![
+            "explain",
+            "absent.bas",
+            "--stage",
+            "ast",
+            "--bindings",
+            "absent.json",
+        ],
+        vec!["explain", "absent.bas", "--stage", "ir", "--template-only"],
+        vec!["explain", "absent.bas", "--stage", "ir", "--out", "output"],
+    ] {
+        assert_eq!(invoke(dir, &args, 2)["diagnostics"][0]["code"], "E0400");
+    }
+    fs::write(
+        dir.join("source file.bas"),
+        "CONTRACT Demo()\nEMIT unknown\nEND CONTRACT\n",
+    )
+    .unwrap();
+    invoke(dir, &["explain", "source file.bas", "--stage", "ast"], 0);
+    let checked = invoke(dir, &["check", "source file.bas"], 1);
+    let explained = invoke(dir, &["explain", "source file.bas", "--stage", "ir"], 1);
+    assert_eq!(checked["diagnostics"], explained["diagnostics"]);
+}
+
+#[test]
+fn clvm_explain_matches_build_artifacts_and_is_read_only() {
+    let dir = fixture();
+    let dir = dir.path();
+    fs::write(
+        dir.join("source file.bas"),
+        "CONTRACT Demo(n AS INTEGER)\nASSERT FALSE\nEND CONTRACT\n",
+    )
+    .unwrap();
+    fs::write(dir.join("bindings.json"), "{\"N\":\"7\"}").unwrap();
+    for template_only in [false, true] {
+        let flags = if template_only {
+            vec!["--template-only"]
+        } else {
+            vec!["--bindings", "bindings.json"]
+        };
+        let mut args = vec!["explain", "source file.bas", "--stage", "clvm"];
+        args.extend(&flags);
+        let before = fs::read_dir(dir).unwrap().count();
+        let result = invoke(dir, &args, 0);
+        assert_eq!(result, invoke(dir, &args, 0));
+        assert_eq!(before, fs::read_dir(dir).unwrap().count());
+        let out = if template_only { "unbound" } else { "bound" };
+        let mut args = vec!["build", "source file.bas", "--out", out];
+        args.extend(&flags);
+        let built = invoke(dir, &args, 0);
+        let r = &result["result"]["representation"];
+        for name in ["template", "puzzle"] {
+            if template_only && name == "puzzle" {
+                assert!(r[name].is_null());
+                continue;
+            }
+            assert_eq!(r[name]["tree_hash"], built["result"][name]["tree_hash"]);
+            assert_eq!(
+                r[name]["program_sha256"],
+                built["result"][name]["program_sha256"]
+            );
+            assert_eq!(
+                r[name]["hex"],
+                hex::encode(fs::read(dir.join(out).join(format!("{name}.clvm"))).unwrap())
+            );
+        }
+    }
+}
+
+#[test]
+fn clvm_explain_reports_binding_and_usage_errors() {
+    let dir = fixture();
+    let dir = dir.path();
+    fs::write(
+        dir.join("source file.bas"),
+        "CONTRACT Demo(n AS INTEGER)\nEND CONTRACT\n",
+    )
+    .unwrap();
+    assert_eq!(
+        invoke(dir, &["explain", "source file.bas", "--stage", "clvm"], 1)["diagnostics"][0]["code"],
+        "E0301"
+    );
+    invoke(
+        dir,
+        &[
+            "explain",
+            "source file.bas",
+            "--stage",
+            "clvm",
+            "--bindings",
+            "missing.json",
+        ],
+        4,
+    );
+    for flags in [
+        vec!["--bindings", "missing.json", "--template-only"],
+        vec!["--solution", "missing.json"],
+        vec!["--out", "output"],
+    ] {
+        let mut args = vec!["explain", "absent.bas", "--stage", "clvm"];
+        args.extend(flags);
+        invoke(dir, &args, 2);
+    }
+}
+
+#[test]
+fn artifact_metadata_matrix_rejects_invalid_versions_and_provenance() {
+    let dir = fixture();
+    let dir = dir.path();
+    build(dir, "out");
+    let path = dir.join("out/manifest.json");
+    let original: Value = serde_json::from_slice(&fs::read(&path).unwrap()).unwrap();
+    for (pointer, value, status) in [
+        ("/schema_version", json!(2), 2),
+        ("/language_version", json!("future"), 2),
+        ("/abi_version", json!(2), 2),
+        ("/target_profile", json!("future"), 2),
+        ("/optimization", json!("aggressive"), 2),
+        ("/compiler/version", json!("future"), 2),
+        ("/compiler/rust_version", json!("0.0.0"), 4),
+        ("/compiler/cargo_lock_sha256", json!("bad"), 4),
+        ("/source/sha256", json!("G".repeat(64)), 4),
+        ("/source/name", json!("../source.bas"), 4),
+        ("/source/name", json!("..\\source.bas"), 4),
+        ("/source/name", json!("source.txt"), 4),
+        ("/contract", json!("Uppercase"), 4),
+        ("/contract", json!("bad-name"), 4),
+        ("/template/program_sha256", json!("0".repeat(64)), 4),
+        ("/puzzle/tree_hash", json!("0".repeat(64)), 4),
+    ] {
+        let mut changed = original.clone();
+        *changed.pointer_mut(pointer).unwrap() = value;
+        fs::write(&path, serde_json::to_vec(&changed).unwrap()).unwrap();
+        let result = invoke(dir, &["run", "out/manifest.json"], status);
+        assert_eq!(
+            result["diagnostics"][0]["code"],
+            if status == 2 { "E0400" } else { "E0600" },
+            "{pointer}"
+        );
+    }
+    fs::write(&path, serde_json::to_vec(&original).unwrap()).unwrap();
+    invoke(dir, &["run", "out/manifest.json"], 0);
+}
+
+#[test]
+fn every_artifact_path_rejects_aliases_traversal_and_absolute_names() {
+    let dir = fixture();
+    let dir = dir.path();
+    build(dir, "out");
+    let path = dir.join("out/manifest.json");
+    let original: Value = serde_json::from_slice(&fs::read(&path).unwrap()).unwrap();
+    for role in ["template", "puzzle"] {
+        for field in ["binary", "hex"] {
+            for bad in [
+                "../outside.clvm",
+                "..\\outside.clvm",
+                "/tmp/outside.clvm",
+                "C:\\outside.clvm",
+                "\\\\server\\share\\outside.clvm",
+                "./puzzle.clvm",
+                "puzzle.clvm:stream",
+                "other.clvm",
+                "",
+            ] {
+                let mut changed = original.clone();
+                changed[role][field] = json!(bad);
+                fs::write(&path, serde_json::to_vec(&changed).unwrap()).unwrap();
+                assert_eq!(
+                    invoke(dir, &["run", "out/manifest.json"], 4)["diagnostics"][0]["code"],
+                    "E0600"
+                );
+            }
+        }
+    }
+}
+
+#[test]
+fn matching_file_digests_cannot_hide_template_puzzle_binding_mismatch() {
+    let dir = fixture();
+    let dir = dir.path();
+    build(dir, "out");
+    let path = dir.join("out/manifest.json");
+    let original: Value = serde_json::from_slice(&fs::read(&path).unwrap()).unwrap();
+    for role in ["template", "puzzle"] {
+        let binary_path = dir.join(format!("out/{role}.clvm"));
+        let hex_path = dir.join(format!("out/{role}.hex"));
+        let binary = fs::read(&binary_path).unwrap();
+        let text = fs::read(&hex_path).unwrap();
+        let mut changed = original.clone();
+        // Canonical nil with internally consistent bytes, hex and both hashes.
+        fs::write(&binary_path, [0x80]).unwrap();
+        fs::write(&hex_path, "80\n").unwrap();
+        changed[role]["program_sha256"] = json!(oxbasic_compiler::clvm::sha256(&[0x80]));
+        changed[role]["tree_hash"] = json!(oxbasic_compiler::clvm::tree_hash(&[0x80]).unwrap());
+        fs::write(&path, serde_json::to_vec(&changed).unwrap()).unwrap();
+        let r = invoke(dir, &["run", "out/manifest.json"], 4);
+        assert!(
+            r["diagnostics"][0]["message"]
+                .as_str()
+                .unwrap()
+                .contains("ABI binding")
+        );
+        fs::write(binary_path, binary).unwrap();
+        fs::write(hex_path, text).unwrap();
+    }
+    fs::write(&path, serde_json::to_vec(&original).unwrap()).unwrap();
+    invoke(dir, &["run", "out/manifest.json"], 0);
+}
+
+#[test]
+fn nested_artifact_metadata_requires_exact_fields_and_canonical_hex_files() {
+    let dir = fixture();
+    let dir = dir.path();
+    build(dir, "out");
+    let path = dir.join("out/manifest.json");
+    let original: Value = serde_json::from_slice(&fs::read(&path).unwrap()).unwrap();
+    for (object, field) in [
+        ("compiler", "version"),
+        ("source", "name"),
+        ("template", "hex"),
+        ("puzzle", "tree_hash"),
+    ] {
+        for variant in 0..3 {
+            let mut changed = original.clone();
+            let text = if variant == 0 {
+                let value = serde_json::to_string(&changed[object][field]).unwrap();
+                let object_text = serde_json::to_string(&changed[object]).unwrap();
+                serde_json::to_string(&changed).unwrap().replace(
+                    &object_text,
+                    &object_text.replacen('{', &format!("{{\"{field}\":{value},"), 1),
+                )
+            } else {
+                if variant == 1 {
+                    changed[object].as_object_mut().unwrap().remove(field);
+                } else {
+                    changed[object]["unknown"] = json!(true);
+                }
+                serde_json::to_string(&changed).unwrap()
+            };
+            fs::write(&path, text).unwrap();
+            assert_eq!(
+                invoke(dir, &["run", "out/manifest.json"], 4)["diagnostics"][0]["code"],
+                "E0600"
+            );
+        }
+    }
+    fs::write(&path, serde_json::to_vec(&original).unwrap()).unwrap();
+    for role in ["template", "puzzle"] {
+        let hex_path = dir.join(format!("out/{role}.hex"));
+        let text = fs::read_to_string(&hex_path).unwrap();
+        for bad in [
+            text.trim().to_owned(),
+            text.to_uppercase(),
+            format!(" {text}"),
+            format!("{text}00"),
+        ] {
+            fs::write(&hex_path, bad).unwrap();
+            invoke(dir, &["run", "out/manifest.json"], 4);
+        }
+        fs::write(hex_path, text).unwrap();
+    }
+}
+
+#[test]
+fn relocated_artifacts_run_without_source_and_provenance_is_not_authentication() {
+    let dir = fixture();
+    let dir = dir.path();
+    build(dir, "out");
+    let expected = invoke(dir, &["run", "out/manifest.json"], 0);
+    let relocated = dir.join("relocated bundle");
+    fs::create_dir(&relocated).unwrap();
+    for name in [
+        "template.clvm",
+        "template.hex",
+        "puzzle.clvm",
+        "puzzle.hex",
+        "manifest.json",
+    ] {
+        fs::copy(dir.join("out").join(name), relocated.join(name)).unwrap();
+    }
+    let path = relocated.join("manifest.json");
+    let mut m: Value = serde_json::from_slice(&fs::read(&path).unwrap()).unwrap();
+    // Validly shaped descriptive provenance is not verified against external source or lock files.
+    m["source"]["name"] = json!("not-present.bas");
+    m["source"]["sha256"] = json!("0".repeat(64));
+    m["compiler"]["cargo_lock_sha256"] = json!("1".repeat(64));
+    fs::write(path, serde_json::to_vec(&m).unwrap()).unwrap();
+    assert_eq!(
+        invoke(dir, &["run", "relocated bundle/manifest.json"], 0),
+        expected
+    );
 }

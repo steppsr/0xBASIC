@@ -21,6 +21,10 @@ python tools/verify_m3_pairs.py
 python tools/verify_m3_lists.py
 python tools/verify_m3_domains.py
 python tools/verify_m3_publickeys.py
+python tools/verify_m3_payments.py
+python tools/verify_m3_signatures.py
+python tools/verify_m3_explain.py
+python tools/verify_m3_conformance.py
 ```
 
 On Linux, use `python3` if `python` is unavailable. The [CI workflow](.github/workflows/ci.yml) lists the complete conformance commands, including earlier language features. Run checks relevant to your change; CI runs the full matrix on Windows and Linux.
@@ -57,3 +61,7 @@ A typical contribution uses a branch and pull request. Include the problem, the 
 | `tools` | Independent verification and upstream inspection scripts |
 
 The repository uses the [Apache-2.0 license](LICENSE).
+
+## Simulator integration
+
+The optional [M4 simulator environment](simulator/README.md) has separate platform locks and a one-block smoke test. It is not needed to build or run the compiler. Linux simulator validation is pending; use a native Linux project copy, not a Windows virtual environment over Samba.

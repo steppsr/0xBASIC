@@ -216,7 +216,7 @@ fn unsupported_and_invalid_source_is_rejected_with_locations() {
     for body in [
         "SOLUTION x AS DOUBLE\n",
         "ELSEIF TRUE THEN\n",
-        "EMIT CREATE_COIN(0x, 1)\n",
+        "EMIT AGG_SIG_ME(0x, 0x)\n",
         "EMIT ASSERT_HEIGHT_ABSOLUTE(TRUE)\n",
         "EMIT ASSERT_HEIGHT_ABSOLUTE(1 < 2)\n",
     ] {

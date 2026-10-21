@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "profile": "0xbasic-spendsim-2.7.4-v1",
+  "chia_commit": "98aba3d176b24b5814e84a33f9d1c11af67a9cdc",
+  "chia_blockchain": "2.7.4",
+  "chia_rs": "0.48.0",
+  "python_major_minor": "3.13",
+  "resolver": "uv==0.9.4",
+  "source_hashes": {
+    "chia/consensus/default_constants.py": "76c087c518e6765d1e38322f02b7f9c56d5feba004433eac724be2c188c17bd0",
+    "chia/_tests/util/spend_sim.py": "23ca69d24e5196c41dcb0ec7d43181076b83cee9be675ea299af2877ee54a054",
+    "chia/full_node/mempool_manager.py": "61c501fa89183e065844a80a1bfba4a0dd677163c4882dea88e691cfb5425fa1"
+  },
+  "signature_domain_hex": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+}

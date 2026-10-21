@@ -164,6 +164,19 @@ impl Analyzer<'_> {
                 binary_type(self.source, *operator, lhs, rhs, left.span, right.span)?
             }
             E::Call { name, arguments } => {
+                if let Some((_, parameters)) = crate::ir::expressions::payment_builtin(name) {
+                    crate::ir::expressions::require_arity(
+                        self.source,
+                        arguments.len(),
+                        parameters.len(),
+                        expr.span,
+                    )?;
+                    for (argument, expected) in arguments.iter().zip(&parameters) {
+                        let ty = self.expression(argument, scope)?;
+                        require_type(self.source, &ty, expected, argument.span)?;
+                    }
+                    return Ok(ValueType::Condition);
+                }
                 if name.eq_ignore_ascii_case("CONS") {
                     crate::ir::expressions::require_arity(
                         self.source,

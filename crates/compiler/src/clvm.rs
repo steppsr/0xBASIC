@@ -756,6 +756,31 @@ fn scalar_expression(
             }
             op(a, 5, &[tuple])?
         }
+        IntegerValueKind::PaymentCondition { opcode, operands } => {
+            // Operands were evaluated left-to-right and already have validated
+            // domain types. Construct a proper condition list; no memo argument.
+            let mut tail = quote(a, NodePtr::NIL)?;
+            for operand in operands.iter().rev() {
+                let value = value_path(a, *operand, value_slots, count)?;
+                tail = op(a, 4, &[value, tail])?;
+            }
+            let code = a.new_small_number(u32::from(*opcode)).map_err(internal)?;
+            let code = quote(a, code)?;
+            let condition = op(a, 4, &[code, tail])?;
+            if *opcode == 50 {
+                // Limit the application message here, including unused calls.
+                // Consensus adds coin/network context later; do not append it here.
+                let message = value_path(a, operands[1], value_slots, count)?;
+                let length = op(a, 13, &[message])?;
+                let limit = a.new_small_number(1025).map_err(internal)?;
+                let limit = quote(a, limit)?;
+                let valid = op(a, 21, &[limit, length])?;
+                let fail = op(a, 8, &[])?;
+                choose(a, valid, condition, fail)?
+            } else {
+                condition
+            }
+        }
         IntegerValueKind::HeightCondition { operand } => {
             let height = value_path(a, *operand, value_slots, count)?;
             height_condition(a, height)?

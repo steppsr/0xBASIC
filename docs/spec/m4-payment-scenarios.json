@@ -1,0 +1,99 @@
+{
+  "schema_version": 1,
+  "status": "planned acceptance scenarios; none executed yet",
+  "profile": "0xbasic-spendsim-2.7.4-v1",
+  "height": 10,
+  "amount": "1000",
+  "cases": [
+    {
+      "id": "authorized-at-height",
+      "setup": "valid owner signature; previous transaction-block height equals H",
+      "expected": "accepted then confirmed",
+      "postcondition": "input spent; exactly one recipient output of A"
+    },
+    {
+      "id": "authorized-after-height",
+      "setup": "valid signature; context height above H",
+      "expected": "accepted then confirmed",
+      "postcondition": "same output invariants"
+    },
+    {
+      "id": "premature-height",
+      "setup": "valid signature; context height H-1",
+      "expected": "not accepted: height lock",
+      "postcondition": "no recipient output; input unspent; advance real blocks and recheck acceptance"
+    },
+    {
+      "id": "missing-signature",
+      "setup": "empty aggregate; otherwise valid height",
+      "expected": "signature rejection",
+      "postcondition": "input remains unspent"
+    },
+    {
+      "id": "wrong-owner",
+      "setup": "signature made by a different deterministic test key",
+      "expected": "signature rejection",
+      "postcondition": "input remains unspent"
+    },
+    {
+      "id": "message-only-signature",
+      "setup": "sign application message without coin/network suffix",
+      "expected": "signature rejection",
+      "postcondition": "input remains unspent"
+    },
+    {
+      "id": "wrong-network-domain",
+      "setup": "sign with different additional-data suffix",
+      "expected": "signature rejection",
+      "postcondition": "input remains unspent"
+    },
+    {
+      "id": "cross-coin-replay",
+      "setup": "two funded coins share puzzle hash and amount but have different parents; sign first and spend second",
+      "expected": "signature rejection",
+      "postcondition": "both inputs initially unspent; second not consumed"
+    },
+    {
+      "id": "double-spend",
+      "setup": "resubmit spend after its input has been confirmed spent",
+      "expected": "spent-coin rejection",
+      "postcondition": "no second recipient output"
+    },
+    {
+      "id": "wrong-puzzle-reveal",
+      "setup": "use reveal from differently bound recipient while spending original funded coin",
+      "expected": "puzzle-hash rejection",
+      "postcondition": "no output; do not mislabel as signature failure"
+    },
+    {
+      "id": "wrong-coin-amount",
+      "setup": "fund compiled puzzle with actual amount A+1 but fixed paymentAmount A; sign actual coin correctly",
+      "expected": "amount-assertion rejection",
+      "postcondition": "input remains unspent"
+    },
+    {
+      "id": "changed-recipient-stale-signature",
+      "setup": "fund newly bound recipient variant; reuse original signature",
+      "expected": "signature rejection",
+      "postcondition": "no output; puzzle reveal matches new coin"
+    },
+    {
+      "id": "changed-recipient-resigned",
+      "setup": "fund recipient variant and sign its actual coin/message correctly",
+      "expected": "accepted then confirmed",
+      "postcondition": "only new recipient receives A"
+    },
+    {
+      "id": "malformed-solution",
+      "setup": "valid signature but nonempty raw solution for empty solution schema",
+      "expected": "execution rejection",
+      "postcondition": "input remains unspent"
+    },
+    {
+      "id": "zero-payment-amount",
+      "setup": "bind zero amount and fund nonzero actual coin; exercise local ASSERT first",
+      "expected": "execution rejection",
+      "postcondition": "record primary failure; no claim of isolated amount-condition test"
+    }
+  ]
+}

@@ -16,15 +16,16 @@ impl Args {
     fn parse(args: &[String]) -> Result<Self> {
         let command = args
             .first()
-            .ok_or_else(|| usage("Expected check, build, or run"))?
+            .ok_or_else(|| usage("Expected check, build, run, or explain"))?
             .clone();
         let allowed: &[&str] = match command.as_str() {
             "check" => &[],
+            "explain" => &["--stage", "--bindings", "--template-only"],
             "build" => &["--out", "--bindings", "--template-only"],
             "run" => &["--solution", "--solution-hex", "--max-cost"],
             _ => {
                 return Err(usage(
-                    "Implemented commands: check, build, run; explain is planned for M3",
+                    "Implemented commands: check, build, run, explain (ast/ir/clvm)",
                 ));
             }
         };
@@ -61,6 +62,18 @@ impl Args {
         ] {
             if options.contains_key(left) && options.contains_key(right) {
                 return Err(usage(format!("{left} and {right} are mutually exclusive")));
+            }
+        }
+        if command == "explain" {
+            match options.get("--stage").map(String::as_str) {
+                Some("ast" | "ir") => {
+                    if options.contains_key("--bindings") || options.contains_key("--template-only")
+                    {
+                        return Err(usage("AST/IR views reject binding flags"));
+                    }
+                }
+                Some("clvm") => {}
+                _ => return Err(usage("explain requires --stage ast|ir|clvm")),
             }
         }
         Ok(Self {
@@ -106,8 +119,31 @@ fn source(path: &Path) -> Result<(String, Vec<u8>)> {
         .to_owned();
     Ok((name, read(path)?))
 }
+fn binding_json(args: &Args) -> Result<Option<Vec<u8>>> {
+    if args.options.contains_key("--template-only") {
+        return Ok(None);
+    }
+    Ok(Some(if let Some(path) = args.options.get("--bindings") {
+        read(Path::new(path))?
+    } else {
+        b"{}".to_vec()
+    }))
+}
 fn perform(args: Args) -> Result<Value> {
     match args.command.as_str() {
+        "explain" => {
+            let (name, bytes) = source(&args.path)?;
+            if args.options["--stage"] == "clvm" {
+                let bindings = binding_json(&args)?;
+                return compiler::explain::explain_clvm(&name, &bytes, bindings.as_deref());
+            }
+            let stage = if args.options["--stage"] == "ast" {
+                compiler::explain::Stage::Ast
+            } else {
+                compiler::explain::Stage::Ir
+            };
+            compiler::explain::explain(&name, &bytes, stage)
+        }
         "check" => {
             let (name, bytes) = source(&args.path)?;
             let contract = compiler::check(&name, &bytes)?;
@@ -116,16 +152,11 @@ fn perform(args: Args) -> Result<Value> {
         "build" => {
             let (name, bytes) = source(&args.path)?;
             let compiled = compiler::compile_template(&name, &bytes)?;
-            let bound = if args.options.contains_key("--template-only") {
-                None
-            } else {
-                let json = if let Some(path) = args.options.get("--bindings") {
-                    read(Path::new(path))?
-                } else {
-                    b"{}".to_vec()
-                };
-                Some(compiled.bind(&json)?)
-            };
+            let bindings = binding_json(&args)?;
+            let bound = bindings
+                .as_deref()
+                .map(|json| compiled.bind(json))
+                .transpose()?;
             artifact::build(
                 &name,
                 &bytes,
@@ -180,7 +211,7 @@ fn main() {
     let args: std::result::Result<Vec<_>, _> = raw.into_iter().map(|v| v.into_string()).collect();
     let result = args.map_err(|_| usage("Command arguments must be valid Unicode")).and_then(|args| {
         if args.len() == 1 && args[0] == "--help" {
-            return Ok(json!({"usage":["0xbasic check SOURCE [--json]", "0xbasic build SOURCE --out DIRECTORY [--bindings FILE | --template-only] [--json]", "0xbasic run MANIFEST [--solution FILE | --solution-hex FILE] [--max-cost N] [--json]"],"implemented":compiler::IMPLEMENTED_SUBSET}));
+            return Ok(json!({"usage":["0xbasic explain SOURCE --stage ast|ir|clvm [--bindings FILE | --template-only] [--json]", "0xbasic check SOURCE [--json]", "0xbasic build SOURCE --out DIRECTORY [--bindings FILE | --template-only] [--json]", "0xbasic run MANIFEST [--solution FILE | --solution-hex FILE] [--max-cost N] [--json]"],"implemented":compiler::IMPLEMENTED_SUBSET}));
         }
         if args.len() == 1 && args[0] == "--version" {
             return Ok(json!({"compiler":compiler::COMPILER_VERSION,"language":compiler::LANGUAGE_VERSION,"abi":compiler::ABI_VERSION,"target_profile":compiler::TARGET_PROFILE}));

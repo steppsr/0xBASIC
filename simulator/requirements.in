@@ -1,0 +1,3 @@
+# M4 simulator only; separate from the compiler and M0 reference environment.
+chia-blockchain==2.7.4
+chia_rs==0.48.0

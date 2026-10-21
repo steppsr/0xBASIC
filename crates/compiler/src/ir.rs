@@ -102,6 +102,10 @@ pub enum IntegerValueKind {
         bundle: usize,
         index: usize,
     },
+    PaymentCondition {
+        opcode: u8,
+        operands: Vec<usize>,
+    },
     HeightCondition {
         operand: usize,
     },

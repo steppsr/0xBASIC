@@ -8,7 +8,7 @@
 
 The goal is to make contract development easier to learn without hiding how Chia's coin and condition model works.
 
-**Early development · compiler `0.1.0-m3.6b` · Apache-2.0**
+**Early development · compiler `0.1.0-m3.8b` · Apache-2.0**
 
 The compiler and local runner work today, but the language is incomplete and has not been audited for production use. Current execution checks CLVM behavior; it does not validate a blockchain spend. Do not use this development version to secure funds.
 
@@ -28,9 +28,11 @@ END CONTRACT
 - Pure, nonrecursive functions and typed INTEGER, BOOLEAN, BYTES, STRING, AMOUNT, PUZZLEHASH, PUBLICKEY, PAIR, LIST, and CONDITION values inside programs.
 - Byte operations, SHA256, integer encodings, strict UTF-8 conversion, and collection operations.
 - INTEGER, BOOLEAN, BYTES, STRING, AMOUNT, PUZZLEHASH, PUBLICKEY, and nested PAIR/LIST fixed parameters and solution fields, with JSON conversion and generated CLVM boundary validation.
-- `check`, `build`, and `run` commands; reproducible artifacts, tree hashes, structured diagnostics, and execution-cost reporting.
+- `check`, `build`, `run`, and `explain --stage ast|ir|clvm` commands; reproducible artifacts, tree hashes, structured diagnostics, and execution-cost reporting.
 
-Only `ASSERT_HEIGHT_ABSOLUTE` is currently implemented as a blockchain condition constructor. Payment conditions, signatures, and simulator spend validation are upcoming work. The specifications describe the intended language as well as features still being implemented; see the [status and roadmap](docs/development.md).
+`ASSERT_HEIGHT_ABSOLUTE`, `ASSERT_MY_AMOUNT`, `CREATE_COIN`, and `AGG_SIG_ME` are implemented as blockchain condition constructors. Signing and simulator spend validation are upcoming work. The specifications describe the intended language as well as features still being implemented; see the [status and roadmap](docs/development.md).
+
+The optional [simulator harness](simulator/README.md) now passes a one-block environment smoke test on Windows. Linux simulator testing is pending; signed payment scenarios are the next stage. Compiler testing has passed on both platforms.
 
 ## Try it
 
@@ -47,11 +49,20 @@ cargo run --locked -p oxbasic-cli -- run height-lock-build/manifest.json --json
 
 These commands work in PowerShell and Linux shells. The output directory `height-lock-build` must not already exist. A build produces binary CLVM, hex files, and a manifest recording the template and bound puzzle identities. The runner returns the raw condition tree corresponding to `((83 100))` and labels its result `clvm-execution-only`.
 
+To inspect how the compiler sees a program without binding or running it:
+
+```text
+cargo run --locked -p oxbasic-cli -- explain examples/height-locked-payment.bas --stage ast --json
+cargo run --locked -p oxbasic-cli -- explain examples/height-locked-payment.bas --stage ir --json
+```
+
+`ast` shows parsed syntax; `ir` shows the checked intermediate representation. Use `--stage clvm --template-only` to inspect generated CLVM, or `--stage clvm --bindings FILE` to include the bound puzzle. These debug views include source locations and may change with compiler versions.
+
 Dependency downloads require internet access initially. Compilation and local execution then work with cached dependencies; no wallet or running Chia node is required. Python is only needed for the verification scripts.
 
 ## Explore and contribute
 
-- [Examples](examples): small programs demonstrating implemented features. `height-locked-payment.bas` is a future conformance example and does not compile yet.
+- [Examples](examples): small programs demonstrating implemented features. `height-locked-payment.bas` compiles and runs locally using its companion bindings file; signing and spend validation remain future work.
 - [Architecture](docs/architecture.md) and [language specification](docs/language-v0.1.md).
 - [ABI](docs/spec/abi-v1.md), [CLI and artifact format](docs/spec/cli-v1.md), and [pinned target profile](docs/spec/target-profile.md).
 - [Development status and roadmap](docs/development.md).
