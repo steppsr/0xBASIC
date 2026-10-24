@@ -1,0 +1,55 @@
+name: Isolated simulator checks
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  simulator:
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            platform: windows
+            bin: Scripts
+            executable: 0xbasic.exe
+          - os: ubuntu-latest
+            platform: linux
+            bin: bin
+            executable: 0xbasic
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
+    env:
+      UV_CACHE_DIR: ${{ github.workspace }}/.work/m4/uv-cache
+      PIP_CACHE_DIR: ${{ github.workspace }}/.work/m4/pip-cache
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13.7'
+          architecture: x64
+      - name: Build pinned compiler
+        run: |
+          rustup toolchain install 1.95.0 --profile minimal
+          cargo build --workspace --locked
+      - name: Install isolated hash-locked simulator
+        run: |
+          python -m venv .work/m4/tools
+          .work/m4/tools/${{ matrix.bin }}/python -m pip --isolated install --cache-dir .work/m4/pip-cache --require-hashes -r simulator/tools.lock
+          .work/m4/tools/${{ matrix.bin }}/uv venv --python 3.13.7 --no-python-downloads .work/m4/venv
+          .work/m4/tools/${{ matrix.bin }}/uv pip install --python .work/m4/venv/${{ matrix.bin }}/python --require-hashes -r simulator/requirements-${{ matrix.platform }}.lock --build-constraints simulator/build-requirements.lock
+          .work/m4/tools/${{ matrix.bin }}/uv pip check --python .work/m4/venv/${{ matrix.bin }}/python
+      - name: Test reporting failure paths
+        run: .work/m4/venv/${{ matrix.bin }}/python -m unittest discover -s simulator -p 'test_*.py'
+      - name: Verify all scenarios and identical fresh reruns
+        run: .work/m4/venv/${{ matrix.bin }}/python simulator/verify.py --binary target/debug/${{ matrix.executable }}
+      - name: Upload complete verified evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: spendsim-evidence-${{ matrix.platform }}
+          path: .work/m4/verification-${{ matrix.platform }}.json
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 30

@@ -77,3 +77,17 @@ User confirmed M4-3 Linux tests passed. The mutation harness implements all eigh
 ## M4-4 platform confirmation and publication checkpoint
 
 The user confirmed the Linux smoke, height/signature suite and mutation suite all passed. All 15 planned scenarios have now passed on both platforms. Earlier pending-status entries above describe their historical checkpoints and are superseded by this confirmation. M4-5 evidence audit, reproducible reporting and simulator CI integration are next and have not started. Publication includes the simulator harnesses and current documentation; local virtual environments, scratch reports, private handoff notes and unrelated artwork are excluded. Rust tests and compiler/dependency versions remain unchanged.
+
+## M4-5 implementation checkpoint — 2026-10-24
+
+The complete runner and Windows/Linux workflow are implemented; see [commands and evidence status](../../simulator/README.md#m4-5-complete-evidence-and-reproducible-runs). The aggregate requires all 15 cases, 12 exact rejections, 15 confirmed payments, current compiler/environment identities and identical complete reports from two fresh runs. It embeds detailed state evidence and source/binary digests. Failure invalidates prior aggregate success; negative reporting tests cover missing/duplicate cases, corrupt evidence, mixed environments, stale compiler, failed subprocess/preflight and differing reruns.
+
+The saved Windows evidence passes the new audit and reporting tests pass. Fresh smoke passed, but restricted Windows execution denied access to the payment temporary directory; no aggregate success is claimed. Fresh Windows/Linux runner results and hosted CI are pending. M4 completion remains gated on those results; full-node simulator validation remains a pre-release requirement. No compiler or dependency changes.
+
+## M4-5 native Linux confirmation
+
+The user confirmed all native Linux testing passed, closing the Linux reporting/reproducibility gate. A Windows retry in the restricted session again passed smoke and failed at temporary-directory access before payment execution. Windows aggregate verification and hosted simulator CI remain pending; M4 is not complete. The next gate is the documented native Windows test/verification commands, followed by publication and verification of both hosted simulator jobs. This session has read-only access to `.git`, so publication requires a session with repository-write access.
+
+## M4-5 Windows/Linux confirmation and publication checkpoint — 2026-10-24
+
+The user confirmed all Windows and Linux testing passed, including reporting tests and complete aggregate verification. Both native reporting/reproducibility gates are closed, superseding the historical restricted Windows failures above. Publication is authorized; verify both hosted simulator jobs and compiler CI for the published commit before closing M4-5. Unrelated artwork and private local reports/notes are excluded. Compiler, dependency locks and Rust test counts are unchanged.

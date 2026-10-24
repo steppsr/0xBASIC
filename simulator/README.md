@@ -147,4 +147,34 @@ export CARGO_TARGET_DIR="$HOME/.cache/0xbasic/target"
 
 Expected mutation output: eight scenario PASS lines and `PASS: eight replay/mutation scenarios`. Report: `.work/m4/mutations-linux.json` (Windows uses `mutations-windows.json`). Eight confirmed payments and seven rejected attempts are required. Windows runs in both isolated environments produced identical reports; smoke and the seven-scenario M4-3 regression also passed. No lock/compiler changes, package reinstall or full Rust retest are needed. Existing Rust totals remain 274 Windows / 275 Linux.
 
-All 15 planned scenarios have passed on Windows and Linux. M4 remains open until the M4-5 evidence audit, reproducible reporting and simulator CI integration are complete. Full-node validation remains a separate pre-release requirement.
+All 15 planned scenarios have passed on Windows and Linux. M4 remains open until the M4-5 verification gates below pass. Full-node validation remains a separate pre-release requirement.
+
+## M4-5: complete evidence and reproducible runs
+
+`verify.py` runs smoke, the seven height/signature scenarios and the eight mutation scenarios twice in fresh subprocesses/simulators. It requires exact scenario coverage, expected rejection reasons, confirmed positive controls, closed resources, matching environment identities and the current compiler version. The existing scenario harnesses assert actual coin state and artifact/message correctness. The complete reports from both runs must compare equal; timestamps and temporary paths are not added to this comparison.
+
+The aggregate embeds all three detailed reports, a per-scenario summary, the CLI binary digest and hashes of compiler sources, harnesses, locks, profile, payment source and scenario matrix. Each run must contain 15 confirmed payments and 12 rejected attempts. The runner invalidates its previous aggregate before preflight, removes each old component report before invoking its producer, stops on a failed command and publishes the aggregate only after the second successful audit. Component reports alone are not proof of a complete run. Run only one verification process per checkout at a time because component report names are shared.
+
+Use the existing locked environment; no dependency change or Rust test rerun is required. Build the CLI if it is absent or its sources changed. Windows:
+
+```powershell
+.work/m4/venv/Scripts/python.exe -m unittest discover -s simulator -p 'test_*.py'
+.work/m4/venv/Scripts/python.exe simulator/verify.py --binary target/debug/0xbasic.exe
+```
+
+Linux, after refreshing the native checkout while preserving `.work`:
+
+```sh
+set -e
+export CARGO_TARGET_DIR="$HOME/.cache/0xbasic/target"
+.work/m4/venv/bin/python -m unittest discover -s simulator -p 'test_*.py'
+.work/m4/venv/bin/python simulator/verify.py --binary "$CARGO_TARGET_DIR/debug/0xbasic"
+```
+
+Expected: eight reporting tests and `PASS: all 15 scenarios, 12 rejections and 15 confirmed payments per run; two identical fresh runs.` Reports are `.work/m4/verification-windows.json` and `verification-linux.json`. Binary/package/environment hashes differ across platforms; equality is required between fresh runs on the same platform, not between Windows and Linux executables.
+
+The separate [simulator workflow](../.github/workflows/simulator.yml) builds the pinned compiler, installs Python 3.13.7 and the existing hash-locked tools/runtime, checks dependencies, runs reporting tests and executes this gate on Windows/Linux. Successful jobs upload their aggregate as `spendsim-evidence-windows` or `spendsim-evidence-linux` for 30 days. Installation uses package registries; scenario execution uses only the in-process simulator. The compiler workflow remains separate.
+
+Platform verification (2026-10-24): the user confirmed all Windows and Linux testing passed, including the eight reporting tests and complete reproducibility runner. This supersedes the earlier restricted Windows temporary-directory failure; both native aggregate gates are closed. The first hosted workflow run remains pending publication; CI configuration alone does not close M4. No compiler, dependency, ABI or Rust test-count change.
+
+SpendSim covers the selected in-process mempool/coin-store lifecycle. A full-node simulator smoke remains required before release. Testnet, wallet/key management and deployment are separate future work.
