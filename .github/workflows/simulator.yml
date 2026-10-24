@@ -12,10 +12,12 @@ jobs:
           - os: windows-latest
             platform: windows
             bin: Scripts
+            python: python.exe
             executable: 0xbasic.exe
           - os: ubuntu-latest
             platform: linux
             bin: bin
+            python: python
             executable: 0xbasic
     runs-on: ${{ matrix.os }}
     defaults:
@@ -37,14 +39,14 @@ jobs:
       - name: Install isolated hash-locked simulator
         run: |
           python -m venv .work/m4/tools
-          .work/m4/tools/${{ matrix.bin }}/python -m pip --isolated install --cache-dir .work/m4/pip-cache --require-hashes -r simulator/tools.lock
+          .work/m4/tools/${{ matrix.bin }}/${{ matrix.python }} -m pip --isolated install --cache-dir .work/m4/pip-cache --require-hashes -r simulator/tools.lock
           .work/m4/tools/${{ matrix.bin }}/uv venv --python 3.13.7 --no-python-downloads .work/m4/venv
-          .work/m4/tools/${{ matrix.bin }}/uv pip install --python .work/m4/venv/${{ matrix.bin }}/python --require-hashes -r simulator/requirements-${{ matrix.platform }}.lock --build-constraints simulator/build-requirements.lock
-          .work/m4/tools/${{ matrix.bin }}/uv pip check --python .work/m4/venv/${{ matrix.bin }}/python
+          .work/m4/tools/${{ matrix.bin }}/uv pip install --python .work/m4/venv/${{ matrix.bin }}/${{ matrix.python }} --require-hashes -r simulator/requirements-${{ matrix.platform }}.lock --build-constraints simulator/build-requirements.lock
+          .work/m4/tools/${{ matrix.bin }}/uv pip check --python .work/m4/venv/${{ matrix.bin }}/${{ matrix.python }}
       - name: Test reporting failure paths
-        run: .work/m4/venv/${{ matrix.bin }}/python -m unittest discover -s simulator -p 'test_*.py'
+        run: .work/m4/venv/${{ matrix.bin }}/${{ matrix.python }} -m unittest discover -s simulator -p 'test_*.py'
       - name: Verify all scenarios and identical fresh reruns
-        run: .work/m4/venv/${{ matrix.bin }}/python simulator/verify.py --binary target/debug/${{ matrix.executable }}
+        run: .work/m4/venv/${{ matrix.bin }}/${{ matrix.python }} simulator/verify.py --binary target/debug/${{ matrix.executable }}
       - name: Upload complete verified evidence
         uses: actions/upload-artifact@v4
         with:
