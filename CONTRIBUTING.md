@@ -64,4 +64,4 @@ The repository uses the [Apache-2.0 license](LICENSE).
 
 ## Simulator integration
 
-The optional [M4 simulator environment](simulator/README.md) has separate platform locks and a one-block smoke test. It is not needed to build or run the compiler. Linux simulator validation is pending; use a native Linux project copy, not a Windows virtual environment over Samba.
+The optional [M4 simulator environment](simulator/README.md) has separate platform locks and a one-block smoke test. It is not needed to build or run the compiler. Environment smoke and signed payment passed on both platforms; height/signature and mutation suites also passed on both platforms; use a native Linux project copy, not a Windows virtual environment over Samba.

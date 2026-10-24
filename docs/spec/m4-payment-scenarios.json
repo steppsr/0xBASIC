@@ -1,99 +1,189 @@
 {
   "schema_version": 1,
-  "status": "planned acceptance scenarios; none executed yet",
+  "status": "All 15 scenarios passed Windows and Linux; Linux success confirmed by user; M4-5 evidence audit/reporting/CI pending",
   "profile": "0xbasic-spendsim-2.7.4-v1",
   "height": 10,
   "amount": "1000",
   "cases": [
     {
       "id": "authorized-at-height",
-      "setup": "valid owner signature; previous transaction-block height equals H",
+      "setup": "valid owner signature; mempool peak height equals H",
       "expected": "accepted then confirmed",
-      "postcondition": "input spent; exactly one recipient output of A"
+      "postcondition": "input spent; exactly one recipient output of A",
+      "evidence": {
+        "checkpoint": "M4-2/M4-3",
+        "windows": "passed",
+        "linux": "passed",
+        "report": ".work/m4/payment-checks-<platform>.json"
+      }
     },
     {
       "id": "authorized-after-height",
       "setup": "valid signature; context height above H",
       "expected": "accepted then confirmed",
-      "postcondition": "same output invariants"
+      "postcondition": "same output invariants",
+      "evidence": {
+        "checkpoint": "M4-3",
+        "windows": "passed",
+        "linux": "passed",
+        "report": ".work/m4/payment-checks-<platform>.json"
+      }
     },
     {
       "id": "premature-height",
       "setup": "valid signature; context height H-1",
       "expected": "not accepted: height lock",
-      "postcondition": "no recipient output; input unspent; advance real blocks and recheck acceptance"
+      "postcondition": "no recipient output; input unspent; advance real blocks and recheck acceptance",
+      "evidence": {
+        "checkpoint": "M4-3",
+        "windows": "passed",
+        "linux": "passed",
+        "report": ".work/m4/payment-checks-<platform>.json"
+      }
     },
     {
       "id": "missing-signature",
       "setup": "empty aggregate; otherwise valid height",
       "expected": "signature rejection",
-      "postcondition": "input remains unspent"
+      "postcondition": "input remains unspent",
+      "evidence": {
+        "checkpoint": "M4-3",
+        "windows": "passed",
+        "linux": "passed",
+        "report": ".work/m4/payment-checks-<platform>.json"
+      }
     },
     {
       "id": "wrong-owner",
       "setup": "signature made by a different deterministic test key",
       "expected": "signature rejection",
-      "postcondition": "input remains unspent"
+      "postcondition": "input remains unspent",
+      "evidence": {
+        "checkpoint": "M4-3",
+        "windows": "passed",
+        "linux": "passed",
+        "report": ".work/m4/payment-checks-<platform>.json"
+      }
     },
     {
       "id": "message-only-signature",
       "setup": "sign application message without coin/network suffix",
       "expected": "signature rejection",
-      "postcondition": "input remains unspent"
+      "postcondition": "input remains unspent",
+      "evidence": {
+        "checkpoint": "M4-3",
+        "windows": "passed",
+        "linux": "passed",
+        "report": ".work/m4/payment-checks-<platform>.json"
+      }
     },
     {
       "id": "wrong-network-domain",
       "setup": "sign with different additional-data suffix",
       "expected": "signature rejection",
-      "postcondition": "input remains unspent"
+      "postcondition": "input remains unspent",
+      "evidence": {
+        "checkpoint": "M4-3",
+        "windows": "passed",
+        "linux": "passed",
+        "report": ".work/m4/payment-checks-<platform>.json"
+      }
     },
     {
       "id": "cross-coin-replay",
       "setup": "two funded coins share puzzle hash and amount but have different parents; sign first and spend second",
       "expected": "signature rejection",
-      "postcondition": "both inputs initially unspent; second not consumed"
+      "postcondition": "both inputs initially unspent; second not consumed",
+      "evidence": {
+        "checkpoint": "M4-4",
+        "windows": "passed",
+        "linux": "passed",
+        "report": ".work/m4/mutations-<platform>.json"
+      }
     },
     {
       "id": "double-spend",
       "setup": "resubmit spend after its input has been confirmed spent",
       "expected": "spent-coin rejection",
-      "postcondition": "no second recipient output"
+      "postcondition": "no second recipient output",
+      "evidence": {
+        "checkpoint": "M4-4",
+        "windows": "passed",
+        "linux": "passed",
+        "report": ".work/m4/mutations-<platform>.json"
+      }
     },
     {
       "id": "wrong-puzzle-reveal",
       "setup": "use reveal from differently bound recipient while spending original funded coin",
       "expected": "puzzle-hash rejection",
-      "postcondition": "no output; do not mislabel as signature failure"
+      "postcondition": "no output; do not mislabel as signature failure",
+      "evidence": {
+        "checkpoint": "M4-4",
+        "windows": "passed",
+        "linux": "passed",
+        "report": ".work/m4/mutations-<platform>.json"
+      }
     },
     {
       "id": "wrong-coin-amount",
       "setup": "fund compiled puzzle with actual amount A+1 but fixed paymentAmount A; sign actual coin correctly",
       "expected": "amount-assertion rejection",
-      "postcondition": "input remains unspent"
+      "postcondition": "input remains unspent",
+      "evidence": {
+        "checkpoint": "M4-4",
+        "windows": "passed",
+        "linux": "passed",
+        "report": ".work/m4/mutations-<platform>.json"
+      }
     },
     {
       "id": "changed-recipient-stale-signature",
       "setup": "fund newly bound recipient variant; reuse original signature",
       "expected": "signature rejection",
-      "postcondition": "no output; puzzle reveal matches new coin"
+      "postcondition": "no output; puzzle reveal matches new coin",
+      "evidence": {
+        "checkpoint": "M4-4",
+        "windows": "passed",
+        "linux": "passed",
+        "report": ".work/m4/mutations-<platform>.json"
+      }
     },
     {
       "id": "changed-recipient-resigned",
       "setup": "fund recipient variant and sign its actual coin/message correctly",
       "expected": "accepted then confirmed",
-      "postcondition": "only new recipient receives A"
+      "postcondition": "only new recipient receives A",
+      "evidence": {
+        "checkpoint": "M4-4",
+        "windows": "passed",
+        "linux": "passed",
+        "report": ".work/m4/mutations-<platform>.json"
+      }
     },
     {
       "id": "malformed-solution",
       "setup": "valid signature but nonempty raw solution for empty solution schema",
       "expected": "execution rejection",
-      "postcondition": "input remains unspent"
+      "postcondition": "input remains unspent",
+      "evidence": {
+        "checkpoint": "M4-4",
+        "windows": "passed",
+        "linux": "passed",
+        "report": ".work/m4/mutations-<platform>.json"
+      }
     },
     {
       "id": "zero-payment-amount",
       "setup": "bind zero amount and fund nonzero actual coin; exercise local ASSERT first",
       "expected": "execution rejection",
-      "postcondition": "record primary failure; no claim of isolated amount-condition test"
+      "postcondition": "record primary failure; no claim of isolated amount-condition test",
+      "evidence": {
+        "checkpoint": "M4-4",
+        "windows": "passed",
+        "linux": "passed",
+        "report": ".work/m4/mutations-<platform>.json"
+      }
     }
   ]
 }

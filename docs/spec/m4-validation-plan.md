@@ -1,6 +1,6 @@
 # M4-0: payment validation design
 
-Status: design checkpoint, 2026-10-20. M3 is complete: Windows 274 and Linux 275 tests passed. Compiler remains `0.1.0-m3.8b`. No simulator is installed or executed by this checkpoint. The [scenario matrix](m4-payment-scenarios.json) records planned expectations, not results.
+Status: design checkpoint, 2026-10-20. M3 is complete: Windows 274 and Linux 275 tests passed. Compiler remains `0.1.0-m3.8b`. No simulator was installed or executed by the original M4-0 checkpoint; implementation updates follow below. The [scenario matrix](m4-payment-scenarios.json) records expectations and explicitly marked implementation evidence; unmarked scenarios remain planned.
 
 ## Selected approach
 
@@ -33,7 +33,7 @@ Use a deterministic test-only recipient puzzle whose hash is known and which can
 
 Retain DEFAULT_CONSTANTS activation heights. Use synthetic additional data `aa` repeated 32 bytes and derive the other six signature domains by upstream rules. Record constants and effective validation flags, rather than forcing local CLI flags onto the simulator.
 
-Farm real blocks and inspect the actual previous transaction-block height used by validation. Exercise H-1, H and H+1; do not infer height solely from the number of farm calls or use a counter-only pass_blocks shortcut. If setup cannot reach the chosen H with valid funding, document and adjust fixture scheduling before interpreting outcomes. A premature spend may be pending; assert nonacceptance with the height-lock reason. After advancing, inspect whether it was promoted or resubmit only if needed.
+Farm real blocks and inspect the actual mempool peak height passed to time-lock validation (distinct from its block record’s previous-transaction-height field). Exercise H-1, H and H+1; do not infer height solely from the number of farm calls or use a counter-only pass_blocks shortcut. If setup cannot reach the chosen H with valid funding, document and adjust fixture scheduling before interpreting outcomes. A premature spend may be pending; assert nonacceptance with the height-lock reason. After advancing, inspect whether it was promoted or resubmit only if needed.
 
 Run signature failures at a valid height with valid coin/reveal/amount/solution. Each negative scenario changes one targeted property where possible. A changed fixed recipient changes the puzzle hash: testing a wrong reveal is different from funding a new variant and testing a stale signature. Capture actual upstream error names; don't invent numeric codes before the pinned harness runs. Rejections must preserve coin state and must not create outputs. Fresh positive controls distinguish fixture/setup failures from the intended rejection. Resubmission after confirmed spend must not create another output, regardless of exact rejection wording.
 
@@ -61,3 +61,19 @@ Split any row further if environment or API work requires it. M4 completion requ
 ## M4-1 implementation update
 
 The [isolated setup](../../simulator/README.md) now installs the hash-locked 2.7.4 release distribution instead of an editable checkout. Its SpendSim, mempool-manager and constants files are byte-identical to the recorded commit evidence. Runtime locks are separate for Windows/Linux; source-package build tools are version-constrained from a separate lock. Windows Python 3.13.7 installation and one-block smoke passed, including a second clean offline installation. Linux resolution succeeded; execution remains pending. No spend/signature scenario is implemented yet. Compiler unchanged.
+
+## M4-2 implementation update
+
+User confirmed M4-1 Linux smoke success. The [payment harness](../../simulator/README.md) now completes test funding, independent artifact/message checks, actual-coin AGG_SIG_ME signing, mempool acceptance and exact inclusion/state checks. Two fresh Windows runs in separate environments produced identical reports. Linux payment validation is pending. Only `authorized-at-height` is exercised; all negative and replay scenarios remain planned. The pinned manager checks time locks against mempool peak height 10 in this positive case; its record's previous-transaction height is 9 and inclusion is 11. No compiler, ABI, dependency or source-language changes.
+
+## M4-3 implementation update
+
+User confirmed Linux smoke and M4-2 payment passed. `payment.py --suite` now runs seven fresh-simulator height/signature scenarios, checks exact rejection reasons and unmodified coin state, and confirms a correct payment after every negative attempt. Windows showed pending height rejection at peak9, automatic promotion at10, and signature failures at valid peak10. Both isolated Windows environments produced identical complete reports. Linux suite confirmation is pending. M4-4 replay and remaining mutation cases have not been implemented; no full-node consensus claim is made.
+
+## M4-4 implementation update
+
+User confirmed M4-3 Linux tests passed. The mutation harness implements all eight remaining planned cases in separate simulators, using confirmed funding, exact error checks, a subsequent farm to prove rejection has no delayed effect, and appropriate positive controls. Double-spend retains the existing output; malformed amount/zero-bound coins remain unspent while a separate valid coin proves the environment works. Windows replay/mutation runs in both isolated environments produced identical reports. The previous seven scenarios and smoke regressions passed. All 15 planned cases now have Windows evidence; Linux mutation confirmation and M4-5 evidence/CI integration remain pending. No compiler or dependency change.
+
+## M4-4 platform confirmation and publication checkpoint
+
+The user confirmed the Linux smoke, height/signature suite and mutation suite all passed. All 15 planned scenarios have now passed on both platforms. Earlier pending-status entries above describe their historical checkpoints and are superseded by this confirmation. M4-5 evidence audit, reproducible reporting and simulator CI integration are next and have not started. Publication includes the simulator harnesses and current documentation; local virtual environments, scratch reports, private handoff notes and unrelated artwork are excluded. Rust tests and compiler/dependency versions remain unchanged.

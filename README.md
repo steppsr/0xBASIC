@@ -10,7 +10,7 @@ The goal is to make contract development easier to learn without hiding how Chia
 
 **Early development · compiler `0.1.0-m3.8b` · Apache-2.0**
 
-The compiler and local runner work today, but the language is incomplete and has not been audited for production use. Current execution checks CLVM behavior; it does not validate a blockchain spend. Do not use this development version to secure funds.
+The compiler and local runner work today, but the language is incomplete and has not been audited for production use. The CLI runner checks CLVM behavior; it does not validate a blockchain spend. Do not use this development version to secure funds.
 
 ## A small working example
 
@@ -30,9 +30,9 @@ END CONTRACT
 - INTEGER, BOOLEAN, BYTES, STRING, AMOUNT, PUZZLEHASH, PUBLICKEY, and nested PAIR/LIST fixed parameters and solution fields, with JSON conversion and generated CLVM boundary validation.
 - `check`, `build`, `run`, and `explain --stage ast|ir|clvm` commands; reproducible artifacts, tree hashes, structured diagnostics, and execution-cost reporting.
 
-`ASSERT_HEIGHT_ABSOLUTE`, `ASSERT_MY_AMOUNT`, `CREATE_COIN`, and `AGG_SIG_ME` are implemented as blockchain condition constructors. Signing and simulator spend validation are upcoming work. The specifications describe the intended language as well as features still being implemented; see the [status and roadmap](docs/development.md).
+`ASSERT_HEIGHT_ABSOLUTE`, `ASSERT_MY_AMOUNT`, `CREATE_COIN`, and `AGG_SIG_ME` are implemented as blockchain condition constructors. An isolated test harness verifies signed payments on Windows and Linux; rejection/lifecycle coverage is being expanded. The specifications describe the intended language as well as features still being implemented; see the [status and roadmap](docs/development.md).
 
-The optional [simulator harness](simulator/README.md) now passes a one-block environment smoke test on Windows. Linux simulator testing is pending; signed payment scenarios are the next stage. Compiler testing has passed on both platforms.
+The optional [simulator harness](simulator/README.md) passes its environment smoke test on Windows and Linux. Compiled, signed payment testing also passes on both platforms. Height/signature rejection tests pass on both platforms. All 15 planned payment scenarios, including replay and payment-mutation checks, now pass on Windows and Linux. Simulator CI integration is next. Compiler testing has passed on both platforms.
 
 ## Try it
 

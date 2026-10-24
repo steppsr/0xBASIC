@@ -45,16 +45,21 @@ def preflight():
     return profile, lock, versions
 
 
-async def smoke(profile):
-    from chia._tests.util.spend_sim import SpendSim, SimClient
+def simulator_constants(profile):
     from chia.consensus.default_constants import DEFAULT_CONSTANTS
-    from chia_rs import get_flags_for_height_and_constants, DONT_VALIDATE_SIGNATURE, MEMPOOL_MODE
     from chia_rs.sized_bytes import bytes32
     base = bytes.fromhex(profile["signature_domain_hex"])
     overrides = {"AGG_SIG_ME_ADDITIONAL_DATA": bytes32(base)}
     for code, name in enumerate(["PARENT", "PUZZLE", "AMOUNT", "PUZZLE_AMOUNT", "PARENT_AMOUNT", "PARENT_PUZZLE"], 43):
         overrides[f"AGG_SIG_{name}_ADDITIONAL_DATA"] = bytes32(hashlib.sha256(base + bytes([code])).digest())
-    constants = DEFAULT_CONSTANTS.replace(**overrides)
+    return DEFAULT_CONSTANTS.replace(**overrides)
+
+
+async def smoke(profile):
+    from chia._tests.util.spend_sim import SpendSim, SimClient
+    from chia_rs import get_flags_for_height_and_constants, DONT_VALIDATE_SIGNATURE, MEMPOOL_MODE
+    from chia_rs.sized_bytes import bytes32
+    constants = simulator_constants(profile)
     recipient = bytes32(bytes.fromhex("11" * 32))
     async with SpendSim.managed(defaults=constants) as sim:
         client = SimClient(sim)
