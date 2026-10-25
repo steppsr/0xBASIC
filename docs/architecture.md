@@ -1,6 +1,6 @@
 # 0xBASIC architecture
 
-This is the design baseline for the compiler and tooling. See the [current status](development.md) for implemented features and remaining milestones. The [language specification](language-v0.1.md) and [ABI](spec/abi-v1.md) define detailed syntax and encoding.
+This describes the released `0.1.0-m3.8b` compiler and tooling; future extensions are identified explicitly. See the [current status](development.md) for implemented features and remaining milestones. The [language specification](language-v0.1.md) and [ABI](spec/abi-v1.md) define detailed syntax and encoding.
 
 ## Scope and intended experience
 
@@ -34,33 +34,34 @@ Spend scenario harness -----> upstream Chia validation / simulator
 
 The compiler core accepts source and explicit configuration and returns artifacts or diagnostics. It does not read keys, contact nodes, submit transactions, or print directly to the terminal. The CLI owns filesystem operations and presentation. Network tools, when introduced later, remain separate from compilation.
 
-Use one Rust library crate and one CLI crate initially. Organize compiler stages as modules rather than a package per pass. Use Cargo and an explicitly pinned stable Rust toolchain; choose exact versions only after dependency compatibility checks.
+The Cargo workspace contains the `oxbasic-compiler` library and `oxbasic-cli` executable. Compiler stages are modules rather than separate crates. Rust 1.95.0 and the dependency lock are pinned; see the [target profile](spec/target-profile.md).
 
-Proposed layout, to be created during implementation:
+Current repository layout:
 
 ```text
 crates/
-  compiler/src/    # source, syntax, types, lowering, IR, CLVM, diagnostics
-  cli/src/         # commands, file handling, output
-tests/
-  fixtures/       # source, diagnostics, expected values and conditions
-  integration/    # CLI/artifact round trips and cross-platform behavior
-  simulator/      # spend lifecycles, possibly Python
-examples/         # checked examples matching the released language
-docs/             # specification, design decisions, tutorials, research
+  compiler/src/   # syntax, analysis, IR, CLVM, ABI, diagnostics, explain
+  compiler/tests/ # language/boundary/conformance integration tests
+  cli/src/        # command handling and artifact validation
+  cli/tests/      # command and diagnostic contract tests
+simulator/        # isolated SpendSim/full-node harnesses and dependency locks
+tools/            # conformance, tutorial, regression and package verifiers
+examples/         # source programs and public binding fixtures
+distribution/     # rebuild instructions and pinned upstream notices
+docs/spec/        # specifications, schemas, evidence and tutorials
 ```
 
 Do not create placeholder website, IDE, or book packages during the compiler MVP. A single repository is the working organizational default. The project uses the Apache-2.0 license.
 
 ## Front end and language model
 
-Use handwritten recursive-descent parsing for statements and precedence parsing for expressions. Retain source spans and comment/trivia information needed by future editor tools. Reject lexical errors; never skip invalid source and emit a seemingly successful program.
+The handwritten parser handles statements and expression precedence. Source spans refer to original source bytes. Comments and whitespace are consumed during lexing; AST inspection does not preserve them as nodes. Lossless formatting/editor support would require additional design. Reject lexical errors; never skip invalid source and emit a seemingly successful program.
 
-Use case-insensitive names, explicit declarations, static types, and local inference where specified. Keep integers, booleans, bytes, strings, lists, and pairs distinct at the source level even where CLVM shares a representation. Integers are arbitrary precision. Amounts are integer mojos. Floating point is deferred.
+Use case-insensitive names, explicit declarations, static types, and local inference where specified. Keep integers, booleans, bytes, strings, lists, and pairs distinct at the source level even where CLVM shares a representation. Integers are arbitrary precision. AMOUNT is a distinct, bounded type measured in mojos, with explicit INTEGER conversion. Floating point is unsupported.
 
 Validate declarations, symbol resolution, type compatibility, definite assignment, return paths, and the placement of `EMIT`. Functions are pure and return values. Local reassignment is permitted; mutation through references and mutation of outer scope are excluded initially.
 
-The first subset contains structured conditionals and nonrecursive function calls. Loops and recursion follow once the core lowering and cost behavior are verified. They are intended future capabilities, not silently accepted unsupported syntax.
+The first subset contains structured conditionals and nonrecursive function calls. Loops and recursion are unsupported; any future addition needs its own specification, cost model and conformance work. Their implementation is not promised by this release.
 
 ## Contract and function boundary
 
@@ -69,7 +70,7 @@ A contract has two distinct classes of values:
 - **Fixed parameters:** bound into the puzzle by a deterministic binding operation. Changing these produces a different bound program and generally a different puzzle hash.
 - **Solution inputs:** supplied by the spender, always treated as untrusted. The calling convention defines their order, representation, and exact input shape.
 
-The compiler emits runtime validation for supported declared solution-input types by default. Host-side JSON validation alone is insufficient because someone can construct a raw solution independently. Domain types must validate the invariants their operations rely on; byte length alone does not establish every cryptographic invariant. M0 defines the exact obligations and unsupported cases.
+The compiler emits runtime validation for supported declared solution-input types by default. Host-side JSON validation alone is insufficient because someone can construct a raw solution independently. Domain types must validate the invariants their operations rely on; byte length alone does not establish every cryptographic invariant. [ABI 1](spec/abi-v1.md) defines the exact obligations and unsupported cases. Both fixed and solution fields are guarded, including unused fields.
 
 Do not implicitly expose current height, coin ID, balance, or other chain state as ambient variables. Contract logic returns conditions to require facts about a spend; supplied context must be authenticated where it matters.
 
@@ -91,7 +92,7 @@ Begin with transparent, correct code generation. Add optimizations only alongsid
 
 ## Artifacts and reproducibility
 
-A build produces a serialized program (and optional hex), an inspectable CLVM representation, and a sidecar manifest. The manifest records language/compiler version, target profile, source/dependency hashes, options, calling convention, parameter/input schemas, and the program tree hash.
+A build writes binary and hex template files, bound puzzle files unless `--template-only` is selected, and `manifest.json`. `explain --stage clvm` supplies an inspectable representation without writing artifacts. The manifest records language/compiler version, target profile, source/dependency hashes, options, calling convention, parameter/input schemas, and the program tree hash.
 
 Clearly distinguish an unbound template hash from a bound puzzle hash. Record fixed bindings and resulting identity separately. Never put timestamps or local absolute paths into deterministic program identity. Keep tooling metadata out of the on-chain program unless the calling convention explicitly requires it.
 
@@ -106,7 +107,7 @@ Initial command families:
 | `check` | Parse and type-check with source diagnostics |
 | `build` | Generate artifacts and optionally bind fixed parameters |
 | `run` | Execute a compiled program locally with a solution and cost limit |
-| `explain` | Display available syntax/IR/CLVM/condition information |
+| `explain` | Inspect AST, checked IR or generated CLVM without executing it |
 
 Exact flags, file extensions, diagnostics, and machine-readable output are specified in [CLI v1](spec/cli-v1.md). Compiler failure must return a failing process status and must not leave newly published success artifacts.
 
@@ -116,7 +117,7 @@ Keep the library independent of terminal and filesystem state. This permits a la
 
 Separate compiler tests, CLVM execution tests, and spend-validation tests. A VM result is not a verdict that a transaction is valid. Use independent reference programs and adversarial solutions as well as golden artifacts; do not rely only on snapshots generated by our own implementation.
 
-Use native Windows and Linux in the initial CI matrix. Preserve macOS portability but verify it before advertising support. A Python simulator harness may invoke the Rust CLI or consume its artifacts; it does not become a runtime dependency for compilation.
+Use native Windows and Linux in the initial CI matrix. Preserve macOS portability but verify it before advertising support. The Python SpendSim and full-node harnesses invoke the Rust CLI and consume its artifacts; Python is not a runtime dependency for compilation.
 
 The first complete contract uses a fixed owner key, recipient, exact amount, and earliest height. It requires the coin's amount, requires authorization, enforces the height lock, and emits one payment. Signing-message encoding is specified and tested before implementing the example. Change, fee selection, wallet discovery, and transaction submission are outside its initial scope. See the [development plan](development.md) for acceptance tests.
 

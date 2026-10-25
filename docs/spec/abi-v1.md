@@ -1,6 +1,6 @@
 # 0xBASIC ABI 1
 
-Status: normative M0 baseline. Language `0.1`, ABI `1`. Runtime tree values, serialized bytes, and JSON are distinct representations.
+Status: normative ABI for released compiler `0.1.0-m3.8b`. Language `0.1`, ABI `1`; the original M0 calling convention remains unchanged. Runtime tree values, serialized bytes, and JSON are distinct representations.
 
 ## Calling convention
 

@@ -1,6 +1,6 @@
 # Implemented language reference
 
-Applies to compiler `0.1.0-m3.8b`, language `0.1`, ABI `1`. This page describes executable features. The [language specification](../language-v0.1.md) gives complete syntax and evaluation rules; the [compatibility policy](experimental-compatibility.md) explains experimental version changes.
+Applies to compiler `0.1.0-m3.8b`, language `0.1`, ABI `1`. This page describes executable features. The [documentation index](README.md) maps the reference, normative contracts and validation evidence. The [language specification](../language-v0.1.md) gives complete syntax and evaluation rules; the [compatibility policy](experimental-compatibility.md) explains experimental version changes.
 
 ## Program structure
 

@@ -62,6 +62,8 @@ Dependency downloads require internet access initially. Compilation and local ex
 
 ## Explore and contribute
 
+Start with the [documentation index](docs/spec/README.md) for released specifications, tutorials, validation evidence and historical plans.
+
 - [Examples](examples): small programs demonstrating implemented features. `height-locked-payment.bas` compiles and runs locally using its companion bindings file; separate simulator harnesses test signed, confirmed payments.
 - [Implemented-feature reference](docs/spec/implemented-reference.md) and [payment tutorial](docs/spec/payment-tutorial.md).
 - [Architecture](docs/architecture.md) and [language specification](docs/language-v0.1.md).

@@ -2,6 +2,8 @@
 
 Profile ID: `chia-clvm-0.19-strict-v1`. Source assessment date: 2026-10-04. This is a reproducible local compiler/runner profile, not a declaration that every network height uses identical flags/costs.
 
+Current status: the pinned profile is used by the [experimental release](experimental-release.md). Original source-assessment notes below describe M0 evidence; subsequent native and hosted compiler, SpendSim and full-node validation passed during M4/M5. Compiler VM execution and each simulator environment retain their separately documented constants and costs.
+
 ## Selected versions
 
 | Component | Selection | Evidence/status |
@@ -43,7 +45,7 @@ For deterministic low-height tests, use pinned DEFAULT_CONSTANTS with an explici
 
 Use H=10 for the example scenario: push with mempool peak height 9 and require nonacceptance; advance to mempool peak height 10 and require acceptance; farm the next block and verify the output. A mempool may classify a premature spend as pending rather than permanently invalid; assert nonacceptance and the height-lock reason, not one generic status spelling. Signature-negative scenarios must run at an otherwise valid height.
 
-The simulator does not prove full network/block-consensus behavior or RPC integration. Before M5 release, add a full-node simulator smoke test for the same contract; testnet remains a later integration phase. Runtime costs and simulator total spend costs are separately labeled.
+The simulator does not prove full network/block-consensus behavior or RPC integration. M5 added a separate isolated full-node payment harness for the same contract, which passed native and hosted checks on Windows/Linux. See the [full-node harness](../../simulator/README.md#m5-1b-compiled-payment-through-the-full-node); its actual signature domain is recorded separately from the synthetic SpendSim domain above. Testnet remains a later integration phase. Runtime costs and simulator total spend costs are separately labeled.
 
 ## Pinned source evidence
 

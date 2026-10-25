@@ -14,13 +14,13 @@ PUBLICKEY requires a canonical 48-byte BLS G1 encoding, subgroup membership, and
 
 `check`, `build`, `run`, and `explain --stage ast|ir|clvm` are implemented. AST inspection parses without semantic checking; IR inspection uses the checked, lowered program. AST/IR views include source spans and a source digest and require no bindings. The CLVM view applies build's binding rules and shows template/puzzle bytes, hashes and flat trees. All views write no artifacts and perform no CLVM execution. `build --template-only` produces an unbound template. Bound artifacts distinguish the template hash from the puzzle hash. `ASSERT_HEIGHT_ABSOLUTE`, `ASSERT_MY_AMOUNT(AMOUNT)`, `CREATE_COIN(PUZZLEHASH, AMOUNT)`, and `AGG_SIG_ME(PUBLICKEY, BYTES)` are available as condition constructors. CREATE_COIN has no memo argument in this subset. Constructors return CONDITION values; only EMIT adds them to the output. Argument expressions execute left-to-right, with existing AMOUNT/PUZZLEHASH validation. AGG_SIG_ME preserves the application message exactly and rejects messages over 1024 bytes at runtime, including unused calls. It does not append coin/network context or generate/verify a signature. No node, wallet, signing, or transaction submission integration is implemented.
 
-The [language specification](language-v0.1.md), [ABI](spec/abi-v1.md), and [CLI specification](spec/cli-v1.md) include planned capabilities. Their status notes and this page distinguish those capabilities from the executable subset.
+The [documentation index](spec/README.md) identifies the released language, ABI and CLI contracts, user guides and historical milestone records. Future roadmap items do not extend the released interface.
 
 ## Source keyword clarification
 
 Compiler `0.1.0-m3.2.1` renames the solution-field declaration to `SOLUTION name AS type`. The former `INPUT` keyword is no longer accepted as a declaration. Contracts do not prompt, read a keyboard, or wait for user interaction. Fixed parameters are still declared in the contract header; solution fields are supplied by the spender.
 
-Update older source declarations and rebuild artifacts with the current compiler. The ABI and generated boundary semantics are unchanged; manifests still require the matching compiler version. The README uses a fixed height-lock example without solution fields. Windows verification passes 199 Rust tests, including new keyword and README-example regressions.
+Update older source declarations and rebuild artifacts with the current compiler. The ABI and generated boundary semantics are unchanged; manifests still require the matching compiler version. The README uses a fixed height-lock example without solution fields. That historical keyword-change checkpoint passed 199 Windows Rust tests; current release totals are listed above.
 
 ## Roadmap
 
