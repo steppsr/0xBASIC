@@ -62,6 +62,14 @@ Bindings/solutions are objects keyed by case-insensitive source names. Reject du
 
 JSON numbers are not language integers. Default `{}` bindings/solution work only for zero corresponding fields. Raw `--solution-hex` bypasses JSON conversion, not runtime checks. [CLI and artifact rules](cli-v1.md) define schemas.
 
+### Host conversion limits
+
+For compiler `0.1.0-m3.8b`, fixed parameters and solution fields each allow at most 32 entries. Each boundary type permits at most 32 collection edges from its root and 1,024 type nodes; scalar roots have depth zero. CONDITION is forbidden anywhere in these types.
+
+Each JSON binding or solution document is limited to 1,048,576 bytes and 96 simultaneously open object/array containers. Host conversion permits at most 65,536 tree nodes across the entire encoded fixed-value or solution-value list, including the outer list spine, nested pairs/list spines, atoms and nil tails. This is a per-list total, not a per-field allowance. The serialized result of conversion must also fit 1,048,576 bytes.
+
+These are host conversion budgets, not additional on-chain type rules. A valid raw tree can exceed the JSON conversion node budget yet pass generated entry validation, subject to the runner's serialization and execution limits. Raw solutions must still have exact arity, proper list structure and valid typed values. See the [resource-limit and failure audit](limits-and-failures.md) for implementation references and the distinction between conversion and execution failures.
+
 ## Payment authorization
 
 The [example](../../examples/height-locked-payment.bas) fixes a valid owner key, recipient, positive exact amount, and height in `0..2^32-1`. Application preimage:

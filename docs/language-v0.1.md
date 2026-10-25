@@ -133,6 +133,8 @@ This list is exhaustive for 0.1. T/A/B represent compiler-internal polymorphism,
 
 Range/validation failures abort VM execution when the call is evaluated. Constant folding must not turn an unexecuted failing conversion into a compilation error; it may lower an evaluated failing call to a runtime raise. `PAYMENT_MESSAGE` is an ordinary [example function](../examples/height-locked-payment.bas), not a built-in. Compiler-generated validators may recurse even though user recursion is excluded.
 
+`check` verifies built-in arity and types, not successful evaluation for particular values. An invalid domain value supplied through bindings or solution JSON can instead fail during host conversion, before a call executes. Calls in `CONST` expressions are prohibited even when their arguments are literals. The 1024-byte `AGG_SIG_ME` message limit applies when constructing that condition; it is not a general BYTES length limit. Condition constructors return values; `EMIT` determines whether they enter the returned condition list. See [failure stages and resource limits](spec/limits-and-failures.md) for the separate host and runtime budgets.
+
 ## Exclusions and conformance
 
 No floating point, division/remainder/exponentiation, bitwise operators, loops, user recursion, SUB, mutable globals, references, closures, macros, imports, raw opcodes, runtime I/O, or package manager. Unsupported constructs produce diagnostics. Loops/recursion remain planned Core features.

@@ -31,6 +31,14 @@ An output directory must not already exist; fail instead of overwriting. Write a
 
 ## Files and manifest
 
+### File and result limits
+
+The CLI reads at most 1,048,576 bytes from each source, bindings, JSON solution, raw solution-hex or manifest file. The raw solution-hex limit counts the textual file, including whitespace, before hex decoding; it is not a 1 MiB binary allowance. Exceeding these file-reader limits produces E0600/exit 4.
+
+Artifact binary files permit at most 1,048,576 bytes each. Their companion hex files permit 2,097,153 bytes (twice the binary budget plus a newline). Generated programs, decoded program/solution serialization and serialized execution results have separate 1,048,576-byte limits.
+
+After successful VM reduction, the runner also limits the displayed result tree to 8,192 visited nodes and depth 512, counting the root at depth zero. Exceeding result serialization or display limits produces E0500/exit 3 even if VM evaluation finished within `--max-cost`. Raising the cost limit does not raise file, conversion or display budgets. These host limits are distinct from network consensus rules; see [limits and failure stages](limits-and-failures.md).
+
 Build output:
 
 - `template.clvm`: traditional serialized unbound tree, binary.
