@@ -46,7 +46,7 @@ Build output:
 - `puzzle.clvm` and `puzzle.hex`: corresponding bound puzzle; absent with `--template-only`.
 - `manifest.json`: UTF-8 JSON, 2-space indentation, LF; deterministic key order chosen by schema field order, no timestamp.
 
-The [manifest JSON Schema](manifest.schema.json) defines exact required fields. JSON property names are case-sensitive here. The argument type representation is a recursive object: scalar `{"kind":"INTEGER"}`; list `{"kind":"LIST","element":type}`; pair `{"kind":"PAIR","first":type,"rest":type}`. In addition to schema validation, check unique field names and validate normalized binding values against the fixed-field schema; every artifact path/hash must match its role. The schema is descriptive, not permission to execute arbitrary code.
+The [manifest JSON Schema](manifest.schema.json) describes required fields and structural constraints. The CLI implements validation through typed deserialization and explicit reader checks; it does not load this schema file at runtime. Passing a generic JSON Schema validator is insufficient for `run`: the reader additionally checks exact compiler compatibility, field/type budgets, normalized binding values, filesystem paths, file contents and rebinding. JSON property names are case-sensitive here. The argument type representation is a recursive object: scalar `{"kind":"INTEGER"}`; list `{"kind":"LIST","element":type}`; pair `{"kind":"PAIR","first":type,"rest":type}`. See the [manifest validation guide](manifest-validation.md) for the division of responsibility.
 
 Include source basename and SHA-256 of original source bytes, compiler version, exact Rust version, Cargo.lock SHA-256, language/ABI/profile versions, optimization level, fixed/input schemas in declaration order, normalized bindings or null, and file/hash descriptions. Paths are relative POSIX names, never local absolute paths. Type/name schemas originate in source, not from trusting an arbitrary manifest. Lowercase identifiers in schemas and normalized binding keys. Compiler output never serializes private keys.
 
@@ -62,15 +62,23 @@ Artifact filenames are fixed by role (`template.clvm`, `template.hex`, `puzzle.c
 
 With `--json`, stdout is one JSON object followed by LF; stderr contains only unexpected process-level failures. Normal diagnostics are in the JSON envelope:
 
+For `demo.bas` containing the following UTF-8 text with LF line endings and a final LF, `0xbasic check demo.bas --json` exits 1 and emits the envelope below (object key order is not significant):
+
+```basic
+CONTRACT Demo()
+    ASSERT missing
+END CONTRACT
+```
+
 ```json
-{"schema_version":1,"command":"check","ok":false,"diagnostics":[{"code":"E0200","severity":"error","message":"Unknown name: value","source":"demo.bas","span":{"start_byte":21,"end_byte":26,"line":2,"column":6},"notes":[]}],"result":null}
+{"schema_version":1,"command":"check","ok":false,"diagnostics":[{"code":"E0200","severity":"error","message":"Unknown name: missing","source":"demo.bas","span":{"start_byte":27,"end_byte":34,"line":2,"column":12},"notes":[]}],"result":null}
 ```
 
 Every diagnostic has code, severity (`error` or `warning`), message, source (basename or null), span (or null), and notes (string array). Byte spans are half-open offsets into original UTF-8. Line/column are one-based Unicode-scalar positions; a tab counts as one column, CRLF as one newline. A BOM occupies bytes but no displayed column. Error messages may improve without code changes.
 
 Successful results: `check` gives contract name; `build` gives relative output file names and bound/template tree hashes; `run` gives `validation:"clvm-execution-only"`, cost as a decimal string, and a raw result tree. Raw trees use exactly `{"atom":"lowercasehex"}` or `{"pair":[left,right]}`; do not pretend every list returned by arbitrary CLVM is a decoded valid condition. `explain` gives stage and a compiler-versioned representation.
 
-Exit codes: 0 success, 1 source/typing/binding errors, 2 command usage or unsupported option/profile, 3 VM/validation/cost execution failure, 4 I/O/artifact integrity failure, 70 internal compiler failure. On failure result is null. Human mode writes diagnostics to stderr, results to stdout. Color is disabled for nonterminal output.
+Exit codes: 0 success, 1 source/typing/binding/solution-conversion errors, 2 command usage or unsupported option/profile, 3 VM/validation/cost execution or result-rendering failure, 4 I/O/artifact integrity failure, 70 internal compiler failure. On failure result is null. Human mode writes diagnostics to stderr, results to stdout. Color is disabled for nonterminal output.
 
 ## Initial diagnostic codes
 
@@ -85,12 +93,12 @@ Exit codes: 0 success, 1 source/typing/binding errors, 2 command usage or unsupp
 | E0202 | Type mismatch / ambiguous empty list / call arity |
 | E0203 | Invalid assignment target, including constant/input/parameter |
 | E0204 | Function may finish without a return |
-| E0205 | Construct forbidden in this context |
+| E0205 | Construct forbidden in this context or compiler resource budget exceeded |
 | E0206 | Recursive call cycle |
 | E0300 | Invalid ABI/solution value or shape |
 | E0301 | Invalid/missing fixed binding |
-| E0400 | Unsupported language/ABI/target version |
-| E0500 | VM execution failure (including contract ASSERT) |
+| E0400 | Invalid command usage, unsupported manifest/compiler/language/ABI/profile/optimization identity, or template-only execution |
+| E0500 | VM execution failure (including contract ASSERT) or result serialization/display failure |
 | E0501 | Execution cost limit exceeded |
 | E0600 | File/I/O/artifact integrity failure |
 | E9000 | Internal compiler invariant failure |
