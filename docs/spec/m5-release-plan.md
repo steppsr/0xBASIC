@@ -1,6 +1,6 @@
 # M5-0: experimental release readiness
 
-Status: design checkpoint, 2026-10-24. M4 is complete. Native Windows/Linux reporting and reproducibility passed; compiler and simulator CI passed on `75002bbbd980966f41c1ac3913544ba991817a5f`. No additional M4 testing is needed. M5 implementation and release remain pending.
+Status: M5 complete, 2026-10-25. The approved [experimental prerelease](https://github.com/steppsr/0xBASIC/releases/tag/v0.1.0-m3.8b-experimental) targets `b9411b6`, with all three Windows/Linux CI workflows passing. See the [release record](experimental-release.md). The design and dated checkpoints below are historical; their pending-gate statements are superseded by this status.
 
 ## Baseline and gaps
 

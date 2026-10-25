@@ -1,10 +1,10 @@
 # M5-6 experimental release review
 
-Review date: 2026-10-24. **Native functional gates pass; release clearance remains open.** No tag or release has been published. Compiler `0.1.0-m3.8b`, ABI 1 and all dependency locks are unchanged. This review does not select a new compiler version or authorize distribution.
+Review closed: 2026-10-25. **M5 experimental release approved and published.** [Release `v0.1.0-m3.8b-experimental`](https://github.com/steppsr/0xBASIC/releases/tag/v0.1.0-m3.8b-experimental) points to `b9411b67e9923549f9355eeb0c1eb5910da64368`. Compiler `0.1.0-m3.8b`, ABI 1 and dependency locks are unchanged. The [release record](experimental-release.md) documents scope, runtime baselines and attribution.
 
 ## Verified evidence
 
-Update: the [source-inclusive distribution checkpoint](source-distribution.md) now supplies all 134 locked crate sources, authoritative supplemental notices and rebuild instructions. Windows passed four rejection tests, two offline source rebuilds (including a modified Malachite library), 8,969 source-file checks and both eight-command extracted checks. Native Linux verification of this revised layout passed, as confirmed by the user on 2026-10-24. The original M5-5 evidence and dependency findings below describe the earlier binary-only candidate; its missing-material finding is superseded by this implementation, while final review and publication gates remain open.
+Update: the [source-inclusive distribution checkpoint](source-distribution.md) now supplies all 134 locked crate sources, authoritative supplemental notices and rebuild instructions. Windows passed four rejection tests, two offline source rebuilds (including a modified Malachite library), 8,969 source-file checks and both eight-command extracted checks. Native Linux verification of this revised layout passed, as confirmed by the user on 2026-10-24. The original M5-5 evidence and dependency findings below describe the earlier binary-only candidate; its missing-material finding is superseded by this implementation, and the final review/publication gates are now complete.
 
 | Gate | Windows | Native Linux |
 | --- | --- | --- |
@@ -38,14 +38,14 @@ Reproduce the metadata inventory from a populated dependency cache with `python 
 
 ## Hosted verification and release scope
 
-The last published revision is `75002bb`, whose M4 compiler/simulator workflows passed. The accumulated M5 changes are local. The compiler workflow includes generated-input/tutorial checks; simulator CI now includes the already-native-tested full-node payment command and separate evidence upload. Package CI builds candidates and tests extracted downloads in separate jobs. All three YAML files parse and `git diff --check` passes; these are static checks, not hosted success claims.
+The release targets `b9411b67e9923549f9355eeb0c1eb5910da64368`. All exact-revision hosted workflows passed: [compiler](https://github.com/steppsr/0xBASIC/actions/runs/40162973936), [simulator/full-node](https://github.com/steppsr/0xBASIC/actions/runs/40162973891), and [packages/extraction](https://github.com/steppsr/0xBASIC/actions/runs/40162973924). Both platforms passed two offline source rebuilds, including a modified library. Independent extraction reports verified 8,970 source files and eight CLI commands per platform.
 
-Hosted compiler, simulator/full-node and package jobs must pass for the exact source revision proposed for release. Package CI uploads executable candidate artifacts, so publishing changes that trigger it must include the complete source/notices arrangement above. The package build verifies those materials before upload. No workflow dispatch, source push or artifact upload was performed during this review.
+The release contains the unchanged CI archives, their SHA-256 sidecars and a release manifest. GitHub's uploaded digests match the verified files. The tag resolves to the tested source commit. The release is marked prerelease, not latest stable.
 
 Runtime scope remains x86_64 Windows MSVC and Linux GNU on tested hosts. Empty PATH/outside-checkout smoke proves the exercised CLI operations do not need the Rust tools or source checkout; it is not a pristine-OS or broad Windows/glibc compatibility certificate. Record the final supported OS/runtime baseline with the chosen release assets. macOS, ARM, musl/static linking, wallet/RPC integration, testnet deployment and production audit are outside this candidate's claims.
 
-Before release, settle the release/tag naming and project ownership/attribution statement without altering the standard Apache license appendix merely because it contains illustrative placeholders. Preserve the compiler/artifact compatibility identities unless intentionally changed and reverified. Require explicit release authorization only after these concrete review items and hosted evidence are complete.
+The approved title is “0xBASIC 0.1.0-m3.8b — Experimental preview.” Attribution identifies the verified `steppsr/0xBASIC` repository and maintainer account, retains the project's Apache-2.0 LICENSE and preserves dependencies' own terms/notices. It does not invent a legal copyright owner. The standard Apache appendix remains unchanged. Explicit final publication approval was received on 2026-10-25.
 
-## Current next action
+## Completion and next scope
 
-Native Linux source-inclusive packaging passed, user confirmed. Publish the reviewed M5 source changes and verify compiler, simulator/full-node and package CI on the exact commit. No further manual native test is required for this documentation checkpoint. M5-6 stays open; the passing native tests alone do not close release readiness.
+M5 is complete for this experimental scope. No additional native tests are required. Further specifications/documentation work should distinguish the implemented subset from future language features and wallet/network integration; this prerelease does not authorize or claim production deployment.
