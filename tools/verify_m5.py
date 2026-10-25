@@ -182,8 +182,10 @@ def measure(runner, case):
     manifest = runner.build(source, case["id"], bindings)
     metadata = json.loads(manifest.read_text(encoding="utf-8"))
     result = runner.call(["run", manifest])["result"]
-    return {"source_sha256": hashlib.sha256(source.read_bytes()).hexdigest(),
-            "bindings_sha256": hashlib.sha256(bindings.read_bytes()).hexdigest() if bindings else None,
+    # Git stores these text fixtures as LF; rsync may preserve a Windows CRLF copy.
+    # Normalize only regression input fingerprints, never compiler artifact bytes.
+    return {"source_sha256": hashlib.sha256(source.read_bytes().replace(b"\r\n", b"\n")).hexdigest(),
+            "bindings_sha256": hashlib.sha256(bindings.read_bytes().replace(b"\r\n", b"\n")).hexdigest() if bindings else None,
             "template_bytes": (manifest.parent / "template.clvm").stat().st_size,
             "puzzle_bytes": (manifest.parent / "puzzle.clvm").stat().st_size,
             "puzzle_sha256": metadata["puzzle"]["program_sha256"],
@@ -197,7 +199,9 @@ def regressions(runner):
     for case in baseline["cases"]:
         runner.case = case["id"]
         measured = measure(runner, case)
-        require(measured == case["expected"], f"{runner.case}: frozen size/hash/cost/output changed")
+        differences = {key: {"expected": case["expected"].get(key), "actual": value}
+                       for key, value in measured.items() if case["expected"].get(key) != value}
+        require(measured == case["expected"], f"{runner.case}: frozen regression changed: {differences}")
         manifest = runner.directory / case["id"] / "manifest.json"
         cost = int(measured["cost"])
         runner.call(["run", manifest, "--max-cost", cost])

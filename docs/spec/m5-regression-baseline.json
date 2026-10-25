@@ -7,7 +7,7 @@
       "id": "strings",
       "source": "examples/m2-strings.bas",
       "expected": {
-        "source_sha256": "19e376b99d2e8961155209675930bb9c2efa5dbf627fedf29aa6b0893cf53488",
+        "source_sha256": "7e51837c6953faf7e647dee29a14c45b6a68d7f96ea6d0c2bd75a4e54dc33eae",
         "bindings_sha256": null,
         "template_bytes": 379,
         "puzzle_bytes": 395,
@@ -44,7 +44,7 @@
       "id": "lists",
       "source": "examples/m2-list-operations.bas",
       "expected": {
-        "source_sha256": "4022139561615c9c9b4a8ce4db8ba3728e3eef1185f0a85847f13163ec2c2689",
+        "source_sha256": "59848107fd9fadc4982429f9deea30b2d53f8a7fc98575ef10f54a1b6adcce68",
         "bindings_sha256": null,
         "template_bytes": 699,
         "puzzle_bytes": 715,
@@ -124,8 +124,8 @@
       "source": "examples/height-locked-payment.bas",
       "bindings": "examples/height-locked-payment.bindings.json",
       "expected": {
-        "source_sha256": "a629dd9f35730b0776da172e864a3f0a6cb60747b53dc2a8d416b9773b249cfa",
-        "bindings_sha256": "4983bc64f02c4cf0f87a2fe58665ae6ff8784636f0a1f54c5b8f49c4030c63a3",
+        "source_sha256": "e6a7043559bbdcf306d0cd6f279ba85254303a42b29a74a9b41779c28e38f067",
+        "bindings_sha256": "d0d54fb41f406c60bfbec5147f392fbd88a438b5579e7c955efc9f4c525b0aa9",
         "template_bytes": 2003,
         "puzzle_bytes": 2109,
         "puzzle_sha256": "6949a6a511716438d9afaf30fb60ef57e1c7a1026cf47affc4c5d934055c0e81",

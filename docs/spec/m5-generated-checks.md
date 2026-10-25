@@ -55,3 +55,5 @@ The shared verification helper, examples and bindings already exist in the previ
 Expected: six PASS lines, ending with `PASS: M5 generated-input and regression checks (653 CLI calls).` followed by the report path. The verifier prints its retained input directory before starting. Each family prints progress as it completes. A failure provides its case ID and directory; retain those for investigation.
 
 Windows verification: all 653 invocations and all three frozen baselines passed; `git diff --check` passed. The existing compiler workflow now runs this tool on both platforms after the conformance steps; no hosted result is claimed for this unpublished change. After native Linux confirmation, proceed to M5-4 implemented-feature reference and payment tutorial.
+
+Regression input fingerprints normalize CRLF to LF to match Git text fixtures, including rsync copies from Windows. Compiled byte/hash/cost/output expectations remain exact and unchanged. This normalization applies only to regression input fingerprints; compiler artifact provenance continues to hash the actual source bytes.
