@@ -1,0 +1,58 @@
+name: Experimental package checks
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - run: rustup toolchain install 1.95.0 --profile minimal
+      - run: python -m unittest discover -s tools -p test_package.py
+      - run: python tools/package_experimental.py
+      - name: Include standalone archive verifier
+        run: python -c "import shutil; [shutil.copyfile('tools/'+name, '.work/packages/'+name) for name in ['verify_package.py','verify_package_sources.py']]"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: experimental-package-${{ matrix.os }}
+          path: |
+            .work/packages/*.zip
+            .work/packages/*.tar.gz
+            .work/packages/*.sha256
+            .work/packages/package-*.json
+            .work/packages/verify_package.py
+            .work/packages/verify_package_sources.py
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 14
+  extracted-smoke:
+    needs: build
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - uses: actions/download-artifact@v4
+        with:
+          name: experimental-package-${{ matrix.os }}
+          path: candidate
+      - name: Verify extracted package without checking out sources
+        run: python -c "from pathlib import Path; import subprocess, sys; p=Path('candidate'); archives=list(p.glob('*.zip'))+list(p.glob('*.tar.gz')); assert len(archives)==1; subprocess.run([sys.executable,str(p/'verify_package.py'),str(archives[0]),'--report','extracted-evidence.json'],check=True)"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: extracted-evidence-${{ matrix.os }}
+          path: extracted-evidence.json
+          if-no-files-found: error

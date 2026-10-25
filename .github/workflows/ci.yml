@@ -58,3 +58,5 @@ jobs:
       - run: python tools/verify_m3_signatures.py
       - run: python tools/verify_m3_explain.py
       - run: python tools/verify_m3_conformance.py
+      - run: python tools/verify_m5.py
+      - run: python tools/verify_tutorial.py

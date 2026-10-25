@@ -147,7 +147,7 @@ export CARGO_TARGET_DIR="$HOME/.cache/0xbasic/target"
 
 Expected mutation output: eight scenario PASS lines and `PASS: eight replay/mutation scenarios`. Report: `.work/m4/mutations-linux.json` (Windows uses `mutations-windows.json`). Eight confirmed payments and seven rejected attempts are required. Windows runs in both isolated environments produced identical reports; smoke and the seven-scenario M4-3 regression also passed. No lock/compiler changes, package reinstall or full Rust retest are needed. Existing Rust totals remain 274 Windows / 275 Linux.
 
-All 15 planned scenarios have passed on Windows and Linux. M4 remains open until the M4-5 verification gates below pass. Full-node validation remains a separate pre-release requirement.
+All 15 planned scenarios and the M4-5 verification gates below have passed on Windows and Linux. M4 is complete. Full-node validation remains a separate pre-release requirement.
 
 ## M4-5: complete evidence and reproducible runs
 
@@ -171,10 +171,77 @@ export CARGO_TARGET_DIR="$HOME/.cache/0xbasic/target"
 .work/m4/venv/bin/python simulator/verify.py --binary "$CARGO_TARGET_DIR/debug/0xbasic"
 ```
 
-Expected: eight reporting tests and `PASS: all 15 scenarios, 12 rejections and 15 confirmed payments per run; two identical fresh runs.` Reports are `.work/m4/verification-windows.json` and `verification-linux.json`. Binary/package/environment hashes differ across platforms; equality is required between fresh runs on the same platform, not between Windows and Linux executables.
+Expected: eight reporting tests (12 total with the M5-1a isolation tests) and `PASS: all 15 scenarios, 12 rejections and 15 confirmed payments per run; two identical fresh runs.` Reports are `.work/m4/verification-windows.json` and `verification-linux.json`. Binary/package/environment hashes differ across platforms; equality is required between fresh runs on the same platform, not between Windows and Linux executables.
 
 The separate [simulator workflow](../.github/workflows/simulator.yml) builds the pinned compiler, installs Python 3.13.7 and the existing hash-locked tools/runtime, checks dependencies, runs reporting tests and executes this gate on Windows/Linux. Successful jobs upload their aggregate as `spendsim-evidence-windows` or `spendsim-evidence-linux` for 30 days. Installation uses package registries; scenario execution uses only the in-process simulator. The compiler workflow remains separate.
 
-Platform verification (2026-10-24): the user confirmed all Windows and Linux testing passed, including the eight reporting tests and complete reproducibility runner. This supersedes the earlier restricted Windows temporary-directory failure; both native aggregate gates are closed. The first hosted workflow run remains pending publication; CI configuration alone does not close M4. No compiler, dependency, ABI or Rust test-count change.
+Platform verification (2026-10-24): the user confirmed all Windows and Linux testing passed, including the eight reporting tests and complete reproducibility runner. This supersedes the earlier restricted Windows temporary-directory failure; both native aggregate gates are closed. Hosted simulator and compiler CI subsequently passed on `75002bb` after correcting the Windows interpreter path. Both evidence artifacts were uploaded; M4 is complete. See the [M5 work plan](../docs/spec/m5-release-plan.md) for CI links and next steps. No compiler, dependency, ABI or Rust test-count change.
 
 SpendSim covers the selected in-process mempool/coin-store lifecycle. A full-node simulator smoke remains required before release. Testnet, wallet/key management and deployment are separate future work.
+
+## M5-1a: full-node environment and block smoke
+
+`full_node_smoke.py` uses the same locked Python 3.13.7 environment, with eight additional upstream source hashes verified against the pinned Chia commit in `full_node_sources.json`. No package installation, compiler rebuild or Rust retest is needed. `tools/inspect_m5_upstream.py` is the networked maintenance verifier used to establish those hashes; ordinary smoke runs check installed bytes locally and do not download sources.
+
+The launcher starts a fresh worker with project-local roots before Chia imports. Each run uses a unique `.work/m5/run-*` directory for config, databases, public test keys/certificates, three k19 plots, temporary files and `output.log`. It constructs FullNode/FullNodeSimulator and manages the actual node database/validation lifecycle without starting peer or RPC listeners, a daemon or wallet. Peer discovery is disabled, a socket guard rejects non-loopback binds/connections, and the upstream unused-port probe is replaced with a loopback-only probe. These are transport/setup adaptations; full-block consensus validation is unchanged. The test keyring uses upstream's file-backed test helper with OS credential storage disabled and is removed on shutdown. Logs, plots and node data remain in the ignored run directory for diagnosis.
+
+The test farms three transaction blocks after genesis and requires each full block to become the validated peak and be retrievable from BlockStore. Confirmed coin records must exactly match the recipient rewards claimed by the full blocks, remain unspent and be retrievable by coin ID. It verifies an empty mempool, no network service or peer connection, and node/keyring cleanup. It does not submit a compiled payment; M5-1b adds that lifecycle after Linux confirmation.
+
+The launcher invalidates old success before startup, enforces a ten-minute worker timeout and publishes the aggregate atomically only after a successful worker exit. Failure leaves the run log for diagnosis and no successful aggregate. Run one smoke per checkout at a time. Full-node hashes/timing may differ across fresh runs; this checkpoint requires semantic assertions, not whole-report equality.
+
+Windows:
+
+```powershell
+.work/m4/venv/Scripts/python.exe -m unittest discover -s simulator -p 'test_*.py'
+.work/m4/venv/Scripts/python.exe simulator/full_node_smoke.py
+```
+
+Linux: refresh the **native local checkout from these local Windows changes**, preserving its `.work` environment and native build directory. These changes are not yet on GitHub. From the native checkout root:
+
+```sh
+set -e
+.work/m4/venv/bin/python -m unittest discover -s simulator -p 'test_*.py'
+.work/m4/venv/bin/python simulator/full_node_smoke.py
+```
+
+Expected: **12 tests** (eight reporting and four full-node isolation/publication checks), then `PASS: full-node blocks and reward records verified; resources closed.` Aggregate: `.work/m5/full-node-smoke-linux.json` (Windows: `full-node-smoke-windows.json`). The fresh chain ends at height 3 with four confirmed recipient reward records and three k19 plots; `resources_closed` is true and `network_services_started` is false. This test does not invoke the Rust CLI, so no binary path or `CARGO_TARGET_DIR` setting is needed.
+
+Windows verification (2026-10-24): all 12 tests passed; the final harness passed with height 3, four reward records, no started network services and successful cleanup. The report's harness digest matches the final source. Restricted execution initially blocked upstream temporary config writes; the final run used normal Windows permissions. The user subsequently confirmed native Linux M5-1a passed. M4 evidence remains valid; do not rerun its scenarios for this checkpoint. No compiler, ABI, dependency or Rust test-count change.
+
+## M5-1b: compiled payment through the full node
+
+M5-1a native Linux testing was confirmed successful by the user. Both platforms now pass the environment/block smoke. `full_node_smoke.py --payment` extends that same isolated run with `full_node_payment.py`; it still runs the M5-1a block/reward assertions before exercising payment.
+
+The harness builds the existing height-locked payment using a deterministic public test key and independently checks artifact byte/tree hashes, compiler version, condition output and signing-message derivation. It funds the contract via a confirmed spend of a real farmed reward, preserving separate change. At a valid height, a missing-signature attempt must fail with `BAD_AGGREGATE_SIGNATURE`; input, recipient/children and mempool state must remain unchanged immediately and after another real block. The correctly signed positive control must then enter the mempool and be included in a real full block. CoinStore additions/removals at that block must match exactly one recipient output and the contract input, excluding reward additions; change must remain unspent.
+
+Signatures bind the actual contract coin and the full node's effective `AGG_SIG_ME_ADDITIONAL_DATA`, not M4's synthetic domain. Submission uses upstream `FullNode.add_transaction(..., test=True)`: this skips only wall-clock/peer synchronization readiness for the isolated historical chain. Signature/condition prevalidation, mempool acceptance and full-block consensus validation remain enabled. No network listener, RPC connection, wallet or daemon is started. This checkpoint covers an invalid-signature rejection and a valid payment after the height lock; it does not repeat every M4 negative case through the full node.
+
+The aggregate records the compiler manifest, CLI binary and payment-source digests, actual coins, signing domain/message/signature, block hashes/heights, rejection state and confirmed records. Local VM cost is recorded separately from full-node mempool cost. Prior payment success is invalidated before startup and publication requires successful worker exit and resource cleanup. Block-smoke reports use a separate filename.
+
+Windows:
+
+```powershell
+.work/m4/venv/Scripts/python.exe -m unittest discover -s simulator -p 'test_*.py'
+.work/m4/venv/Scripts/python.exe simulator/full_node_smoke.py --payment --binary target/debug/0xbasic.exe
+```
+
+Native Linux: run the following **from the same native checkout where M5-1a passed**. The first two checks confirm that this checkout and its isolated environment exist. The rsync command refreshes only the simulator code from the known Windows share; it preserves `.work` and native binaries and does not copy artwork. These changes are not yet on GitHub.
+
+```bash
+set -e
+test -f Cargo.toml
+test -x .work/m4/venv/bin/python
+rsync -a --exclude='__pycache__/' /mnt/artoo/e/DEV/0xBASIC/simulator/ simulator/
+export CARGO_TARGET_DIR="$HOME/.cache/0xbasic/target"
+if [ ! -x "$CARGO_TARGET_DIR/debug/0xbasic" ]; then
+    cargo build --workspace --locked
+fi
+.work/m4/venv/bin/python -m unittest discover -s simulator -p 'test_*.py'
+.work/m4/venv/bin/python simulator/full_node_smoke.py --payment --binary "$CARGO_TARGET_DIR/debug/0xbasic"
+```
+
+No dependency installation or Rust test rerun is needed. The existing CLI is unchanged; the conditional build is only for a missing native executable. The combined payment command includes the block smoke, so no separate M5-1a rerun is necessary.
+
+Expected: **12 tests pass**, followed by `PASS: full-node funding, missing-signature rejection and exact payment verified; resources closed.` Report: `.work/m5/full-node-payment-linux.json` (Windows: `full-node-payment-windows.json`). Windows observed funding at height 6, `FAILED/BAD_AGGREGATE_SIGNATURE` at peak 10, unchanged state after farming 11, acceptance at peak 11 and confirmation at height 12. Exactly one recipient child is confirmed, change remains unspent, resources close and network services remain unstarted. Local CLI/upstream VM cost: 1,487,727; full-node mempool cost: 30,347,727.
+
+Windows M5-1b passed on 2026-10-24, including all 12 reporting/isolation tests and the payment-mode stale-success check. Native Linux M5-1b subsequently passed, as confirmed by the user. The full-node payment gate is complete on both platforms. Compiler, ABI, locks and Rust counts remain unchanged. Next after Linux confirmation: M5-2 experimental compatibility and diagnostic policy.

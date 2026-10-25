@@ -10,3 +10,5 @@
 *.hex text eol=lf
 *.clvm binary
 docs/archive/** -text
+distribution/upstream-notices/** -text
+distribution/upstream-notices/sources.json text eol=lf

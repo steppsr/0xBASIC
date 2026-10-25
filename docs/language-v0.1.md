@@ -1,6 +1,6 @@
 # 0xBASIC 0.1 language specification
 
-Status: M0 specification baseline, 2026-10-04. Defines intended behavior, not implemented capabilities. Changes require a recorded decision and corresponding conformance cases. Complete syntax: [grammar.ebnf](spec/grammar.ebnf). External representations: [ABI 1](spec/abi-v1.md).
+Status: normative 0.1 language rules, reconciled with compiler `0.1.0-m3.8b` at M5-4. The [implemented-feature reference](spec/implemented-reference.md) summarizes available capabilities and exclusions; the development roadmap separately describes future work. Changes require a recorded decision and corresponding conformance cases. Complete syntax: [grammar.ebnf](spec/grammar.ebnf). External representations: [ABI 1](spec/abi-v1.md).
 
 ## Program and lexical rules
 
@@ -90,7 +90,7 @@ Ordered comparison accepts INTEGER only. Equality requires identical scalar type
 
 Operands/arguments evaluate left to right, once semantically. `AND` skips the right operand when the left is false; `OR` skips it when true. IF/ELSEIF tests run in source order and only the selected body executes. Unselected branches cannot emit, fail, or incur evaluation costs. Optimizations preserve these rules.
 
-`ASSERT booleanExpression` continues when true and aborts CLVM execution when false. No exception recovery. RETURN prevents subsequent execution in that function. Unreachable code is still parsed and type-checked; a warning may identify it.
+`ASSERT booleanExpression` continues when true and aborts CLVM execution when false. No exception recovery. RETURN prevents subsequent execution in that function. Unreachable code is still parsed and type-checked; the current compiler does not issue an unreachable-code warning.
 
 ## EMIT
 

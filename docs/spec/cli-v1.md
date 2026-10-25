@@ -2,6 +2,8 @@
 
 Status: normative interface specification. `check`, `build`, and `run` support the [M3-8b subset](../development.md): the typed BASIC core plus scalar and recursive PAIR/LIST fixed parameters and SOLUTION fields, JSON binding/solution conversion and generated raw-tree validation. AMOUNT, PUZZLEHASH and PUBLICKEY boundaries and explicit conversions are supported; ASSERT_MY_AMOUNT, CREATE_COIN and AGG_SIG_ME constructors are implemented; `explain --stage ast|ir|clvm` is implemented. Program name: `0xbasic`; internal Rust package names use `oxbasic` because Rust identifiers cannot begin with a digit.
 
+Experimental upgrade/rebuild rules and the stable diagnostic contract are documented in the [compatibility policy](experimental-compatibility.md).
+
 ## Commands
 
 ```text

@@ -1,0 +1,4424 @@
+{
+  "cargo_lock_sha256": "1cc960c6b03ccee53b0f647adc4bf44dd6755eb58a8d03f809489eafd6af9ad0",
+  "platforms": {
+    "x86_64-pc-windows-msvc": [
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+          "LICENSE-MIT": "27995d58ad5c1145c1a8cd86244ce844886958a35eb2b78c6b772748669999ac"
+        },
+        "declared_license": "Apache-2.0 OR MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "num-traits",
+          "autocfg"
+        ],
+        "license_file": null,
+        "name": "autocfg",
+        "repository": "https://github.com/cuviper/autocfg",
+        "version": "1.5.1"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5",
+          "LICENSE-MIT": "54fb6dfe99a6906f862aa40282f0e8e9d9d0f22d57d99ab8acbaf4c8ceaa70e0"
+        },
+        "declared_license": "Apache-2.0 OR MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "k256",
+          "elliptic-curve",
+          "base16ct"
+        ],
+        "license_file": null,
+        "name": "base16ct",
+        "repository": "https://github.com/RustCrypto/formats",
+        "version": "1.0.0"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5",
+          "LICENSE-MIT": "2d1c57bff28344b9e698f51063bc8509799cc4c99a4e0cf2aa3f7e7c3e1f9a9d"
+        },
+        "declared_license": "Apache-2.0 OR MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "k256",
+          "ecdsa",
+          "spki",
+          "base64ct"
+        ],
+        "license_file": null,
+        "name": "base64ct",
+        "repository": "https://github.com/RustCrypto/formats",
+        "version": "1.8.3"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+          "LICENSE-MIT": "6485b8ed310d3f0340bf1ad1f47645069ce4069dcc6bb46c7d5c6faf41de1fdb"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "bitflags"
+        ],
+        "license_file": null,
+        "name": "bitflags",
+        "repository": "https://github.com/bitflags/bitflags",
+        "version": "2.13.2"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE.txt": "411781fd38700f2357a14126d0ab048164ab881f1dcb335c1bb932e232c9a2f5"
+        },
+        "declared_license": "MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "bitvec"
+        ],
+        "license_file": null,
+        "name": "bitvec",
+        "repository": "https://github.com/bitvecto-rs/bitvec",
+        "version": "1.1.1"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5",
+          "LICENSE-MIT": "d5c22aa3118d240e877ad41c5d9fa232f9c77d757d4aac0c2f943afc0a95e0ef"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "sha2",
+          "digest",
+          "block-buffer"
+        ],
+        "license_file": null,
+        "name": "block-buffer",
+        "repository": "https://github.com/RustCrypto/utils",
+        "version": "0.10.4"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5",
+          "LICENSE-MIT": "98181e7249d0c01737645ec982499ce99a0f07eb8f7d625b8840d799d10dbc01"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "k256",
+          "ecdsa",
+          "digest",
+          "block-buffer"
+        ],
+        "license_file": null,
+        "name": "block-buffer",
+        "repository": "https://github.com/RustCrypto/utils",
+        "version": "0.12.1"
+      },
+      {
+        "available_notice_sha256": {},
+        "declared_license": "Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "chia-bls",
+          "blst"
+        ],
+        "license_file": null,
+        "name": "blst",
+        "repository": "https://github.com/supranational/blst",
+        "version": "0.3.17"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+          "LICENSE-MIT": "65f94e99ddaf4f5d1782a6dae23f35d4293a9a01444a13135a6887017d353cee"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "bumpalo"
+        ],
+        "license_file": null,
+        "name": "bumpalo",
+        "repository": "https://github.com/fitzgen/bumpalo",
+        "version": "3.20.3"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "e3ba223bb1423f0aad8c3dfce0fe3148db48926d41e6fbc3afbbf5ff9e1c89cb",
+          "LICENSE-MIT": "9df9ba60a11af705f2e451b53762686e615d86f76b169cf075c3237730dbd7e2",
+          "LICENSE-ZLIB": "84b34dd7608f7fb9b17bd588a6bf392bf7de504e2716f024a77d89f1b145a151"
+        },
+        "declared_license": "Zlib OR Apache-2.0 OR MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "malachite-bigint",
+          "malachite-nz",
+          "wide",
+          "bytemuck"
+        ],
+        "license_file": null,
+        "name": "bytemuck",
+        "repository": "https://github.com/Lokathor/bytemuck",
+        "version": "1.25.2"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+          "LICENSE-MIT": "378f5840b258e2779c39418f3f2d7b2ba96f1c7917dd6be0713f88305dbda397"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "chia-bls",
+          "blst",
+          "cc"
+        ],
+        "license_file": null,
+        "name": "cc",
+        "repository": "https://github.com/rust-lang/cc-rs",
+        "version": "1.6.0"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+          "LICENSE-MIT": "378f5840b258e2779c39418f3f2d7b2ba96f1c7917dd6be0713f88305dbda397"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "sha2",
+          "cfg-if"
+        ],
+        "license_file": null,
+        "name": "cfg-if",
+        "repository": "https://github.com/rust-lang/cfg-if",
+        "version": "1.0.5"
+      },
+      {
+        "available_notice_sha256": {},
+        "declared_license": "Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "chia-bls"
+        ],
+        "license_file": null,
+        "name": "chia-bls",
+        "repository": "https://github.com/Chia-Network/chia_rs",
+        "version": "0.38.2"
+      },
+      {
+        "available_notice_sha256": {},
+        "declared_license": "Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "chia-bls",
+          "chia-sha2"
+        ],
+        "license_file": null,
+        "name": "chia-sha2",
+        "repository": "https://github.com/Chia-Network/chia_rs",
+        "version": "0.38.2"
+      },
+      {
+        "available_notice_sha256": {},
+        "declared_license": "Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "chia-bls",
+          "chia-traits"
+        ],
+        "license_file": null,
+        "name": "chia-traits",
+        "repository": null,
+        "version": "0.38.2"
+      },
+      {
+        "available_notice_sha256": {},
+        "declared_license": "Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "chia-bls",
+          "chia-traits",
+          "chia_streamable_macro"
+        ],
+        "license_file": null,
+        "name": "chia_streamable_macro",
+        "repository": "https://github.com/Chia-Network/chia_rs",
+        "version": "0.38.2"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE": "7db0cf1060026bf2a544ea29cf9a96fba7d3781f93a1d06d6fee18251f1c207a"
+        },
+        "declared_license": "Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr"
+        ],
+        "license_file": null,
+        "name": "clvmr",
+        "repository": "https://github.com/Chia-Network/clvm_rs/",
+        "version": "0.19.0"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+          "LICENSE-MIT": "70c9d40f1f9545c3f133b8a67206e89da850f6468eed072281bb3701514114a9"
+        },
+        "declared_license": "Apache-2.0 OR MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "k256",
+          "ecdsa",
+          "digest",
+          "ctutils",
+          "cmov"
+        ],
+        "license_file": null,
+        "name": "cmov",
+        "repository": "https://github.com/RustCrypto/utils",
+        "version": "0.5.4"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5",
+          "LICENSE-MIT": "73b9dc2e79c7308998dd30296e073aefaefb944a68fb89aa412c23c0edcabcaa"
+        },
+        "declared_license": "Apache-2.0 OR MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "k256",
+          "ecdsa",
+          "der",
+          "const-oid"
+        ],
+        "license_file": null,
+        "name": "const-oid",
+        "repository": "https://github.com/RustCrypto/formats",
+        "version": "0.10.2"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5",
+          "LICENSE-MIT": "003736bc98408b53511b9cc8ff5d1af3bf0a8f17d53841cc39d8ab1b96a195b0"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "k256",
+          "cpubits"
+        ],
+        "license_file": null,
+        "name": "cpubits",
+        "repository": "https://github.com/RustCrypto/utils",
+        "version": "0.1.1"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5",
+          "LICENSE-MIT": "ae9baa7beea910273c2f384c2a6b721fb7bd02bda3436074a1072e4ee689f985"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "sha2",
+          "cpufeatures"
+        ],
+        "license_file": null,
+        "name": "cpufeatures",
+        "repository": "https://github.com/RustCrypto/utils",
+        "version": "0.2.17"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5",
+          "LICENSE-MIT": "73b9dc2e79c7308998dd30296e073aefaefb944a68fb89aa412c23c0edcabcaa"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "k256",
+          "sha2",
+          "cpufeatures"
+        ],
+        "license_file": null,
+        "name": "cpufeatures",
+        "repository": "https://github.com/RustCrypto/utils",
+        "version": "0.3.1"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5",
+          "LICENSE-MIT": "57a4d75c1d095bb94754a478f3cd15e60ac66a5c5627d844be01a918eea5fe88"
+        },
+        "declared_license": "Apache-2.0 OR MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "k256",
+          "elliptic-curve",
+          "crypto-bigint"
+        ],
+        "license_file": null,
+        "name": "crypto-bigint",
+        "repository": "https://github.com/RustCrypto/crypto-bigint",
+        "version": "0.7.5"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5",
+          "LICENSE-MIT": "3521672491a3479422d5fe1aca6645dd2984090f85da6e5205abfb18fb7a6897"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "sha2",
+          "digest",
+          "crypto-common"
+        ],
+        "license_file": null,
+        "name": "crypto-common",
+        "repository": "https://github.com/RustCrypto/traits",
+        "version": "0.1.7"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5",
+          "LICENSE-MIT": "d2e7ec5355c96eeade56b09187ceb48a6a30299da3ce7531a66d3d11405ab963"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "k256",
+          "elliptic-curve",
+          "crypto-common"
+        ],
+        "license_file": null,
+        "name": "crypto-common",
+        "repository": "https://github.com/RustCrypto/traits",
+        "version": "0.2.2"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+          "LICENSE-MIT": "91585c36e4fb9ab4ca0d3dfac5d66d3c0c62cc51f640a0e1196542daf2267eae"
+        },
+        "declared_license": "Apache-2.0 OR MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "k256",
+          "ecdsa",
+          "digest",
+          "ctutils"
+        ],
+        "license_file": null,
+        "name": "ctutils",
+        "repository": "https://github.com/RustCrypto/utils",
+        "version": "0.4.2"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5",
+          "LICENSE-MIT": "73b9dc2e79c7308998dd30296e073aefaefb944a68fb89aa412c23c0edcabcaa"
+        },
+        "declared_license": "Apache-2.0 OR MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "k256",
+          "ecdsa",
+          "der"
+        ],
+        "license_file": null,
+        "name": "der",
+        "repository": "https://github.com/RustCrypto/formats",
+        "version": "0.8.2"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5",
+          "LICENSE-MIT": "9e0dfd2dd4173a530e238cb6adb37aa78c34c6bc7444e0e10c1ab5d8881f63ba"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "sha2",
+          "digest"
+        ],
+        "license_file": null,
+        "name": "digest",
+        "repository": "https://github.com/RustCrypto/traits",
+        "version": "0.10.7"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5",
+          "LICENSE-MIT": "af59cea35d7f5e2777a713b8d155d65efa2c339eb43f3c14e868c6ac8506edad"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "k256",
+          "ecdsa",
+          "digest"
+        ],
+        "license_file": null,
+        "name": "digest",
+        "repository": "https://github.com/RustCrypto/traits",
+        "version": "0.11.3"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "78779d420019e6b4630376af8e86b6b335ee8a2f89ede6e0411e0469a326aaa4",
+          "LICENSE-MIT": "9aa4f92bfcde293ebeca9e2379fa18d1d61f000977da144c7b74c2986c9b6466"
+        },
+        "declared_license": "Apache-2.0 OR MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "k256",
+          "ecdsa"
+        ],
+        "license_file": null,
+        "name": "ecdsa",
+        "repository": "https://github.com/RustCrypto/signatures",
+        "version": "0.17.0"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+          "LICENSE-MIT": "7576269ea71f767b99297934c0b2367532690f8c4badc695edf8e04ab6a1e545"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "malachite-bigint",
+          "malachite-base",
+          "itertools",
+          "either"
+        ],
+        "license_file": null,
+        "name": "either",
+        "repository": "https://github.com/rayon-rs/either",
+        "version": "1.18.0"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5",
+          "LICENSE-MIT": "d8c4ab431f20da8452c9a217084163822e5fd9d134e1343903c929f2859fc8fd"
+        },
+        "declared_license": "Apache-2.0 OR MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "k256",
+          "elliptic-curve"
+        ],
+        "license_file": null,
+        "name": "elliptic-curve",
+        "repository": "https://github.com/RustCrypto/traits",
+        "version": "0.14.1"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+          "LICENSE-MIT": "7365cc8878a1d7ce155a58c4ca09c3d7a6be413efa5334a80ea842912b669349"
+        },
+        "declared_license": "Apache-2.0 OR MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "chia-bls",
+          "chia-traits",
+          "chia_streamable_macro",
+          "proc-macro-crate",
+          "toml_edit",
+          "indexmap",
+          "equivalent"
+        ],
+        "license_file": null,
+        "name": "equivalent",
+        "repository": "https://github.com/indexmap-rs/equivalent",
+        "version": "1.0.2"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+          "LICENSE-MIT": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
+        },
+        "declared_license": "Apache-2.0 OR MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "tempfile",
+          "fastrand"
+        ],
+        "license_file": null,
+        "name": "fastrand",
+        "repository": "https://github.com/smol-rs/fastrand",
+        "version": "2.5.0"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "3708458dee7f359ac6c9c5558023ed481be87e5372c43ebd7f2ca7ad23c12026",
+          "LICENSE-MIT": "8d0c1d1d4b2bebf5b9211f0e883d5a482b7808f3ed31320da14ddee95811f4ef"
+        },
+        "declared_license": "MIT/Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "k256",
+          "elliptic-curve",
+          "ff"
+        ],
+        "license_file": null,
+        "name": "ff",
+        "repository": "https://github.com/zkcrypto/ff",
+        "version": "0.14.0"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+          "LICENSE-MIT": "378f5840b258e2779c39418f3f2d7b2ba96f1c7917dd6be0713f88305dbda397"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "chia-bls",
+          "blst",
+          "cc",
+          "find-msvc-tools"
+        ],
+        "license_file": null,
+        "name": "find-msvc-tools",
+        "repository": "https://github.com/rust-lang/cc-rs",
+        "version": "0.1.14"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE": "b1181a40b2a7b25cf66fd01481713bc1005df082c53ef73e851e55071b102744"
+        },
+        "declared_license": "Zlib",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "malachite-bigint",
+          "malachite-base",
+          "hashbrown",
+          "foldhash"
+        ],
+        "license_file": null,
+        "name": "foldhash",
+        "repository": "https://github.com/orlp/foldhash",
+        "version": "0.2.0"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE.txt": "f790cc576999f5998c766d3d26d7d64dc368e805a98461484f65e8d961ec6d9f"
+        },
+        "declared_license": "MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "bitvec",
+          "funty"
+        ],
+        "license_file": null,
+        "name": "funty",
+        "repository": "https://github.com/myrrlyn/funty",
+        "version": "2.0.0"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE": "c09aae9d3c77b531f56351a9947bc7446511d6b025b3255312d3e3442a9a7583"
+        },
+        "declared_license": "MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "sha2",
+          "digest",
+          "block-buffer",
+          "generic-array"
+        ],
+        "license_file": null,
+        "name": "generic-array",
+        "repository": "https://github.com/fizyk20/generic-array.git",
+        "version": "0.14.7"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "aaff376532ea30a0cd5330b9502ad4a4c8bf769c539c87ffe78819d188a18ebf",
+          "LICENSE-MIT": "29e9fe5074bd27e0e5d5d110394fbbcd841baee2651a3c4b4560a632702cede4"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "rand",
+          "rand_core",
+          "getrandom"
+        ],
+        "license_file": null,
+        "name": "getrandom",
+        "repository": "https://github.com/rust-random/getrandom",
+        "version": "0.3.4"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "aaff376532ea30a0cd5330b9502ad4a4c8bf769c539c87ffe78819d188a18ebf",
+          "LICENSE-MIT": "523a42c25d245dde9c015f882cec7f4555aad883382a6cf19b4b7d9b2cd5419b"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "tempfile",
+          "getrandom"
+        ],
+        "license_file": null,
+        "name": "getrandom",
+        "repository": "https://github.com/rust-random/getrandom",
+        "version": "0.4.3"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+          "LICENSE-MIT": "6485b8ed310d3f0340bf1ad1f47645069ce4069dcc6bb46c7d5c6faf41de1fdb"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "chia-bls",
+          "blst",
+          "glob"
+        ],
+        "license_file": null,
+        "name": "glob",
+        "repository": "https://github.com/rust-lang/glob",
+        "version": "0.3.4"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+          "LICENSE-MIT": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
+        },
+        "declared_license": "MIT/Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "k256",
+          "elliptic-curve",
+          "group"
+        ],
+        "license_file": null,
+        "name": "group",
+        "repository": "https://github.com/zkcrypto/group",
+        "version": "0.14.0"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+          "LICENSE-MIT": "ff8f68cb076caf8cefe7a6430d4ac086ce6af2ca8ce2c4e5a2004d4552ef52a2"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "malachite-bigint",
+          "malachite-base",
+          "hashbrown"
+        ],
+        "license_file": null,
+        "name": "hashbrown",
+        "repository": "https://github.com/rust-lang/hashbrown",
+        "version": "0.16.1"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+          "LICENSE-MIT": "ff8f68cb076caf8cefe7a6430d4ac086ce6af2ca8ce2c4e5a2004d4552ef52a2"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "chia-bls",
+          "chia-traits",
+          "chia_streamable_macro",
+          "proc-macro-crate",
+          "toml_edit",
+          "indexmap",
+          "hashbrown"
+        ],
+        "license_file": null,
+        "name": "hashbrown",
+        "repository": "https://github.com/rust-lang/hashbrown",
+        "version": "0.17.1"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "c6596eb7be8581c18be736c846fb9173b69eccf6ef94c5135893ec56bd92ba08",
+          "LICENSE-MIT": "f7bdb3426d045cd50efd4953026e3eb5a83d0199f458a075602611b9344da5b9"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "hex"
+        ],
+        "license_file": null,
+        "name": "hex",
+        "repository": "https://github.com/KokaKiwi/rust-hex",
+        "version": "0.4.3"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5",
+          "LICENSE-MIT": "fbe7b9b51878efdfa613d4ec42ebfc9c7fb0c29806249ef9a3cd8f31ca5ef855"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "hex-literal"
+        ],
+        "license_file": null,
+        "name": "hex-literal",
+        "repository": "https://github.com/RustCrypto/utils",
+        "version": "0.4.1"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "59013a5c8d3a19c26a457579105915a5d51bb0c09d579f8cdedf12e4203c3018",
+          "LICENSE-MIT": "d288f9c9b4590446ec18c22ead8f8b5a12a3d4025b68f62dc9015063eb9cca69"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "chia-bls",
+          "hkdf"
+        ],
+        "license_file": null,
+        "name": "hkdf",
+        "repository": "https://github.com/RustCrypto/KDFs/",
+        "version": "0.12.4"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5",
+          "LICENSE-MIT": "9e0dfd2dd4173a530e238cb6adb37aa78c34c6bc7444e0e10c1ab5d8881f63ba"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "chia-bls",
+          "hkdf",
+          "hmac"
+        ],
+        "license_file": null,
+        "name": "hmac",
+        "repository": "https://github.com/RustCrypto/MACs",
+        "version": "0.12.1"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5",
+          "LICENSE-MIT": "9e0dfd2dd4173a530e238cb6adb37aa78c34c6bc7444e0e10c1ab5d8881f63ba"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "k256",
+          "ecdsa",
+          "rfc6979",
+          "hmac"
+        ],
+        "license_file": null,
+        "name": "hmac",
+        "repository": "https://github.com/RustCrypto/MACs",
+        "version": "0.13.0"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5",
+          "LICENSE-MIT": "70c9d40f1f9545c3f133b8a67206e89da850f6468eed072281bb3701514114a9"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "k256",
+          "elliptic-curve",
+          "hybrid-array"
+        ],
+        "license_file": null,
+        "name": "hybrid-array",
+        "repository": "https://github.com/RustCrypto/hybrid-array",
+        "version": "0.4.15"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+          "LICENSE-MIT": "ecc269ef87fd38a1d98e30bfac9ba964a9dbd9315c3770fed98d4d7cb5882055"
+        },
+        "declared_license": "Apache-2.0 OR MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "chia-bls",
+          "chia-traits",
+          "chia_streamable_macro",
+          "proc-macro-crate",
+          "toml_edit",
+          "indexmap"
+        ],
+        "license_file": null,
+        "name": "indexmap",
+        "repository": "https://github.com/indexmap-rs/indexmap",
+        "version": "2.14.2"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+          "LICENSE-MIT": "7576269ea71f767b99297934c0b2367532690f8c4badc695edf8e04ab6a1e545"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "malachite-bigint",
+          "malachite-base",
+          "itertools"
+        ],
+        "license_file": null,
+        "name": "itertools",
+        "repository": "https://github.com/rust-itertools/itertools",
+        "version": "0.14.0"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a",
+          "LICENSE-MIT": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "serde_json",
+          "itoa"
+        ],
+        "license_file": null,
+        "name": "itoa",
+        "repository": "https://github.com/dtolnay/itoa",
+        "version": "1.0.18"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5",
+          "LICENSE-MIT": "3b4f73047906835fba5005acdf68f25a460b9ee298dae710f22b435d335a6f7b"
+        },
+        "declared_license": "Apache-2.0 OR MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "k256"
+        ],
+        "license_file": null,
+        "name": "k256",
+        "repository": "https://github.com/RustCrypto/elliptic-curves",
+        "version": "0.14.0"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5",
+          "LICENSE-MIT": "bdebaf9156a298f8fdab56dd26cb5144673de522d80f4c0d88e0039145f147f9"
+        },
+        "declared_license": "Apache-2.0 OR MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "sha3",
+          "keccak"
+        ],
+        "license_file": null,
+        "name": "keccak",
+        "repository": "https://github.com/RustCrypto/sponges/tree/master/keccak",
+        "version": "0.1.6"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+          "LICENSE-MIT": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "lazy_static"
+        ],
+        "license_file": null,
+        "name": "lazy_static",
+        "repository": "https://github.com/rust-lang-nursery/lazy-static.rs",
+        "version": "1.5.1"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE.txt": "3823dda7cf046602f4b4e77ec8e227863dc4736037cc85bb33d9f19febe16bb7"
+        },
+        "declared_license": "MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "malachite-bigint",
+          "malachite-base",
+          "libm"
+        ],
+        "license_file": null,
+        "name": "libm",
+        "repository": "https://github.com/rust-lang/compiler-builtins",
+        "version": "0.2.16"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "8173d5c29b4f956d532781d2b86e4e30f83e6b7878dce18c919451d6ba707c90",
+          "LICENSE-MIT": "7b63ecd5f1902af1b63729947373683c32745c16a10e8e6292e2e2dcd7e90ae0"
+        },
+        "declared_license": "MIT/Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "chia-bls",
+          "linked-hash-map"
+        ],
+        "license_file": null,
+        "name": "linked-hash-map",
+        "repository": "https://github.com/contain-rs/linked-hash-map",
+        "version": "0.5.6"
+      },
+      {
+        "available_notice_sha256": {},
+        "declared_license": "LGPL-3.0-only",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "malachite-bigint",
+          "malachite-base"
+        ],
+        "license_file": null,
+        "name": "malachite-base",
+        "repository": "https://github.com/mhogrefe/malachite",
+        "version": "0.9.2"
+      },
+      {
+        "available_notice_sha256": {},
+        "declared_license": "LGPL-3.0-only",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "malachite-bigint"
+        ],
+        "license_file": null,
+        "name": "malachite-bigint",
+        "repository": "https://github.com/mhogrefe/malachite",
+        "version": "0.9.2"
+      },
+      {
+        "available_notice_sha256": {},
+        "declared_license": "LGPL-3.0-only",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "malachite-bigint",
+          "malachite-nz"
+        ],
+        "license_file": null,
+        "name": "malachite-nz",
+        "repository": "https://github.com/mhogrefe/malachite",
+        "version": "0.9.2"
+      },
+      {
+        "available_notice_sha256": {
+          "COPYING": "01c266bced4a434da0051174d6bee16a4c82cf634e2679b6155d40d75012390f",
+          "LICENSE-MIT": "0f96a83840e146e43c0ec96a22ec1f392e0680e6c1226e6f3ba87e0740af850f"
+        },
+        "declared_license": "Unlicense OR MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "serde_json",
+          "memchr"
+        ],
+        "license_file": null,
+        "name": "memchr",
+        "repository": "https://github.com/BurntSushi/memchr",
+        "version": "2.8.3"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+          "LICENSE-MIT": "6485b8ed310d3f0340bf1ad1f47645069ce4069dcc6bb46c7d5c6faf41de1fdb"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "num-bigint"
+        ],
+        "license_file": null,
+        "name": "num-bigint",
+        "repository": "https://github.com/rust-num/num-bigint",
+        "version": "0.4.6"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+          "LICENSE-MIT": "6485b8ed310d3f0340bf1ad1f47645069ce4069dcc6bb46c7d5c6faf41de1fdb"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "num-integer"
+        ],
+        "license_file": null,
+        "name": "num-integer",
+        "repository": "https://github.com/rust-num/num-integer",
+        "version": "0.1.47"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+          "LICENSE-MIT": "6485b8ed310d3f0340bf1ad1f47645069ce4069dcc6bb46c7d5c6faf41de1fdb"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "num-traits"
+        ],
+        "license_file": null,
+        "name": "num-traits",
+        "repository": "https://github.com/rust-num/num-traits",
+        "version": "0.2.19"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+          "LICENSE-MIT": "391a5396cec6230bfabd4ef4eb2350eb895bc5efce377a2218f5702ed020d3e3"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "chia-bls",
+          "blst",
+          "threadpool",
+          "num_cpus"
+        ],
+        "license_file": null,
+        "name": "num_cpus",
+        "repository": "https://github.com/seanmonstar/num_cpus",
+        "version": "1.17.0"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+          "LICENSE-MIT": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "tempfile",
+          "once_cell"
+        ],
+        "license_file": null,
+        "name": "once_cell",
+        "repository": "https://github.com/matklad/once_cell",
+        "version": "1.21.4"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5",
+          "LICENSE-MIT": "d8c4ab431f20da8452c9a217084163822e5fd9d134e1343903c929f2859fc8fd"
+        },
+        "declared_license": "Apache-2.0 OR MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "p256"
+        ],
+        "license_file": null,
+        "name": "p256",
+        "repository": "https://github.com/RustCrypto/elliptic-curves",
+        "version": "0.14.0"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a",
+          "LICENSE-MIT": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "malachite-bigint",
+          "paste"
+        ],
+        "license_file": null,
+        "name": "paste",
+        "repository": "https://github.com/dtolnay/paste",
+        "version": "1.0.15"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5",
+          "LICENSE-MIT": "4148e7b027fba018131f297b4fe27995386ba317018d6855e182fd0e86cd754f"
+        },
+        "declared_license": "Apache-2.0 OR MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "k256",
+          "elliptic-curve",
+          "pem-rfc7468"
+        ],
+        "license_file": null,
+        "name": "pem-rfc7468",
+        "repository": "https://github.com/RustCrypto/formats",
+        "version": "1.0.0"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5",
+          "LICENSE-MIT": "73b9dc2e79c7308998dd30296e073aefaefb944a68fb89aa412c23c0edcabcaa"
+        },
+        "declared_license": "Apache-2.0 OR MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "k256",
+          "elliptic-curve",
+          "pkcs8"
+        ],
+        "license_file": null,
+        "name": "pkcs8",
+        "repository": "https://github.com/RustCrypto/formats",
+        "version": "0.11.0"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "0218327e7a480793ffdd4eb792379a9709e5c135c7ba267f709d6f6d4d70af0a",
+          "LICENSE-MIT": "4cada0bd02ea3692eee6f16400d86c6508bbd3bafb2b65fed0419f36d4f83e8f"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "rand",
+          "rand_chacha",
+          "ppv-lite86"
+        ],
+        "license_file": null,
+        "name": "ppv-lite86",
+        "repository": "https://github.com/cryptocorrosion/cryptocorrosion",
+        "version": "0.2.21"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5",
+          "LICENSE-MIT": "4621bda86773a67b5645bbd25cf1bf8b6820d4fcec3885b23b9ceec612007f63"
+        },
+        "declared_license": "Apache-2.0 OR MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "p256",
+          "primefield"
+        ],
+        "license_file": null,
+        "name": "primefield",
+        "repository": "https://github.com/RustCrypto/elliptic-curves",
+        "version": "0.14.0"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5",
+          "LICENSE-MIT": "233b95ccbf90dc67e32f3e8995c489f6312d9191ebd141a931c3b684f1e3be6d"
+        },
+        "declared_license": "Apache-2.0 OR MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "k256",
+          "primeorder"
+        ],
+        "license_file": null,
+        "name": "primeorder",
+        "repository": "https://github.com/RustCrypto/elliptic-curves",
+        "version": "0.14.0"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "8ada45cd9f843acf64e4722ae262c622a2b3b3007c7310ef36ac1061a30f6adb",
+          "LICENSE-MIT": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "chia-bls",
+          "chia-traits",
+          "chia_streamable_macro",
+          "proc-macro-crate"
+        ],
+        "license_file": null,
+        "name": "proc-macro-crate",
+        "repository": "https://github.com/bkchr/proc-macro-crate",
+        "version": "1.3.1"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a",
+          "LICENSE-MIT": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "serde",
+          "serde_derive",
+          "proc-macro2"
+        ],
+        "license_file": null,
+        "name": "proc-macro2",
+        "repository": "https://github.com/dtolnay/proc-macro2",
+        "version": "1.0.107"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a",
+          "LICENSE-MIT": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "serde",
+          "serde_derive",
+          "quote"
+        ],
+        "license_file": null,
+        "name": "quote",
+        "repository": "https://github.com/dtolnay/quote",
+        "version": "1.0.47"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE.txt": "13f4cc9fbc8d4a447b28aa84019c10ad4abf4b5f6919db061bf6690ccc23bc02"
+        },
+        "declared_license": "MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "bitvec",
+          "radium"
+        ],
+        "license_file": null,
+        "name": "radium",
+        "repository": "https://github.com/bitvecto-rs/radium",
+        "version": "0.7.0"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "35242e7a83f69875e6edeff02291e688c97caafe2f8902e4e19b49d3e78b4cab",
+          "LICENSE-MIT": "209fbbe0ad52d9235e37badf9cadfe4dbdc87203179c0899e738b39ade42177b"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "rand"
+        ],
+        "license_file": null,
+        "name": "rand",
+        "repository": "https://github.com/rust-random/rand",
+        "version": "0.9.5"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "35242e7a83f69875e6edeff02291e688c97caafe2f8902e4e19b49d3e78b4cab",
+          "LICENSE-MIT": "209fbbe0ad52d9235e37badf9cadfe4dbdc87203179c0899e738b39ade42177b"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "rand",
+          "rand_chacha"
+        ],
+        "license_file": null,
+        "name": "rand_chacha",
+        "repository": "https://github.com/rust-random/rand",
+        "version": "0.9.0"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "6df43f6f4b5d4587f3d8d71e45532c688fd168afa5fe89d571cb32fa09c4ef51",
+          "LICENSE-MIT": "8b6e9feec03e7c9a5facb26855cecd31662bf989b636bcfe79521bdf8ac863f0"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "tempfile",
+          "getrandom",
+          "rand_core"
+        ],
+        "license_file": null,
+        "name": "rand_core",
+        "repository": "https://github.com/rust-random/rand_core",
+        "version": "0.10.1"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "6df43f6f4b5d4587f3d8d71e45532c688fd168afa5fe89d571cb32fa09c4ef51",
+          "LICENSE-MIT": "209fbbe0ad52d9235e37badf9cadfe4dbdc87203179c0899e738b39ade42177b"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "rand",
+          "rand_core"
+        ],
+        "license_file": null,
+        "name": "rand_core",
+        "repository": "https://github.com/rust-random/rand",
+        "version": "0.9.5"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "78779d420019e6b4630376af8e86b6b335ee8a2f89ede6e0411e0469a326aaa4",
+          "LICENSE-MIT": "9aa4f92bfcde293ebeca9e2379fa18d1d61f000977da144c7b74c2986c9b6466"
+        },
+        "declared_license": "Apache-2.0 OR MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "k256",
+          "ecdsa",
+          "rfc6979"
+        ],
+        "license_file": null,
+        "name": "rfc6979",
+        "repository": "https://github.com/RustCrypto/signatures",
+        "version": "0.6.0"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a",
+          "LICENSE-BOOST": "c9bff75738922193e67fa726fa225535870d2aa1059f91452c411736284ad566"
+        },
+        "declared_license": "Apache-2.0 OR BSL-1.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "malachite-bigint",
+          "malachite-base",
+          "ryu"
+        ],
+        "license_file": null,
+        "name": "ryu",
+        "repository": "https://github.com/dtolnay/ryu",
+        "version": "1.0.23"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE.md": "e3ba223bb1423f0aad8c3dfce0fe3148db48926d41e6fbc3afbbf5ff9e1c89cb",
+          "LICENSE-MIT.md": "e57011537d230b14e790f6666dc00816f7b371ebbd7da8a12491e51086fec278",
+          "LICENSE-ZLIB.md": "c43b9a9b1387ed53d2c49263838261129a010e280e3a174a792242c3e2c98db9"
+        },
+        "declared_license": "Zlib OR Apache-2.0 OR MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "malachite-bigint",
+          "malachite-nz",
+          "wide",
+          "safe_arch"
+        ],
+        "license_file": null,
+        "name": "safe_arch",
+        "repository": "https://github.com/Lokathor/safe_arch",
+        "version": "1.2.0"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5",
+          "LICENSE-MIT": "57a4d75c1d095bb94754a478f3cd15e60ac66a5c5627d844be01a918eea5fe88"
+        },
+        "declared_license": "Apache-2.0 OR MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "k256",
+          "elliptic-curve",
+          "sec1"
+        ],
+        "license_file": null,
+        "name": "sec1",
+        "repository": "https://github.com/RustCrypto/formats",
+        "version": "0.8.1"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a",
+          "LICENSE-MIT": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "serde"
+        ],
+        "license_file": null,
+        "name": "serde",
+        "repository": "https://github.com/serde-rs/serde",
+        "version": "1.0.229"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a",
+          "LICENSE-MIT": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "serde",
+          "serde_core"
+        ],
+        "license_file": null,
+        "name": "serde_core",
+        "repository": "https://github.com/serde-rs/serde",
+        "version": "1.0.229"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a",
+          "LICENSE-MIT": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "serde",
+          "serde_derive"
+        ],
+        "license_file": null,
+        "name": "serde_derive",
+        "repository": "https://github.com/serde-rs/serde",
+        "version": "1.0.229"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a",
+          "LICENSE-MIT": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "serde_json"
+        ],
+        "license_file": null,
+        "name": "serde_json",
+        "repository": "https://github.com/serde-rs/json",
+        "version": "1.0.151"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+          "LICENSE-MIT": "2ca9996043628ad4dea1408974e1d92d3932f6acf9db8ffb7faecbfa6d928997"
+        },
+        "declared_license": "Apache-2.0 OR MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "k256",
+          "primeorder",
+          "serdect"
+        ],
+        "license_file": null,
+        "name": "serdect",
+        "repository": "https://github.com/RustCrypto/formats",
+        "version": "0.4.3"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5",
+          "LICENSE-MIT": "b4eb00df6e2a4d22518fcaa6a2b4646f249b3a3c9814509b22bd2091f1392ff1"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "sha1"
+        ],
+        "license_file": null,
+        "name": "sha1",
+        "repository": "https://github.com/RustCrypto/hashes",
+        "version": "0.10.7"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5",
+          "LICENSE-MIT": "b4eb00df6e2a4d22518fcaa6a2b4646f249b3a3c9814509b22bd2091f1392ff1"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "sha2"
+        ],
+        "license_file": null,
+        "name": "sha2",
+        "repository": "https://github.com/RustCrypto/hashes",
+        "version": "0.10.9"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5",
+          "LICENSE-MIT": "831e0f43ad0bf014c1c4fec5767aae470434c1d66d6e671be2d823e729063e25"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "k256",
+          "sha2"
+        ],
+        "license_file": null,
+        "name": "sha2",
+        "repository": "https://github.com/RustCrypto/hashes",
+        "version": "0.11.0"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5",
+          "LICENSE-MIT": "f18f6229547ab07f0b7b3e1f83acad8bb436f5f4c95a8a98b44f876caa00f04e"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "sha3"
+        ],
+        "license_file": null,
+        "name": "sha3",
+        "repository": "https://github.com/RustCrypto/hashes",
+        "version": "0.10.9"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "553fffcd9b1cb158bc3e9edc35da85ca5c3b3d7d2e61c883ebcfa8a65814b583",
+          "LICENSE-MIT": "4455bf75a91154108304cb283e0fea9948c14f13e20d60887cf2552449dea3b1"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "chia-bls",
+          "blst",
+          "cc",
+          "shlex"
+        ],
+        "license_file": null,
+        "name": "shlex",
+        "repository": "https://github.com/comex/rust-shlex",
+        "version": "2.0.1"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5",
+          "LICENSE-MIT": "9aa4f92bfcde293ebeca9e2379fa18d1d61f000977da144c7b74c2986c9b6466"
+        },
+        "declared_license": "Apache-2.0 OR MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "k256",
+          "signature"
+        ],
+        "license_file": null,
+        "name": "signature",
+        "repository": "https://github.com/RustCrypto/traits",
+        "version": "3.0.0"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5",
+          "LICENSE-MIT": "57a4d75c1d095bb94754a478f3cd15e60ac66a5c5627d844be01a918eea5fe88"
+        },
+        "declared_license": "Apache-2.0 OR MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "k256",
+          "ecdsa",
+          "spki"
+        ],
+        "license_file": null,
+        "name": "spki",
+        "repository": "https://github.com/RustCrypto/formats",
+        "version": "0.8.0"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE": "d1fc1bc0d155df60b2e7705b6b2ae02a05c96f948e1cec6e2fb86360b09f346b"
+        },
+        "declared_license": "BSD-3-Clause",
+        "dependency_path": [
+          "oxbasic-cli",
+          "sha2",
+          "digest",
+          "subtle"
+        ],
+        "license_file": null,
+        "name": "subtle",
+        "repository": "https://github.com/dalek-cryptography/subtle",
+        "version": "2.6.1"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a",
+          "LICENSE-MIT": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "chia-bls",
+          "chia-traits",
+          "chia_streamable_macro",
+          "syn"
+        ],
+        "license_file": null,
+        "name": "syn",
+        "repository": "https://github.com/dtolnay/syn",
+        "version": "2.0.119"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a",
+          "LICENSE-MIT": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "serde",
+          "serde_derive",
+          "syn"
+        ],
+        "license_file": null,
+        "name": "syn",
+        "repository": "https://github.com/dtolnay/syn",
+        "version": "3.0.6"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE.txt": "8b4e95f5cf0dc40269c99f7b787203ffe04ded245ca2427422c196efa2b2f42a"
+        },
+        "declared_license": "MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "bitvec",
+          "tap"
+        ],
+        "license_file": null,
+        "name": "tap",
+        "repository": "https://github.com/myrrlyn/tap",
+        "version": "1.0.1"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+          "LICENSE-MIT": "8b427f5bc501764575e52ba4f9d95673cf8f6d80a86d0d06599852e1a9a20a36"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "tempfile"
+        ],
+        "license_file": null,
+        "name": "tempfile",
+        "repository": "https://github.com/Stebalien/tempfile",
+        "version": "3.27.0"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a",
+          "LICENSE-MIT": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "chia-bls",
+          "thiserror"
+        ],
+        "license_file": null,
+        "name": "thiserror",
+        "repository": "https://github.com/dtolnay/thiserror",
+        "version": "1.0.69"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a",
+          "LICENSE-MIT": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "thiserror"
+        ],
+        "license_file": null,
+        "name": "thiserror",
+        "repository": "https://github.com/dtolnay/thiserror",
+        "version": "2.0.21"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a",
+          "LICENSE-MIT": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "chia-bls",
+          "thiserror",
+          "thiserror-impl"
+        ],
+        "license_file": null,
+        "name": "thiserror-impl",
+        "repository": "https://github.com/dtolnay/thiserror",
+        "version": "1.0.69"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a",
+          "LICENSE-MIT": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "thiserror",
+          "thiserror-impl"
+        ],
+        "license_file": null,
+        "name": "thiserror-impl",
+        "repository": "https://github.com/dtolnay/thiserror",
+        "version": "2.0.21"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+          "LICENSE-MIT": "6485b8ed310d3f0340bf1ad1f47645069ce4069dcc6bb46c7d5c6faf41de1fdb"
+        },
+        "declared_license": "MIT/Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "chia-bls",
+          "blst",
+          "threadpool"
+        ],
+        "license_file": null,
+        "name": "threadpool",
+        "repository": "https://github.com/rust-threadpool/rust-threadpool",
+        "version": "1.8.1"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "c6596eb7be8581c18be736c846fb9173b69eccf6ef94c5135893ec56bd92ba08",
+          "LICENSE-MIT": "6efb0476a1cc085077ed49357026d8c173bf33017278ef440f222fb9cbcb66e6"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "chia-bls",
+          "chia-traits",
+          "chia_streamable_macro",
+          "proc-macro-crate",
+          "toml_edit",
+          "toml_datetime"
+        ],
+        "license_file": null,
+        "name": "toml_datetime",
+        "repository": "https://github.com/toml-rs/toml",
+        "version": "0.6.11"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "c6596eb7be8581c18be736c846fb9173b69eccf6ef94c5135893ec56bd92ba08",
+          "LICENSE-MIT": "6efb0476a1cc085077ed49357026d8c173bf33017278ef440f222fb9cbcb66e6"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "chia-bls",
+          "chia-traits",
+          "chia_streamable_macro",
+          "proc-macro-crate",
+          "toml_edit"
+        ],
+        "license_file": null,
+        "name": "toml_edit",
+        "repository": "https://github.com/toml-rs/toml",
+        "version": "0.19.15"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE": "db11fec9946737df39ca3898d9cd8c10ec6f6c3a884a6802b0ad0b81b4e8f23a",
+          "LICENSE-APACHE": "516b24e051bf5630880ebbd55c40a25ce9552ebaf8970a53e8976eb70e522406",
+          "LICENSE-MIT": "a825bd853ab71619a4923d7b4311221427848070ff44d990da39b0b274c1683f"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "sha2",
+          "digest",
+          "crypto-common",
+          "typenum"
+        ],
+        "license_file": null,
+        "name": "typenum",
+        "repository": "https://github.com/paholg/typenum",
+        "version": "1.20.1"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a",
+          "LICENSE-MIT": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3",
+          "LICENSE-UNICODE": "f7db81051789b729fea528a63ec4c938fdcb93d9d61d97dc8cc2e9df6d47f2a1"
+        },
+        "declared_license": "(MIT OR Apache-2.0) AND Unicode-3.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "serde",
+          "serde_derive",
+          "proc-macro2",
+          "unicode-ident"
+        ],
+        "license_file": null,
+        "name": "unicode-ident",
+        "repository": "https://github.com/dtolnay/unicode-ident",
+        "version": "1.0.26"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+          "LICENSE-MIT": "b7e650f3fce5c53249d1cdc608b54df156a97edd636cf9d23498d0cfe7aec63e"
+        },
+        "declared_license": "MIT/Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "sha2",
+          "digest",
+          "block-buffer",
+          "generic-array",
+          "version_check"
+        ],
+        "license_file": null,
+        "name": "version_check",
+        "repository": "https://github.com/SergioBenitez/version_check",
+        "version": "0.9.5"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE.txt": "d64ac6ba60c7352115244dcfcb46c24f934603dd92e64835beafe7631c485abc",
+          "LICENSE-MIT.txt": "69c62cda6938d510467c134dc0b5c83fb9c8ca847b9cd9d9d2fe9ab427c82100",
+          "LICENSE-ZLIB.txt": "3c6921f3dfec0bed0cfa2d632616edd7380a875c8ad76c7b23dc59892259f62c"
+        },
+        "declared_license": "Zlib OR Apache-2.0 OR MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "malachite-bigint",
+          "malachite-nz",
+          "wide"
+        ],
+        "license_file": null,
+        "name": "wide",
+        "repository": "https://github.com/Lokathor/wide",
+        "version": "1.7.1"
+      },
+      {
+        "available_notice_sha256": {
+          "license-apache-2.0": "c16f8dcf1a368b83be78d826ea23de4079fe1b4469a0ab9ee20563f37ff3d44b",
+          "license-mit": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "tempfile",
+          "windows-sys",
+          "windows-link"
+        ],
+        "license_file": null,
+        "name": "windows-link",
+        "repository": "https://github.com/microsoft/windows-rs",
+        "version": "0.2.1"
+      },
+      {
+        "available_notice_sha256": {
+          "license-apache-2.0": "c16f8dcf1a368b83be78d826ea23de4079fe1b4469a0ab9ee20563f37ff3d44b",
+          "license-mit": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "tempfile",
+          "windows-sys"
+        ],
+        "license_file": null,
+        "name": "windows-sys",
+        "repository": "https://github.com/microsoft/windows-rs",
+        "version": "0.61.2"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-MIT": "cb5aedb296c5246d1f22e9099f925a65146f9f0d6b4eebba97fd27a6cdbbab2d"
+        },
+        "declared_license": "MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "chia-bls",
+          "chia-traits",
+          "chia_streamable_macro",
+          "proc-macro-crate",
+          "toml_edit",
+          "winnow"
+        ],
+        "license_file": null,
+        "name": "winnow",
+        "repository": "https://github.com/winnow-rs/winnow",
+        "version": "0.5.40"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5",
+          "LICENSE-MIT": "c1c9d5ca65122bab96e368709f8cfe9b92b443a3c21306c3260fc98eaac7e5fc"
+        },
+        "declared_license": "Apache-2.0 OR MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "k256",
+          "wnaf"
+        ],
+        "license_file": null,
+        "name": "wnaf",
+        "repository": "https://github.com/RustCrypto/elliptic-curves",
+        "version": "0.14.1"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE.txt": "411781fd38700f2357a14126d0ab048164ab881f1dcb335c1bb932e232c9a2f5"
+        },
+        "declared_license": "MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "bitvec",
+          "wyz"
+        ],
+        "license_file": null,
+        "name": "wyz",
+        "repository": "https://github.com/myrrlyn/wyz",
+        "version": "0.5.1"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "9d185ac6703c4b0453974c0d85e9eee43e6941009296bb1f5eb0b54e2329e9f3",
+          "LICENSE-BSD": "83c1763356e822adde0a2cae748d938a73fdc263849ccff6b27776dff213bd32",
+          "LICENSE-MIT": "1a2f5c12ddc934d58956aa5dbdd3255fe55fd957633ab7d0d39e4f0daa73f7df"
+        },
+        "declared_license": "BSD-2-Clause OR Apache-2.0 OR MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "rand",
+          "rand_chacha",
+          "ppv-lite86",
+          "zerocopy"
+        ],
+        "license_file": null,
+        "name": "zerocopy",
+        "repository": "https://github.com/google/zerocopy",
+        "version": "0.8.59"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+          "LICENSE-MIT": "8c7516d4b27b1e495be5e38b612298b63de48d05f49cdac94f70f3cd70f8864b"
+        },
+        "declared_license": "Apache-2.0 OR MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "chia-bls",
+          "blst",
+          "zeroize"
+        ],
+        "license_file": null,
+        "name": "zeroize",
+        "repository": "https://github.com/RustCrypto/utils",
+        "version": "1.9.0"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+          "LICENSE-MIT": "b8c6939380a400f53e11923d50fcc4dd2fa1ba8339fd9d04cda38a0251b6c9b0"
+        },
+        "declared_license": "Apache-2.0 OR MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "chia-bls",
+          "blst",
+          "zeroize",
+          "zeroize_derive"
+        ],
+        "license_file": null,
+        "name": "zeroize_derive",
+        "repository": "https://github.com/RustCrypto/utils",
+        "version": "1.5.0"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-MIT": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
+        },
+        "declared_license": "MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "serde_json",
+          "zmij"
+        ],
+        "license_file": null,
+        "name": "zmij",
+        "repository": "https://github.com/dtolnay/zmij",
+        "version": "1.0.23"
+      }
+    ],
+    "x86_64-unknown-linux-gnu": [
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+          "LICENSE-MIT": "27995d58ad5c1145c1a8cd86244ce844886958a35eb2b78c6b772748669999ac"
+        },
+        "declared_license": "Apache-2.0 OR MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "num-traits",
+          "autocfg"
+        ],
+        "license_file": null,
+        "name": "autocfg",
+        "repository": "https://github.com/cuviper/autocfg",
+        "version": "1.5.1"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5",
+          "LICENSE-MIT": "54fb6dfe99a6906f862aa40282f0e8e9d9d0f22d57d99ab8acbaf4c8ceaa70e0"
+        },
+        "declared_license": "Apache-2.0 OR MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "k256",
+          "elliptic-curve",
+          "base16ct"
+        ],
+        "license_file": null,
+        "name": "base16ct",
+        "repository": "https://github.com/RustCrypto/formats",
+        "version": "1.0.0"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5",
+          "LICENSE-MIT": "2d1c57bff28344b9e698f51063bc8509799cc4c99a4e0cf2aa3f7e7c3e1f9a9d"
+        },
+        "declared_license": "Apache-2.0 OR MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "k256",
+          "ecdsa",
+          "spki",
+          "base64ct"
+        ],
+        "license_file": null,
+        "name": "base64ct",
+        "repository": "https://github.com/RustCrypto/formats",
+        "version": "1.8.3"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+          "LICENSE-MIT": "6485b8ed310d3f0340bf1ad1f47645069ce4069dcc6bb46c7d5c6faf41de1fdb"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "rustix",
+          "bitflags"
+        ],
+        "license_file": null,
+        "name": "bitflags",
+        "repository": "https://github.com/bitflags/bitflags",
+        "version": "2.13.2"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE.txt": "411781fd38700f2357a14126d0ab048164ab881f1dcb335c1bb932e232c9a2f5"
+        },
+        "declared_license": "MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "bitvec"
+        ],
+        "license_file": null,
+        "name": "bitvec",
+        "repository": "https://github.com/bitvecto-rs/bitvec",
+        "version": "1.1.1"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5",
+          "LICENSE-MIT": "d5c22aa3118d240e877ad41c5d9fa232f9c77d757d4aac0c2f943afc0a95e0ef"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "sha2",
+          "digest",
+          "block-buffer"
+        ],
+        "license_file": null,
+        "name": "block-buffer",
+        "repository": "https://github.com/RustCrypto/utils",
+        "version": "0.10.4"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5",
+          "LICENSE-MIT": "98181e7249d0c01737645ec982499ce99a0f07eb8f7d625b8840d799d10dbc01"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "k256",
+          "ecdsa",
+          "digest",
+          "block-buffer"
+        ],
+        "license_file": null,
+        "name": "block-buffer",
+        "repository": "https://github.com/RustCrypto/utils",
+        "version": "0.12.1"
+      },
+      {
+        "available_notice_sha256": {},
+        "declared_license": "Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "chia-bls",
+          "blst"
+        ],
+        "license_file": null,
+        "name": "blst",
+        "repository": "https://github.com/supranational/blst",
+        "version": "0.3.17"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+          "LICENSE-MIT": "65f94e99ddaf4f5d1782a6dae23f35d4293a9a01444a13135a6887017d353cee"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "bumpalo"
+        ],
+        "license_file": null,
+        "name": "bumpalo",
+        "repository": "https://github.com/fitzgen/bumpalo",
+        "version": "3.20.3"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "e3ba223bb1423f0aad8c3dfce0fe3148db48926d41e6fbc3afbbf5ff9e1c89cb",
+          "LICENSE-MIT": "9df9ba60a11af705f2e451b53762686e615d86f76b169cf075c3237730dbd7e2",
+          "LICENSE-ZLIB": "84b34dd7608f7fb9b17bd588a6bf392bf7de504e2716f024a77d89f1b145a151"
+        },
+        "declared_license": "Zlib OR Apache-2.0 OR MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "malachite-bigint",
+          "malachite-nz",
+          "wide",
+          "bytemuck"
+        ],
+        "license_file": null,
+        "name": "bytemuck",
+        "repository": "https://github.com/Lokathor/bytemuck",
+        "version": "1.25.2"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+          "LICENSE-MIT": "378f5840b258e2779c39418f3f2d7b2ba96f1c7917dd6be0713f88305dbda397"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "chia-bls",
+          "blst",
+          "cc"
+        ],
+        "license_file": null,
+        "name": "cc",
+        "repository": "https://github.com/rust-lang/cc-rs",
+        "version": "1.6.0"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+          "LICENSE-MIT": "378f5840b258e2779c39418f3f2d7b2ba96f1c7917dd6be0713f88305dbda397"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "sha2",
+          "cfg-if"
+        ],
+        "license_file": null,
+        "name": "cfg-if",
+        "repository": "https://github.com/rust-lang/cfg-if",
+        "version": "1.0.5"
+      },
+      {
+        "available_notice_sha256": {},
+        "declared_license": "Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "chia-bls"
+        ],
+        "license_file": null,
+        "name": "chia-bls",
+        "repository": "https://github.com/Chia-Network/chia_rs",
+        "version": "0.38.2"
+      },
+      {
+        "available_notice_sha256": {},
+        "declared_license": "Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "chia-bls",
+          "chia-sha2"
+        ],
+        "license_file": null,
+        "name": "chia-sha2",
+        "repository": "https://github.com/Chia-Network/chia_rs",
+        "version": "0.38.2"
+      },
+      {
+        "available_notice_sha256": {},
+        "declared_license": "Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "chia-bls",
+          "chia-traits"
+        ],
+        "license_file": null,
+        "name": "chia-traits",
+        "repository": null,
+        "version": "0.38.2"
+      },
+      {
+        "available_notice_sha256": {},
+        "declared_license": "Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "chia-bls",
+          "chia-traits",
+          "chia_streamable_macro"
+        ],
+        "license_file": null,
+        "name": "chia_streamable_macro",
+        "repository": "https://github.com/Chia-Network/chia_rs",
+        "version": "0.38.2"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE": "7db0cf1060026bf2a544ea29cf9a96fba7d3781f93a1d06d6fee18251f1c207a"
+        },
+        "declared_license": "Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr"
+        ],
+        "license_file": null,
+        "name": "clvmr",
+        "repository": "https://github.com/Chia-Network/clvm_rs/",
+        "version": "0.19.0"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+          "LICENSE-MIT": "70c9d40f1f9545c3f133b8a67206e89da850f6468eed072281bb3701514114a9"
+        },
+        "declared_license": "Apache-2.0 OR MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "k256",
+          "ecdsa",
+          "digest",
+          "ctutils",
+          "cmov"
+        ],
+        "license_file": null,
+        "name": "cmov",
+        "repository": "https://github.com/RustCrypto/utils",
+        "version": "0.5.4"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5",
+          "LICENSE-MIT": "73b9dc2e79c7308998dd30296e073aefaefb944a68fb89aa412c23c0edcabcaa"
+        },
+        "declared_license": "Apache-2.0 OR MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "k256",
+          "ecdsa",
+          "der",
+          "const-oid"
+        ],
+        "license_file": null,
+        "name": "const-oid",
+        "repository": "https://github.com/RustCrypto/formats",
+        "version": "0.10.2"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5",
+          "LICENSE-MIT": "003736bc98408b53511b9cc8ff5d1af3bf0a8f17d53841cc39d8ab1b96a195b0"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "k256",
+          "cpubits"
+        ],
+        "license_file": null,
+        "name": "cpubits",
+        "repository": "https://github.com/RustCrypto/utils",
+        "version": "0.1.1"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5",
+          "LICENSE-MIT": "ae9baa7beea910273c2f384c2a6b721fb7bd02bda3436074a1072e4ee689f985"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "sha2",
+          "cpufeatures"
+        ],
+        "license_file": null,
+        "name": "cpufeatures",
+        "repository": "https://github.com/RustCrypto/utils",
+        "version": "0.2.17"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5",
+          "LICENSE-MIT": "73b9dc2e79c7308998dd30296e073aefaefb944a68fb89aa412c23c0edcabcaa"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "k256",
+          "sha2",
+          "cpufeatures"
+        ],
+        "license_file": null,
+        "name": "cpufeatures",
+        "repository": "https://github.com/RustCrypto/utils",
+        "version": "0.3.1"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5",
+          "LICENSE-MIT": "57a4d75c1d095bb94754a478f3cd15e60ac66a5c5627d844be01a918eea5fe88"
+        },
+        "declared_license": "Apache-2.0 OR MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "k256",
+          "elliptic-curve",
+          "crypto-bigint"
+        ],
+        "license_file": null,
+        "name": "crypto-bigint",
+        "repository": "https://github.com/RustCrypto/crypto-bigint",
+        "version": "0.7.5"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5",
+          "LICENSE-MIT": "3521672491a3479422d5fe1aca6645dd2984090f85da6e5205abfb18fb7a6897"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "sha2",
+          "digest",
+          "crypto-common"
+        ],
+        "license_file": null,
+        "name": "crypto-common",
+        "repository": "https://github.com/RustCrypto/traits",
+        "version": "0.1.7"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5",
+          "LICENSE-MIT": "d2e7ec5355c96eeade56b09187ceb48a6a30299da3ce7531a66d3d11405ab963"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "k256",
+          "elliptic-curve",
+          "crypto-common"
+        ],
+        "license_file": null,
+        "name": "crypto-common",
+        "repository": "https://github.com/RustCrypto/traits",
+        "version": "0.2.2"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+          "LICENSE-MIT": "91585c36e4fb9ab4ca0d3dfac5d66d3c0c62cc51f640a0e1196542daf2267eae"
+        },
+        "declared_license": "Apache-2.0 OR MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "k256",
+          "ecdsa",
+          "digest",
+          "ctutils"
+        ],
+        "license_file": null,
+        "name": "ctutils",
+        "repository": "https://github.com/RustCrypto/utils",
+        "version": "0.4.2"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5",
+          "LICENSE-MIT": "73b9dc2e79c7308998dd30296e073aefaefb944a68fb89aa412c23c0edcabcaa"
+        },
+        "declared_license": "Apache-2.0 OR MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "k256",
+          "ecdsa",
+          "der"
+        ],
+        "license_file": null,
+        "name": "der",
+        "repository": "https://github.com/RustCrypto/formats",
+        "version": "0.8.2"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5",
+          "LICENSE-MIT": "9e0dfd2dd4173a530e238cb6adb37aa78c34c6bc7444e0e10c1ab5d8881f63ba"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "sha2",
+          "digest"
+        ],
+        "license_file": null,
+        "name": "digest",
+        "repository": "https://github.com/RustCrypto/traits",
+        "version": "0.10.7"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5",
+          "LICENSE-MIT": "af59cea35d7f5e2777a713b8d155d65efa2c339eb43f3c14e868c6ac8506edad"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "k256",
+          "ecdsa",
+          "digest"
+        ],
+        "license_file": null,
+        "name": "digest",
+        "repository": "https://github.com/RustCrypto/traits",
+        "version": "0.11.3"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "78779d420019e6b4630376af8e86b6b335ee8a2f89ede6e0411e0469a326aaa4",
+          "LICENSE-MIT": "9aa4f92bfcde293ebeca9e2379fa18d1d61f000977da144c7b74c2986c9b6466"
+        },
+        "declared_license": "Apache-2.0 OR MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "k256",
+          "ecdsa"
+        ],
+        "license_file": null,
+        "name": "ecdsa",
+        "repository": "https://github.com/RustCrypto/signatures",
+        "version": "0.17.0"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+          "LICENSE-MIT": "7576269ea71f767b99297934c0b2367532690f8c4badc695edf8e04ab6a1e545"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "malachite-bigint",
+          "malachite-base",
+          "itertools",
+          "either"
+        ],
+        "license_file": null,
+        "name": "either",
+        "repository": "https://github.com/rayon-rs/either",
+        "version": "1.18.0"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5",
+          "LICENSE-MIT": "d8c4ab431f20da8452c9a217084163822e5fd9d134e1343903c929f2859fc8fd"
+        },
+        "declared_license": "Apache-2.0 OR MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "k256",
+          "elliptic-curve"
+        ],
+        "license_file": null,
+        "name": "elliptic-curve",
+        "repository": "https://github.com/RustCrypto/traits",
+        "version": "0.14.1"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+          "LICENSE-MIT": "7365cc8878a1d7ce155a58c4ca09c3d7a6be413efa5334a80ea842912b669349"
+        },
+        "declared_license": "Apache-2.0 OR MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "chia-bls",
+          "chia-traits",
+          "chia_streamable_macro",
+          "proc-macro-crate",
+          "toml_edit",
+          "indexmap",
+          "equivalent"
+        ],
+        "license_file": null,
+        "name": "equivalent",
+        "repository": "https://github.com/indexmap-rs/equivalent",
+        "version": "1.0.2"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+          "LICENSE-MIT": "8764a597675778ddfd4e25f81b08a05dbcf089ac05662df7613fe67f150e3aa2"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "rustix",
+          "errno"
+        ],
+        "license_file": null,
+        "name": "errno",
+        "repository": "https://github.com/lambda-fairy/rust-errno",
+        "version": "0.3.14"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+          "LICENSE-MIT": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
+        },
+        "declared_license": "Apache-2.0 OR MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "tempfile",
+          "fastrand"
+        ],
+        "license_file": null,
+        "name": "fastrand",
+        "repository": "https://github.com/smol-rs/fastrand",
+        "version": "2.5.0"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "3708458dee7f359ac6c9c5558023ed481be87e5372c43ebd7f2ca7ad23c12026",
+          "LICENSE-MIT": "8d0c1d1d4b2bebf5b9211f0e883d5a482b7808f3ed31320da14ddee95811f4ef"
+        },
+        "declared_license": "MIT/Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "k256",
+          "elliptic-curve",
+          "ff"
+        ],
+        "license_file": null,
+        "name": "ff",
+        "repository": "https://github.com/zkcrypto/ff",
+        "version": "0.14.0"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+          "LICENSE-MIT": "378f5840b258e2779c39418f3f2d7b2ba96f1c7917dd6be0713f88305dbda397"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "chia-bls",
+          "blst",
+          "cc",
+          "find-msvc-tools"
+        ],
+        "license_file": null,
+        "name": "find-msvc-tools",
+        "repository": "https://github.com/rust-lang/cc-rs",
+        "version": "0.1.14"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE": "b1181a40b2a7b25cf66fd01481713bc1005df082c53ef73e851e55071b102744"
+        },
+        "declared_license": "Zlib",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "malachite-bigint",
+          "malachite-base",
+          "hashbrown",
+          "foldhash"
+        ],
+        "license_file": null,
+        "name": "foldhash",
+        "repository": "https://github.com/orlp/foldhash",
+        "version": "0.2.0"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE.txt": "f790cc576999f5998c766d3d26d7d64dc368e805a98461484f65e8d961ec6d9f"
+        },
+        "declared_license": "MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "bitvec",
+          "funty"
+        ],
+        "license_file": null,
+        "name": "funty",
+        "repository": "https://github.com/myrrlyn/funty",
+        "version": "2.0.0"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE": "c09aae9d3c77b531f56351a9947bc7446511d6b025b3255312d3e3442a9a7583"
+        },
+        "declared_license": "MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "sha2",
+          "digest",
+          "block-buffer",
+          "generic-array"
+        ],
+        "license_file": null,
+        "name": "generic-array",
+        "repository": "https://github.com/fizyk20/generic-array.git",
+        "version": "0.14.7"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "aaff376532ea30a0cd5330b9502ad4a4c8bf769c539c87ffe78819d188a18ebf",
+          "LICENSE-MIT": "29e9fe5074bd27e0e5d5d110394fbbcd841baee2651a3c4b4560a632702cede4"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "rand",
+          "rand_core",
+          "getrandom"
+        ],
+        "license_file": null,
+        "name": "getrandom",
+        "repository": "https://github.com/rust-random/getrandom",
+        "version": "0.3.4"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "aaff376532ea30a0cd5330b9502ad4a4c8bf769c539c87ffe78819d188a18ebf",
+          "LICENSE-MIT": "523a42c25d245dde9c015f882cec7f4555aad883382a6cf19b4b7d9b2cd5419b"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "tempfile",
+          "getrandom"
+        ],
+        "license_file": null,
+        "name": "getrandom",
+        "repository": "https://github.com/rust-random/getrandom",
+        "version": "0.4.3"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+          "LICENSE-MIT": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
+        },
+        "declared_license": "MIT/Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "k256",
+          "elliptic-curve",
+          "group"
+        ],
+        "license_file": null,
+        "name": "group",
+        "repository": "https://github.com/zkcrypto/group",
+        "version": "0.14.0"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+          "LICENSE-MIT": "ff8f68cb076caf8cefe7a6430d4ac086ce6af2ca8ce2c4e5a2004d4552ef52a2"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "malachite-bigint",
+          "malachite-base",
+          "hashbrown"
+        ],
+        "license_file": null,
+        "name": "hashbrown",
+        "repository": "https://github.com/rust-lang/hashbrown",
+        "version": "0.16.1"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+          "LICENSE-MIT": "ff8f68cb076caf8cefe7a6430d4ac086ce6af2ca8ce2c4e5a2004d4552ef52a2"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "chia-bls",
+          "chia-traits",
+          "chia_streamable_macro",
+          "proc-macro-crate",
+          "toml_edit",
+          "indexmap",
+          "hashbrown"
+        ],
+        "license_file": null,
+        "name": "hashbrown",
+        "repository": "https://github.com/rust-lang/hashbrown",
+        "version": "0.17.1"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "c6596eb7be8581c18be736c846fb9173b69eccf6ef94c5135893ec56bd92ba08",
+          "LICENSE-MIT": "f7bdb3426d045cd50efd4953026e3eb5a83d0199f458a075602611b9344da5b9"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "hex"
+        ],
+        "license_file": null,
+        "name": "hex",
+        "repository": "https://github.com/KokaKiwi/rust-hex",
+        "version": "0.4.3"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5",
+          "LICENSE-MIT": "fbe7b9b51878efdfa613d4ec42ebfc9c7fb0c29806249ef9a3cd8f31ca5ef855"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "hex-literal"
+        ],
+        "license_file": null,
+        "name": "hex-literal",
+        "repository": "https://github.com/RustCrypto/utils",
+        "version": "0.4.1"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "59013a5c8d3a19c26a457579105915a5d51bb0c09d579f8cdedf12e4203c3018",
+          "LICENSE-MIT": "d288f9c9b4590446ec18c22ead8f8b5a12a3d4025b68f62dc9015063eb9cca69"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "chia-bls",
+          "hkdf"
+        ],
+        "license_file": null,
+        "name": "hkdf",
+        "repository": "https://github.com/RustCrypto/KDFs/",
+        "version": "0.12.4"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5",
+          "LICENSE-MIT": "9e0dfd2dd4173a530e238cb6adb37aa78c34c6bc7444e0e10c1ab5d8881f63ba"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "chia-bls",
+          "hkdf",
+          "hmac"
+        ],
+        "license_file": null,
+        "name": "hmac",
+        "repository": "https://github.com/RustCrypto/MACs",
+        "version": "0.12.1"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5",
+          "LICENSE-MIT": "9e0dfd2dd4173a530e238cb6adb37aa78c34c6bc7444e0e10c1ab5d8881f63ba"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "k256",
+          "ecdsa",
+          "rfc6979",
+          "hmac"
+        ],
+        "license_file": null,
+        "name": "hmac",
+        "repository": "https://github.com/RustCrypto/MACs",
+        "version": "0.13.0"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5",
+          "LICENSE-MIT": "70c9d40f1f9545c3f133b8a67206e89da850f6468eed072281bb3701514114a9"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "k256",
+          "elliptic-curve",
+          "hybrid-array"
+        ],
+        "license_file": null,
+        "name": "hybrid-array",
+        "repository": "https://github.com/RustCrypto/hybrid-array",
+        "version": "0.4.15"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+          "LICENSE-MIT": "ecc269ef87fd38a1d98e30bfac9ba964a9dbd9315c3770fed98d4d7cb5882055"
+        },
+        "declared_license": "Apache-2.0 OR MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "chia-bls",
+          "chia-traits",
+          "chia_streamable_macro",
+          "proc-macro-crate",
+          "toml_edit",
+          "indexmap"
+        ],
+        "license_file": null,
+        "name": "indexmap",
+        "repository": "https://github.com/indexmap-rs/indexmap",
+        "version": "2.14.2"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+          "LICENSE-MIT": "7576269ea71f767b99297934c0b2367532690f8c4badc695edf8e04ab6a1e545"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "malachite-bigint",
+          "malachite-base",
+          "itertools"
+        ],
+        "license_file": null,
+        "name": "itertools",
+        "repository": "https://github.com/rust-itertools/itertools",
+        "version": "0.14.0"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a",
+          "LICENSE-MIT": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "serde_json",
+          "itoa"
+        ],
+        "license_file": null,
+        "name": "itoa",
+        "repository": "https://github.com/dtolnay/itoa",
+        "version": "1.0.18"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5",
+          "LICENSE-MIT": "3b4f73047906835fba5005acdf68f25a460b9ee298dae710f22b435d335a6f7b"
+        },
+        "declared_license": "Apache-2.0 OR MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "k256"
+        ],
+        "license_file": null,
+        "name": "k256",
+        "repository": "https://github.com/RustCrypto/elliptic-curves",
+        "version": "0.14.0"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5",
+          "LICENSE-MIT": "bdebaf9156a298f8fdab56dd26cb5144673de522d80f4c0d88e0039145f147f9"
+        },
+        "declared_license": "Apache-2.0 OR MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "sha3",
+          "keccak"
+        ],
+        "license_file": null,
+        "name": "keccak",
+        "repository": "https://github.com/RustCrypto/sponges/tree/master/keccak",
+        "version": "0.1.6"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+          "LICENSE-MIT": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "lazy_static"
+        ],
+        "license_file": null,
+        "name": "lazy_static",
+        "repository": "https://github.com/rust-lang-nursery/lazy-static.rs",
+        "version": "1.5.1"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a",
+          "LICENSE-MIT": "123a331b5dbf04c30097fa43b8f858bc85df671fe776de498d01f3d6b7c1f69e"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "rustix",
+          "libc"
+        ],
+        "license_file": null,
+        "name": "libc",
+        "repository": "https://github.com/rust-lang/libc",
+        "version": "0.2.190"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE.txt": "3823dda7cf046602f4b4e77ec8e227863dc4736037cc85bb33d9f19febe16bb7"
+        },
+        "declared_license": "MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "malachite-bigint",
+          "malachite-base",
+          "libm"
+        ],
+        "license_file": null,
+        "name": "libm",
+        "repository": "https://github.com/rust-lang/compiler-builtins",
+        "version": "0.2.16"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "8173d5c29b4f956d532781d2b86e4e30f83e6b7878dce18c919451d6ba707c90",
+          "LICENSE-MIT": "7b63ecd5f1902af1b63729947373683c32745c16a10e8e6292e2e2dcd7e90ae0"
+        },
+        "declared_license": "MIT/Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "chia-bls",
+          "linked-hash-map"
+        ],
+        "license_file": null,
+        "name": "linked-hash-map",
+        "repository": "https://github.com/contain-rs/linked-hash-map",
+        "version": "0.5.6"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+          "LICENSE-Apache-2.0_WITH_LLVM-exception": "268872b9816f90fd8e85db5a28d33f8150ebb8dd016653fb39ef1f94f2686bc5",
+          "LICENSE-MIT": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
+        },
+        "declared_license": "Apache-2.0 WITH LLVM-exception OR Apache-2.0 OR MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "rustix",
+          "linux-raw-sys"
+        ],
+        "license_file": null,
+        "name": "linux-raw-sys",
+        "repository": "https://github.com/sunfishcode/linux-raw-sys",
+        "version": "0.12.1"
+      },
+      {
+        "available_notice_sha256": {},
+        "declared_license": "LGPL-3.0-only",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "malachite-bigint",
+          "malachite-base"
+        ],
+        "license_file": null,
+        "name": "malachite-base",
+        "repository": "https://github.com/mhogrefe/malachite",
+        "version": "0.9.2"
+      },
+      {
+        "available_notice_sha256": {},
+        "declared_license": "LGPL-3.0-only",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "malachite-bigint"
+        ],
+        "license_file": null,
+        "name": "malachite-bigint",
+        "repository": "https://github.com/mhogrefe/malachite",
+        "version": "0.9.2"
+      },
+      {
+        "available_notice_sha256": {},
+        "declared_license": "LGPL-3.0-only",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "malachite-bigint",
+          "malachite-nz"
+        ],
+        "license_file": null,
+        "name": "malachite-nz",
+        "repository": "https://github.com/mhogrefe/malachite",
+        "version": "0.9.2"
+      },
+      {
+        "available_notice_sha256": {
+          "COPYING": "01c266bced4a434da0051174d6bee16a4c82cf634e2679b6155d40d75012390f",
+          "LICENSE-MIT": "0f96a83840e146e43c0ec96a22ec1f392e0680e6c1226e6f3ba87e0740af850f"
+        },
+        "declared_license": "Unlicense OR MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "serde_json",
+          "memchr"
+        ],
+        "license_file": null,
+        "name": "memchr",
+        "repository": "https://github.com/BurntSushi/memchr",
+        "version": "2.8.3"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+          "LICENSE-MIT": "6485b8ed310d3f0340bf1ad1f47645069ce4069dcc6bb46c7d5c6faf41de1fdb"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "num-bigint"
+        ],
+        "license_file": null,
+        "name": "num-bigint",
+        "repository": "https://github.com/rust-num/num-bigint",
+        "version": "0.4.6"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+          "LICENSE-MIT": "6485b8ed310d3f0340bf1ad1f47645069ce4069dcc6bb46c7d5c6faf41de1fdb"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "num-integer"
+        ],
+        "license_file": null,
+        "name": "num-integer",
+        "repository": "https://github.com/rust-num/num-integer",
+        "version": "0.1.47"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+          "LICENSE-MIT": "6485b8ed310d3f0340bf1ad1f47645069ce4069dcc6bb46c7d5c6faf41de1fdb"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "num-traits"
+        ],
+        "license_file": null,
+        "name": "num-traits",
+        "repository": "https://github.com/rust-num/num-traits",
+        "version": "0.2.19"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+          "LICENSE-MIT": "391a5396cec6230bfabd4ef4eb2350eb895bc5efce377a2218f5702ed020d3e3"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "chia-bls",
+          "blst",
+          "threadpool",
+          "num_cpus"
+        ],
+        "license_file": null,
+        "name": "num_cpus",
+        "repository": "https://github.com/seanmonstar/num_cpus",
+        "version": "1.17.0"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+          "LICENSE-MIT": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "tempfile",
+          "once_cell"
+        ],
+        "license_file": null,
+        "name": "once_cell",
+        "repository": "https://github.com/matklad/once_cell",
+        "version": "1.21.4"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5",
+          "LICENSE-MIT": "d8c4ab431f20da8452c9a217084163822e5fd9d134e1343903c929f2859fc8fd"
+        },
+        "declared_license": "Apache-2.0 OR MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "p256"
+        ],
+        "license_file": null,
+        "name": "p256",
+        "repository": "https://github.com/RustCrypto/elliptic-curves",
+        "version": "0.14.0"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a",
+          "LICENSE-MIT": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "malachite-bigint",
+          "paste"
+        ],
+        "license_file": null,
+        "name": "paste",
+        "repository": "https://github.com/dtolnay/paste",
+        "version": "1.0.15"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5",
+          "LICENSE-MIT": "4148e7b027fba018131f297b4fe27995386ba317018d6855e182fd0e86cd754f"
+        },
+        "declared_license": "Apache-2.0 OR MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "k256",
+          "elliptic-curve",
+          "pem-rfc7468"
+        ],
+        "license_file": null,
+        "name": "pem-rfc7468",
+        "repository": "https://github.com/RustCrypto/formats",
+        "version": "1.0.0"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5",
+          "LICENSE-MIT": "73b9dc2e79c7308998dd30296e073aefaefb944a68fb89aa412c23c0edcabcaa"
+        },
+        "declared_license": "Apache-2.0 OR MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "k256",
+          "elliptic-curve",
+          "pkcs8"
+        ],
+        "license_file": null,
+        "name": "pkcs8",
+        "repository": "https://github.com/RustCrypto/formats",
+        "version": "0.11.0"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "0218327e7a480793ffdd4eb792379a9709e5c135c7ba267f709d6f6d4d70af0a",
+          "LICENSE-MIT": "4cada0bd02ea3692eee6f16400d86c6508bbd3bafb2b65fed0419f36d4f83e8f"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "rand",
+          "rand_chacha",
+          "ppv-lite86"
+        ],
+        "license_file": null,
+        "name": "ppv-lite86",
+        "repository": "https://github.com/cryptocorrosion/cryptocorrosion",
+        "version": "0.2.21"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5",
+          "LICENSE-MIT": "4621bda86773a67b5645bbd25cf1bf8b6820d4fcec3885b23b9ceec612007f63"
+        },
+        "declared_license": "Apache-2.0 OR MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "p256",
+          "primefield"
+        ],
+        "license_file": null,
+        "name": "primefield",
+        "repository": "https://github.com/RustCrypto/elliptic-curves",
+        "version": "0.14.0"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5",
+          "LICENSE-MIT": "233b95ccbf90dc67e32f3e8995c489f6312d9191ebd141a931c3b684f1e3be6d"
+        },
+        "declared_license": "Apache-2.0 OR MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "k256",
+          "primeorder"
+        ],
+        "license_file": null,
+        "name": "primeorder",
+        "repository": "https://github.com/RustCrypto/elliptic-curves",
+        "version": "0.14.0"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "8ada45cd9f843acf64e4722ae262c622a2b3b3007c7310ef36ac1061a30f6adb",
+          "LICENSE-MIT": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "chia-bls",
+          "chia-traits",
+          "chia_streamable_macro",
+          "proc-macro-crate"
+        ],
+        "license_file": null,
+        "name": "proc-macro-crate",
+        "repository": "https://github.com/bkchr/proc-macro-crate",
+        "version": "1.3.1"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a",
+          "LICENSE-MIT": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "serde",
+          "serde_derive",
+          "proc-macro2"
+        ],
+        "license_file": null,
+        "name": "proc-macro2",
+        "repository": "https://github.com/dtolnay/proc-macro2",
+        "version": "1.0.107"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a",
+          "LICENSE-MIT": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "serde",
+          "serde_derive",
+          "quote"
+        ],
+        "license_file": null,
+        "name": "quote",
+        "repository": "https://github.com/dtolnay/quote",
+        "version": "1.0.47"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE.txt": "13f4cc9fbc8d4a447b28aa84019c10ad4abf4b5f6919db061bf6690ccc23bc02"
+        },
+        "declared_license": "MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "bitvec",
+          "radium"
+        ],
+        "license_file": null,
+        "name": "radium",
+        "repository": "https://github.com/bitvecto-rs/radium",
+        "version": "0.7.0"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "35242e7a83f69875e6edeff02291e688c97caafe2f8902e4e19b49d3e78b4cab",
+          "LICENSE-MIT": "209fbbe0ad52d9235e37badf9cadfe4dbdc87203179c0899e738b39ade42177b"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "rand"
+        ],
+        "license_file": null,
+        "name": "rand",
+        "repository": "https://github.com/rust-random/rand",
+        "version": "0.9.5"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "35242e7a83f69875e6edeff02291e688c97caafe2f8902e4e19b49d3e78b4cab",
+          "LICENSE-MIT": "209fbbe0ad52d9235e37badf9cadfe4dbdc87203179c0899e738b39ade42177b"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "rand",
+          "rand_chacha"
+        ],
+        "license_file": null,
+        "name": "rand_chacha",
+        "repository": "https://github.com/rust-random/rand",
+        "version": "0.9.0"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "6df43f6f4b5d4587f3d8d71e45532c688fd168afa5fe89d571cb32fa09c4ef51",
+          "LICENSE-MIT": "8b6e9feec03e7c9a5facb26855cecd31662bf989b636bcfe79521bdf8ac863f0"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "tempfile",
+          "getrandom",
+          "rand_core"
+        ],
+        "license_file": null,
+        "name": "rand_core",
+        "repository": "https://github.com/rust-random/rand_core",
+        "version": "0.10.1"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "6df43f6f4b5d4587f3d8d71e45532c688fd168afa5fe89d571cb32fa09c4ef51",
+          "LICENSE-MIT": "209fbbe0ad52d9235e37badf9cadfe4dbdc87203179c0899e738b39ade42177b"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "rand",
+          "rand_core"
+        ],
+        "license_file": null,
+        "name": "rand_core",
+        "repository": "https://github.com/rust-random/rand",
+        "version": "0.9.5"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "78779d420019e6b4630376af8e86b6b335ee8a2f89ede6e0411e0469a326aaa4",
+          "LICENSE-MIT": "9aa4f92bfcde293ebeca9e2379fa18d1d61f000977da144c7b74c2986c9b6466"
+        },
+        "declared_license": "Apache-2.0 OR MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "k256",
+          "ecdsa",
+          "rfc6979"
+        ],
+        "license_file": null,
+        "name": "rfc6979",
+        "repository": "https://github.com/RustCrypto/signatures",
+        "version": "0.6.0"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+          "LICENSE-Apache-2.0_WITH_LLVM-exception": "268872b9816f90fd8e85db5a28d33f8150ebb8dd016653fb39ef1f94f2686bc5",
+          "LICENSE-MIT": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
+        },
+        "declared_license": "Apache-2.0 WITH LLVM-exception OR Apache-2.0 OR MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "rustix"
+        ],
+        "license_file": null,
+        "name": "rustix",
+        "repository": "https://github.com/bytecodealliance/rustix",
+        "version": "1.1.5"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a",
+          "LICENSE-BOOST": "c9bff75738922193e67fa726fa225535870d2aa1059f91452c411736284ad566"
+        },
+        "declared_license": "Apache-2.0 OR BSL-1.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "malachite-bigint",
+          "malachite-base",
+          "ryu"
+        ],
+        "license_file": null,
+        "name": "ryu",
+        "repository": "https://github.com/dtolnay/ryu",
+        "version": "1.0.23"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE.md": "e3ba223bb1423f0aad8c3dfce0fe3148db48926d41e6fbc3afbbf5ff9e1c89cb",
+          "LICENSE-MIT.md": "e57011537d230b14e790f6666dc00816f7b371ebbd7da8a12491e51086fec278",
+          "LICENSE-ZLIB.md": "c43b9a9b1387ed53d2c49263838261129a010e280e3a174a792242c3e2c98db9"
+        },
+        "declared_license": "Zlib OR Apache-2.0 OR MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "malachite-bigint",
+          "malachite-nz",
+          "wide",
+          "safe_arch"
+        ],
+        "license_file": null,
+        "name": "safe_arch",
+        "repository": "https://github.com/Lokathor/safe_arch",
+        "version": "1.2.0"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5",
+          "LICENSE-MIT": "57a4d75c1d095bb94754a478f3cd15e60ac66a5c5627d844be01a918eea5fe88"
+        },
+        "declared_license": "Apache-2.0 OR MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "k256",
+          "elliptic-curve",
+          "sec1"
+        ],
+        "license_file": null,
+        "name": "sec1",
+        "repository": "https://github.com/RustCrypto/formats",
+        "version": "0.8.1"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a",
+          "LICENSE-MIT": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "serde"
+        ],
+        "license_file": null,
+        "name": "serde",
+        "repository": "https://github.com/serde-rs/serde",
+        "version": "1.0.229"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a",
+          "LICENSE-MIT": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "serde",
+          "serde_core"
+        ],
+        "license_file": null,
+        "name": "serde_core",
+        "repository": "https://github.com/serde-rs/serde",
+        "version": "1.0.229"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a",
+          "LICENSE-MIT": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "serde",
+          "serde_derive"
+        ],
+        "license_file": null,
+        "name": "serde_derive",
+        "repository": "https://github.com/serde-rs/serde",
+        "version": "1.0.229"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a",
+          "LICENSE-MIT": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "serde_json"
+        ],
+        "license_file": null,
+        "name": "serde_json",
+        "repository": "https://github.com/serde-rs/json",
+        "version": "1.0.151"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+          "LICENSE-MIT": "2ca9996043628ad4dea1408974e1d92d3932f6acf9db8ffb7faecbfa6d928997"
+        },
+        "declared_license": "Apache-2.0 OR MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "k256",
+          "primeorder",
+          "serdect"
+        ],
+        "license_file": null,
+        "name": "serdect",
+        "repository": "https://github.com/RustCrypto/formats",
+        "version": "0.4.3"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5",
+          "LICENSE-MIT": "b4eb00df6e2a4d22518fcaa6a2b4646f249b3a3c9814509b22bd2091f1392ff1"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "sha1"
+        ],
+        "license_file": null,
+        "name": "sha1",
+        "repository": "https://github.com/RustCrypto/hashes",
+        "version": "0.10.7"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5",
+          "LICENSE-MIT": "b4eb00df6e2a4d22518fcaa6a2b4646f249b3a3c9814509b22bd2091f1392ff1"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "sha2"
+        ],
+        "license_file": null,
+        "name": "sha2",
+        "repository": "https://github.com/RustCrypto/hashes",
+        "version": "0.10.9"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5",
+          "LICENSE-MIT": "831e0f43ad0bf014c1c4fec5767aae470434c1d66d6e671be2d823e729063e25"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "k256",
+          "sha2"
+        ],
+        "license_file": null,
+        "name": "sha2",
+        "repository": "https://github.com/RustCrypto/hashes",
+        "version": "0.11.0"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5",
+          "LICENSE-MIT": "f18f6229547ab07f0b7b3e1f83acad8bb436f5f4c95a8a98b44f876caa00f04e"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "sha3"
+        ],
+        "license_file": null,
+        "name": "sha3",
+        "repository": "https://github.com/RustCrypto/hashes",
+        "version": "0.10.9"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "553fffcd9b1cb158bc3e9edc35da85ca5c3b3d7d2e61c883ebcfa8a65814b583",
+          "LICENSE-MIT": "4455bf75a91154108304cb283e0fea9948c14f13e20d60887cf2552449dea3b1"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "chia-bls",
+          "blst",
+          "cc",
+          "shlex"
+        ],
+        "license_file": null,
+        "name": "shlex",
+        "repository": "https://github.com/comex/rust-shlex",
+        "version": "2.0.1"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5",
+          "LICENSE-MIT": "9aa4f92bfcde293ebeca9e2379fa18d1d61f000977da144c7b74c2986c9b6466"
+        },
+        "declared_license": "Apache-2.0 OR MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "k256",
+          "signature"
+        ],
+        "license_file": null,
+        "name": "signature",
+        "repository": "https://github.com/RustCrypto/traits",
+        "version": "3.0.0"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5",
+          "LICENSE-MIT": "57a4d75c1d095bb94754a478f3cd15e60ac66a5c5627d844be01a918eea5fe88"
+        },
+        "declared_license": "Apache-2.0 OR MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "k256",
+          "ecdsa",
+          "spki"
+        ],
+        "license_file": null,
+        "name": "spki",
+        "repository": "https://github.com/RustCrypto/formats",
+        "version": "0.8.0"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE": "d1fc1bc0d155df60b2e7705b6b2ae02a05c96f948e1cec6e2fb86360b09f346b"
+        },
+        "declared_license": "BSD-3-Clause",
+        "dependency_path": [
+          "oxbasic-cli",
+          "sha2",
+          "digest",
+          "subtle"
+        ],
+        "license_file": null,
+        "name": "subtle",
+        "repository": "https://github.com/dalek-cryptography/subtle",
+        "version": "2.6.1"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a",
+          "LICENSE-MIT": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "chia-bls",
+          "chia-traits",
+          "chia_streamable_macro",
+          "syn"
+        ],
+        "license_file": null,
+        "name": "syn",
+        "repository": "https://github.com/dtolnay/syn",
+        "version": "2.0.119"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a",
+          "LICENSE-MIT": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "serde",
+          "serde_derive",
+          "syn"
+        ],
+        "license_file": null,
+        "name": "syn",
+        "repository": "https://github.com/dtolnay/syn",
+        "version": "3.0.6"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE.txt": "8b4e95f5cf0dc40269c99f7b787203ffe04ded245ca2427422c196efa2b2f42a"
+        },
+        "declared_license": "MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "bitvec",
+          "tap"
+        ],
+        "license_file": null,
+        "name": "tap",
+        "repository": "https://github.com/myrrlyn/tap",
+        "version": "1.0.1"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+          "LICENSE-MIT": "8b427f5bc501764575e52ba4f9d95673cf8f6d80a86d0d06599852e1a9a20a36"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "tempfile"
+        ],
+        "license_file": null,
+        "name": "tempfile",
+        "repository": "https://github.com/Stebalien/tempfile",
+        "version": "3.27.0"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a",
+          "LICENSE-MIT": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "chia-bls",
+          "thiserror"
+        ],
+        "license_file": null,
+        "name": "thiserror",
+        "repository": "https://github.com/dtolnay/thiserror",
+        "version": "1.0.69"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a",
+          "LICENSE-MIT": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "thiserror"
+        ],
+        "license_file": null,
+        "name": "thiserror",
+        "repository": "https://github.com/dtolnay/thiserror",
+        "version": "2.0.21"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a",
+          "LICENSE-MIT": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "chia-bls",
+          "thiserror",
+          "thiserror-impl"
+        ],
+        "license_file": null,
+        "name": "thiserror-impl",
+        "repository": "https://github.com/dtolnay/thiserror",
+        "version": "1.0.69"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a",
+          "LICENSE-MIT": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "thiserror",
+          "thiserror-impl"
+        ],
+        "license_file": null,
+        "name": "thiserror-impl",
+        "repository": "https://github.com/dtolnay/thiserror",
+        "version": "2.0.21"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+          "LICENSE-MIT": "6485b8ed310d3f0340bf1ad1f47645069ce4069dcc6bb46c7d5c6faf41de1fdb"
+        },
+        "declared_license": "MIT/Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "chia-bls",
+          "blst",
+          "threadpool"
+        ],
+        "license_file": null,
+        "name": "threadpool",
+        "repository": "https://github.com/rust-threadpool/rust-threadpool",
+        "version": "1.8.1"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "c6596eb7be8581c18be736c846fb9173b69eccf6ef94c5135893ec56bd92ba08",
+          "LICENSE-MIT": "6efb0476a1cc085077ed49357026d8c173bf33017278ef440f222fb9cbcb66e6"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "chia-bls",
+          "chia-traits",
+          "chia_streamable_macro",
+          "proc-macro-crate",
+          "toml_edit",
+          "toml_datetime"
+        ],
+        "license_file": null,
+        "name": "toml_datetime",
+        "repository": "https://github.com/toml-rs/toml",
+        "version": "0.6.11"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "c6596eb7be8581c18be736c846fb9173b69eccf6ef94c5135893ec56bd92ba08",
+          "LICENSE-MIT": "6efb0476a1cc085077ed49357026d8c173bf33017278ef440f222fb9cbcb66e6"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "chia-bls",
+          "chia-traits",
+          "chia_streamable_macro",
+          "proc-macro-crate",
+          "toml_edit"
+        ],
+        "license_file": null,
+        "name": "toml_edit",
+        "repository": "https://github.com/toml-rs/toml",
+        "version": "0.19.15"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE": "db11fec9946737df39ca3898d9cd8c10ec6f6c3a884a6802b0ad0b81b4e8f23a",
+          "LICENSE-APACHE": "516b24e051bf5630880ebbd55c40a25ce9552ebaf8970a53e8976eb70e522406",
+          "LICENSE-MIT": "a825bd853ab71619a4923d7b4311221427848070ff44d990da39b0b274c1683f"
+        },
+        "declared_license": "MIT OR Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "sha2",
+          "digest",
+          "crypto-common",
+          "typenum"
+        ],
+        "license_file": null,
+        "name": "typenum",
+        "repository": "https://github.com/paholg/typenum",
+        "version": "1.20.1"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a",
+          "LICENSE-MIT": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3",
+          "LICENSE-UNICODE": "f7db81051789b729fea528a63ec4c938fdcb93d9d61d97dc8cc2e9df6d47f2a1"
+        },
+        "declared_license": "(MIT OR Apache-2.0) AND Unicode-3.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "serde",
+          "serde_derive",
+          "proc-macro2",
+          "unicode-ident"
+        ],
+        "license_file": null,
+        "name": "unicode-ident",
+        "repository": "https://github.com/dtolnay/unicode-ident",
+        "version": "1.0.26"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+          "LICENSE-MIT": "b7e650f3fce5c53249d1cdc608b54df156a97edd636cf9d23498d0cfe7aec63e"
+        },
+        "declared_license": "MIT/Apache-2.0",
+        "dependency_path": [
+          "oxbasic-cli",
+          "sha2",
+          "digest",
+          "block-buffer",
+          "generic-array",
+          "version_check"
+        ],
+        "license_file": null,
+        "name": "version_check",
+        "repository": "https://github.com/SergioBenitez/version_check",
+        "version": "0.9.5"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE.txt": "d64ac6ba60c7352115244dcfcb46c24f934603dd92e64835beafe7631c485abc",
+          "LICENSE-MIT.txt": "69c62cda6938d510467c134dc0b5c83fb9c8ca847b9cd9d9d2fe9ab427c82100",
+          "LICENSE-ZLIB.txt": "3c6921f3dfec0bed0cfa2d632616edd7380a875c8ad76c7b23dc59892259f62c"
+        },
+        "declared_license": "Zlib OR Apache-2.0 OR MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "malachite-bigint",
+          "malachite-nz",
+          "wide"
+        ],
+        "license_file": null,
+        "name": "wide",
+        "repository": "https://github.com/Lokathor/wide",
+        "version": "1.7.1"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-MIT": "cb5aedb296c5246d1f22e9099f925a65146f9f0d6b4eebba97fd27a6cdbbab2d"
+        },
+        "declared_license": "MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "chia-bls",
+          "chia-traits",
+          "chia_streamable_macro",
+          "proc-macro-crate",
+          "toml_edit",
+          "winnow"
+        ],
+        "license_file": null,
+        "name": "winnow",
+        "repository": "https://github.com/winnow-rs/winnow",
+        "version": "0.5.40"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5",
+          "LICENSE-MIT": "c1c9d5ca65122bab96e368709f8cfe9b92b443a3c21306c3260fc98eaac7e5fc"
+        },
+        "declared_license": "Apache-2.0 OR MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "k256",
+          "wnaf"
+        ],
+        "license_file": null,
+        "name": "wnaf",
+        "repository": "https://github.com/RustCrypto/elliptic-curves",
+        "version": "0.14.1"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE.txt": "411781fd38700f2357a14126d0ab048164ab881f1dcb335c1bb932e232c9a2f5"
+        },
+        "declared_license": "MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "bitvec",
+          "wyz"
+        ],
+        "license_file": null,
+        "name": "wyz",
+        "repository": "https://github.com/myrrlyn/wyz",
+        "version": "0.5.1"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "9d185ac6703c4b0453974c0d85e9eee43e6941009296bb1f5eb0b54e2329e9f3",
+          "LICENSE-BSD": "83c1763356e822adde0a2cae748d938a73fdc263849ccff6b27776dff213bd32",
+          "LICENSE-MIT": "1a2f5c12ddc934d58956aa5dbdd3255fe55fd957633ab7d0d39e4f0daa73f7df"
+        },
+        "declared_license": "BSD-2-Clause OR Apache-2.0 OR MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "clvmr",
+          "rand",
+          "rand_chacha",
+          "ppv-lite86",
+          "zerocopy"
+        ],
+        "license_file": null,
+        "name": "zerocopy",
+        "repository": "https://github.com/google/zerocopy",
+        "version": "0.8.59"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+          "LICENSE-MIT": "8c7516d4b27b1e495be5e38b612298b63de48d05f49cdac94f70f3cd70f8864b"
+        },
+        "declared_license": "Apache-2.0 OR MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "chia-bls",
+          "blst",
+          "zeroize"
+        ],
+        "license_file": null,
+        "name": "zeroize",
+        "repository": "https://github.com/RustCrypto/utils",
+        "version": "1.9.0"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-APACHE": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+          "LICENSE-MIT": "b8c6939380a400f53e11923d50fcc4dd2fa1ba8339fd9d04cda38a0251b6c9b0"
+        },
+        "declared_license": "Apache-2.0 OR MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "oxbasic-compiler",
+          "chia-bls",
+          "blst",
+          "zeroize",
+          "zeroize_derive"
+        ],
+        "license_file": null,
+        "name": "zeroize_derive",
+        "repository": "https://github.com/RustCrypto/utils",
+        "version": "1.5.0"
+      },
+      {
+        "available_notice_sha256": {
+          "LICENSE-MIT": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
+        },
+        "declared_license": "MIT",
+        "dependency_path": [
+          "oxbasic-cli",
+          "serde_json",
+          "zmij"
+        ],
+        "license_file": null,
+        "name": "zmij",
+        "repository": "https://github.com/dtolnay/zmij",
+        "version": "1.0.23"
+      }
+    ]
+  },
+  "schema_version": 1,
+  "scope": "normal/build dependency graph; includes build-only crates; not a linked-symbol or legal-compliance determination"
+}

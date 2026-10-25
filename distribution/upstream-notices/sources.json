@@ -1,0 +1,32 @@
+[
+  {
+    "commit": "78c822c126a0627ecc8b9b89d0058cec8116e1b2",
+    "path": "malachite/LICENSE",
+    "sha256": "da7eabb7bafdf7d3ae5e9f223aa5bdc1eece45ac569dc21b3b037520b4464768",
+    "url": "https://raw.githubusercontent.com/mhogrefe/malachite/78c822c126a0627ecc8b9b89d0058cec8116e1b2/LICENSE"
+  },
+  {
+    "commit": "78c822c126a0627ecc8b9b89d0058cec8116e1b2",
+    "path": "malachite/COPYING",
+    "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
+    "url": "https://raw.githubusercontent.com/mhogrefe/malachite/78c822c126a0627ecc8b9b89d0058cec8116e1b2/COPYING"
+  },
+  {
+    "commit": "78c822c126a0627ecc8b9b89d0058cec8116e1b2",
+    "path": "malachite/COPYING.LESSER",
+    "sha256": "da7eabb7bafdf7d3ae5e9f223aa5bdc1eece45ac569dc21b3b037520b4464768",
+    "url": "https://raw.githubusercontent.com/mhogrefe/malachite/78c822c126a0627ecc8b9b89d0058cec8116e1b2/COPYING.LESSER"
+  },
+  {
+    "commit": "da47ae281f1f8801542a743263db84fff3612de1",
+    "path": "chia_rs/LICENSE",
+    "sha256": "7db0cf1060026bf2a544ea29cf9a96fba7d3781f93a1d06d6fee18251f1c207a",
+    "url": "https://raw.githubusercontent.com/Chia-Network/chia_rs/da47ae281f1f8801542a743263db84fff3612de1/LICENSE"
+  },
+  {
+    "commit": "54e6e55674722fc2797ebb4bbb71b26d881eb4b8",
+    "path": "blst/LICENSE",
+    "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+    "url": "https://raw.githubusercontent.com/supranational/blst/54e6e55674722fc2797ebb4bbb71b26d881eb4b8/LICENSE"
+  }
+]

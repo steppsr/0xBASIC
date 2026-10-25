@@ -30,9 +30,9 @@ END CONTRACT
 - INTEGER, BOOLEAN, BYTES, STRING, AMOUNT, PUZZLEHASH, PUBLICKEY, and nested PAIR/LIST fixed parameters and solution fields, with JSON conversion and generated CLVM boundary validation.
 - `check`, `build`, `run`, and `explain --stage ast|ir|clvm` commands; reproducible artifacts, tree hashes, structured diagnostics, and execution-cost reporting.
 
-`ASSERT_HEIGHT_ABSOLUTE`, `ASSERT_MY_AMOUNT`, `CREATE_COIN`, and `AGG_SIG_ME` are implemented as blockchain condition constructors. An isolated test harness verifies signed payments on Windows and Linux; rejection/lifecycle coverage is being expanded. The specifications describe the intended language as well as features still being implemented; see the [status and roadmap](docs/development.md).
+`ASSERT_HEIGHT_ABSOLUTE`, `ASSERT_MY_AMOUNT`, `CREATE_COIN`, and `AGG_SIG_ME` are implemented as blockchain condition constructors. Isolated SpendSim and full-node harnesses verify signed payments and rejection/state checks on Windows and Linux. The specifications describe the intended language as well as features still being implemented; see the [status and roadmap](docs/development.md).
 
-The optional [simulator harness](simulator/README.md) passes its environment smoke test on Windows and Linux. Compiled, signed payment testing also passes on both platforms. Height/signature rejection tests pass on both platforms. All 15 planned payment scenarios, including replay and payment-mutation checks, now pass on Windows and Linux. Simulator CI integration is next. Compiler testing has passed on both platforms.
+The optional [simulator harness](simulator/README.md) passes its environment smoke test on Windows and Linux. Compiled, signed payment testing also passes on both platforms. Height/signature rejection tests pass on both platforms. All 15 planned payment scenarios, including replay and payment-mutation checks, now pass on Windows and Linux. Reproducible simulator reporting and Windows/Linux CI also pass; M4 is complete. Compiler testing has passed on both platforms. The isolated full-node payment gate also passes on both platforms. [M5 experimental release quality](docs/spec/m5-release-plan.md) is in progress.
 
 ## Try it
 
@@ -62,7 +62,8 @@ Dependency downloads require internet access initially. Compilation and local ex
 
 ## Explore and contribute
 
-- [Examples](examples): small programs demonstrating implemented features. `height-locked-payment.bas` compiles and runs locally using its companion bindings file; signing and spend validation remain future work.
+- [Examples](examples): small programs demonstrating implemented features. `height-locked-payment.bas` compiles and runs locally using its companion bindings file; separate simulator harnesses test signed, confirmed payments.
+- [Implemented-feature reference](docs/spec/implemented-reference.md) and [payment tutorial](docs/spec/payment-tutorial.md).
 - [Architecture](docs/architecture.md) and [language specification](docs/language-v0.1.md).
 - [ABI](docs/spec/abi-v1.md), [CLI and artifact format](docs/spec/cli-v1.md), and [pinned target profile](docs/spec/target-profile.md).
 - [Development status and roadmap](docs/development.md).

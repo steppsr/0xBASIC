@@ -47,6 +47,16 @@ jobs:
         run: .work/m4/venv/${{ matrix.bin }}/${{ matrix.python }} -m unittest discover -s simulator -p 'test_*.py'
       - name: Verify all scenarios and identical fresh reruns
         run: .work/m4/venv/${{ matrix.bin }}/${{ matrix.python }} simulator/verify.py --binary target/debug/${{ matrix.executable }}
+      - name: Verify full-node compiled payment
+        run: .work/m4/venv/${{ matrix.bin }}/${{ matrix.python }} simulator/full_node_smoke.py --payment --binary target/debug/${{ matrix.executable }}
+      - name: Upload full-node payment evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: full-node-evidence-${{ matrix.platform }}
+          path: .work/m5/full-node-payment-${{ matrix.platform }}.json
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 30
       - name: Upload complete verified evidence
         uses: actions/upload-artifact@v4
         with:

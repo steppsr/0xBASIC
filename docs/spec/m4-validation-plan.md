@@ -91,3 +91,7 @@ The user confirmed all native Linux testing passed, closing the Linux reporting/
 ## M4-5 Windows/Linux confirmation and publication checkpoint — 2026-10-24
 
 The user confirmed all Windows and Linux testing passed, including reporting tests and complete aggregate verification. Both native reporting/reproducibility gates are closed, superseding the historical restricted Windows failures above. Publication is authorized; verify both hosted simulator jobs and compiler CI for the published commit before closing M4-5. Unrelated artwork and private local reports/notes are excluded. Compiler, dependency locks and Rust test counts are unchanged.
+
+## M4 complete — hosted CI confirmation, 2026-10-24
+
+Both Windows/Linux simulator and compiler CI passed on `75002bbbd980966f41c1ac3913544ba991817a5f`; both simulator evidence artifacts were uploaded. This closes M4-5 and supersedes pending statuses above. See the [M5 work plan](m5-release-plan.md) for the full-node pre-release gate and linked CI evidence.

@@ -1,0 +1,238 @@
+{
+  "schema_version": 1,
+  "compiler": "0.1.0-m3.8b",
+  "capture": "2026-10-24; regression observations, not independent correctness evidence",
+  "cases": [
+    {
+      "id": "strings",
+      "source": "examples/m2-strings.bas",
+      "expected": {
+        "source_sha256": "19e376b99d2e8961155209675930bb9c2efa5dbf627fedf29aa6b0893cf53488",
+        "bindings_sha256": null,
+        "template_bytes": 379,
+        "puzzle_bytes": 395,
+        "puzzle_sha256": "cdc767cf0fbf277b0a06511575ecdc231bbfa4ad3f9fb281a861d99bc8a80cde",
+        "puzzle_tree_hash": "4f9f758d8c046d481f9f323dbfae6ad38a9cf0198a6db2140db9eb8198cc2427",
+        "cost": "6159",
+        "tree": {
+          "pair": [
+            {
+              "pair": [
+                {
+                  "atom": "53"
+                },
+                {
+                  "pair": [
+                    {
+                      "atom": "0c"
+                    },
+                    {
+                      "atom": ""
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "atom": ""
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "lists",
+      "source": "examples/m2-list-operations.bas",
+      "expected": {
+        "source_sha256": "4022139561615c9c9b4a8ce4db8ba3728e3eef1185f0a85847f13163ec2c2689",
+        "bindings_sha256": null,
+        "template_bytes": 699,
+        "puzzle_bytes": 715,
+        "puzzle_sha256": "5877d9ed3772908b51ea07a30c0c87ad1046b60c58d86429119d00025beab002",
+        "puzzle_tree_hash": "787f72854dfcf1476a34567ee525891e74091890937c1db67746eff5807082b8",
+        "cost": "15626",
+        "tree": {
+          "pair": [
+            {
+              "pair": [
+                {
+                  "atom": "53"
+                },
+                {
+                  "pair": [
+                    {
+                      "atom": "0a"
+                    },
+                    {
+                      "atom": ""
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "pair": [
+                {
+                  "pair": [
+                    {
+                      "atom": "53"
+                    },
+                    {
+                      "pair": [
+                        {
+                          "atom": "14"
+                        },
+                        {
+                          "atom": ""
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "pair": [
+                    {
+                      "pair": [
+                        {
+                          "atom": "53"
+                        },
+                        {
+                          "pair": [
+                            {
+                              "atom": "03"
+                            },
+                            {
+                              "atom": ""
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "atom": ""
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "payment",
+      "source": "examples/height-locked-payment.bas",
+      "bindings": "examples/height-locked-payment.bindings.json",
+      "expected": {
+        "source_sha256": "a629dd9f35730b0776da172e864a3f0a6cb60747b53dc2a8d416b9773b249cfa",
+        "bindings_sha256": "4983bc64f02c4cf0f87a2fe58665ae6ff8784636f0a1f54c5b8f49c4030c63a3",
+        "template_bytes": 2003,
+        "puzzle_bytes": 2109,
+        "puzzle_sha256": "6949a6a511716438d9afaf30fb60ef57e1c7a1026cf47affc4c5d934055c0e81",
+        "puzzle_tree_hash": "f8bac319ef0beaf4dacbd7b0770d115d013a97a25f8656cb350280698a25ccea",
+        "cost": "1487727",
+        "tree": {
+          "pair": [
+            {
+              "pair": [
+                {
+                  "atom": "49"
+                },
+                {
+                  "pair": [
+                    {
+                      "atom": "03e8"
+                    },
+                    {
+                      "atom": ""
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "pair": [
+                {
+                  "pair": [
+                    {
+                      "atom": "53"
+                    },
+                    {
+                      "pair": [
+                        {
+                          "atom": "0a"
+                        },
+                        {
+                          "atom": ""
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "pair": [
+                    {
+                      "pair": [
+                        {
+                          "atom": "32"
+                        },
+                        {
+                          "pair": [
+                            {
+                              "atom": "97f1d3a73197d7942695638c4fa9ac0fc3688c4f9774b905a14e3a3f171bac586c55e83ff97a1aeffb3af00adb22c6bb"
+                            },
+                            {
+                              "pair": [
+                                {
+                                  "atom": "1b882dfcb8d7291c35b6ac73897228ed89b073c344d68435010bbc30a2959660"
+                                },
+                                {
+                                  "atom": ""
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "pair": [
+                        {
+                          "pair": [
+                            {
+                              "atom": "33"
+                            },
+                            {
+                              "pair": [
+                                {
+                                  "atom": "1111111111111111111111111111111111111111111111111111111111111111"
+                                },
+                                {
+                                  "pair": [
+                                    {
+                                      "atom": "03e8"
+                                    },
+                                    {
+                                      "atom": ""
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "atom": ""
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  ]
+}
