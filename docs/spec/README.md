@@ -7,6 +7,7 @@ This index describes the experimental release `v0.1.0-m3.8b-experimental`: compi
 | Task | Read |
 | --- | --- |
 | Download and run the compiler | [Release record](experimental-release.md), then [package usage](package-usage.md) |
+| Write and compile your first program | [Beginner walkthrough](first-program.md) |
 | Learn the implemented language | [Implemented reference](implemented-reference.md) |
 | Compile and inspect a payment contract | [Payment tutorial](payment-tutorial.md) |
 | Supply fixed parameters or solution values | [ABI 1](abi-v1.md) |
