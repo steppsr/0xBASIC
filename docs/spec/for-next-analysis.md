@@ -31,6 +31,8 @@ Windows verification passed: all 295 Rust tests (including all 18 private FOR/NE
 
 The published parser revision `b3443ab` passed GitHub [compiler checks](https://github.com/steppsr/0xBASIC/actions/runs/40263346020), [simulator checks](https://github.com/steppsr/0xBASIC/actions/runs/40263346045), and [package checks](https://github.com/steppsr/0xBASIC/actions/runs/40263346135). Those results cover the parser revision, not these uncommitted semantic changes.
 
+Published semantic revision `636918e` also passed GitHub [compiler checks](https://github.com/steppsr/0xBASIC/actions/runs/40342318716), [simulator checks](https://github.com/steppsr/0xBASIC/actions/runs/40342318478), and [package checks](https://github.com/steppsr/0xBASIC/actions/runs/40342318550).
+
 ## Native Linux commands
 
 From the same native checkout used for the parser checkpoint:
@@ -47,4 +49,4 @@ cargo test --workspace --locked
 
 Expected: 18 FOR/NEXT unit tests and 295 Windows / 296 Linux Rust tests overall. The new `analysis/for_next.rs` file is included by the source-directory copy. Do not supply a feature flag. No simulator, package installation or release rebuild is needed for this private analysis checkpoint.
 
-After Linux confirmation, proceed to typed executable loop lowering and VM validation in a bounded implementation slice. Keep the test-only gate until execution, compatibility/version changes and the relevant integration gates are complete. Existing experimental packages and the beginner tutorial remain unchanged.
+The subsequent [private CLVM kernel checkpoint](for-next-kernel.md) begins executable VM validation. Typed source-level loop lowering remains the next integration slice. Keep the test-only gate until execution, compatibility/version changes and the relevant integration gates are complete. Existing experimental packages and the beginner tutorial remain unchanged.

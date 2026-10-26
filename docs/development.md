@@ -24,7 +24,7 @@ Update older source declarations and rebuild artifacts with the current compiler
 
 ## Roadmap
 
-Next Core design: [FOR/NEXT](spec/for-next-design.md), covering inclusive counted iteration, immutable scoped counters, carried locals, return/emission behavior and cost/resource constraints. The [private parser/AST prototype](spec/for-next-parser.md) passes Windows and native Linux checks. The subsequent [semantic-analysis checkpoint](spec/for-next-analysis.md) adds header/counter checks and typed state metadata. Both exist only in compiler unit tests; the released compiler and normal builds still have no loop support. Executable lowering remains a future slice.
+Next Core design: [FOR/NEXT](spec/for-next-design.md), covering inclusive counted iteration, immutable scoped counters, carried locals, return/emission behavior and cost/resource constraints. The [private parser/AST prototype](spec/for-next-parser.md) passes Windows and native Linux checks. The subsequent [semantic-analysis checkpoint](spec/for-next-analysis.md) adds header/counter checks and typed state metadata. Both exist only in compiler unit tests; the released compiler and normal builds still have no loop support. A [private CLVM loop kernel](spec/for-next-kernel.md) now tests signed iteration, carried integer state, early return and VM cost limits. Connecting it to typed source-level lowering remains the next slice.
 
 | Stage | Scope | Status |
 | --- | --- | --- |

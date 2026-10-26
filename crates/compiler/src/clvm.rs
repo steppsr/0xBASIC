@@ -7,6 +7,8 @@ use num_bigint::{BigInt, BigUint};
 use serde_json::{Value, json};
 use sha2::{Digest, Sha256};
 use std::io::Cursor;
+#[cfg(test)]
+mod for_next;
 mod utf8;
 
 pub const FLAGS: u32 = 0x0257;
