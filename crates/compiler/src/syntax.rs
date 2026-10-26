@@ -4,7 +4,7 @@ pub(crate) mod expression;
 
 // Parser prototype only: no production API or Cargo feature enables loops.
 #[cfg(test)]
-mod for_next;
+pub(crate) mod for_next;
 
 // Preserve the existing library paths while moving checked data out of syntax.
 pub use crate::ir::{Contract, HeightEmission};
@@ -851,6 +851,13 @@ pub fn check(name: &str, source: &[u8]) -> Result<Contract> {
 #[cfg(test)]
 pub(crate) fn parse(name: &str, source: &[u8]) -> Result<ParsedContract> {
     parser(name, source, false)?.parse()
+}
+
+#[cfg(test)]
+pub(crate) fn parse_for_next(name: &str, source: &[u8]) -> Result<ParsedModule> {
+    let mut parser = parser(name, source, true)?;
+    parser.for_next = true;
+    parser.module()
 }
 
 pub(crate) fn parse_module(name: &str, source: &[u8]) -> Result<ParsedModule> {

@@ -42,4 +42,6 @@ Expected: nine additional `syntax::for_next` unit tests pass; full totals are 28
 
 ## Next slice
 
-After native Linux confirmation, add scoped INTEGER counters, header checking/snapshots and typed loop-state analysis behind the same private test gate. Resolve carried locals, emission ordering and conservative return analysis before backend support. Public loop activation waits for a coherent implementation and versioned compatibility checkpoint; the beginner tutorial remains accurate for the existing release.
+The [semantic-analysis checkpoint](for-next-analysis.md) now extends this prototype behind the same private gate. The original parser tests remain; its old blanket semantic rejection has been replaced by scoped loop checks, while executable lowering still rejects every loop-containing module.
+
+Scoped INTEGER counters, header type checking, carried-local metadata and conservative return analysis are now implemented in that semantic checkpoint, with native Linux verification passed. Runtime header snapshots, carried state execution and emission ordering remain backend work. Public loop activation waits for a coherent implementation and versioned compatibility checkpoint; the beginner tutorial remains accurate for the existing release.

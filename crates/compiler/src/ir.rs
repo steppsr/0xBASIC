@@ -291,6 +291,33 @@ fn lower_contract(name: &str, parsed: ParsedContract, functions: &Callables) -> 
 }
 
 pub(crate) fn lower_module(name: &str, module: crate::syntax::ParsedModule) -> Result<Contract> {
+    // Reject the entire test-only feature before fast paths or unreachable-code
+    // pruning; semantic acceptance must never accidentally enable execution.
+    #[cfg(test)]
+    {
+        fn first_loop(statements: &[crate::syntax::ParsedStatement]) -> Option<Span> {
+            statements.iter().find_map(|statement| match statement {
+                crate::syntax::ParsedStatement::For(statement) => Some(statement.span),
+                crate::syntax::ParsedStatement::If(branch) => {
+                    first_loop(&branch.yes).or_else(|| first_loop(&branch.no))
+                }
+                _ => None,
+            })
+        }
+        if let Some(span) = first_loop(&module.contract.statements).or_else(|| {
+            module
+                .functions
+                .iter()
+                .find_map(|f| first_loop(&f.statements))
+        }) {
+            return Err(Diagnostic::at(
+                "E0205",
+                "FOR/NEXT lowering is not implemented",
+                name,
+                span,
+            ));
+        }
+    }
     if module.functions.is_empty()
         && !module.collection_syntax
         && module.contract.inputs.is_empty()

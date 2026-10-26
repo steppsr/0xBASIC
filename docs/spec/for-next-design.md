@@ -4,7 +4,7 @@ Status: specification-first design checkpoint, 2026-10-25. **Not implemented in 
 
 This selects one counted-loop form for the next Core increment. It excludes WHILE/DO, collection iteration syntax, EXIT/CONTINUE, user recursion and modules. Internal generated loop recursion does not permit recursive user functions.
 
-Implementation checkpoint: the [private test-only parser/AST prototype](for-next-parser.md) covers the first syntax slice while preserving all public released behavior. It does not implement loop semantics or execution.
+Implementation checkpoint: the [private test-only parser/AST prototype](for-next-parser.md) covers the first syntax slice while preserving all public released behavior. The [private semantic-analysis checkpoint](for-next-analysis.md) adds scope/type checks and carried-local metadata. Executable loop lowering remains the next step.
 
 ## Syntax
 
@@ -151,4 +151,4 @@ Implement in bounded slices:
 4. Integration and compatibility: boundary/CLI/inspection tests, cost/size regressions, Windows then native Linux, followed by applicable spend/full-node cases.
 5. Documentation and release: promote the implemented subset into normative language/grammar/ABI/CLI documents, publish exact examples and migration notes, validate source-inclusive packages, then seek approval for a new release.
 
-No native Linux test is required for this design document. Each implementation handoff must provide exact commands and expected outcomes. Parser work is the next bounded step; language identity and partial-feature exposure must be resolved in that checkpoint before publishing executable behavior.
+No native Linux test is required for this design document. Each implementation handoff must provide exact commands and expected outcomes. Parser and semantic-analysis checkpoints have passed Windows and native Linux testing. Executable lowering is next; language identity and partial-feature exposure must be resolved before publishing executable behavior.

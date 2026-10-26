@@ -6,10 +6,16 @@ use crate::syntax::{self, LocalUpdateKind, ParsedStatement};
 use crate::{Diagnostic, Result, Span, ValueType};
 use std::collections::{BTreeMap, BTreeSet};
 
+#[cfg(test)]
+mod for_next;
+
 #[derive(Debug, serde::Serialize)]
 pub struct ModuleAnalysis {
     pub contract: String,
     pub functions: Vec<FunctionSignature>,
+    #[cfg(test)]
+    #[serde(skip)]
+    pub(crate) loops: Vec<for_next::LoopAnalysis>,
 }
 
 #[derive(Debug, Clone, serde::Serialize)]
@@ -49,6 +55,10 @@ struct Analyzer<'a> {
     probe_bytes: usize,
     probe_structure: usize,
     probe_encoded: usize,
+    #[cfg(test)]
+    loops: Vec<for_next::LoopAnalysis>,
+    #[cfg(test)]
+    loop_state_nodes: usize,
 }
 
 impl Analyzer<'_> {
@@ -295,11 +305,9 @@ impl Analyzer<'_> {
             let next = match statement {
                 #[cfg(test)]
                 ParsedStatement::For(statement) => {
-                    return Err(self.error(
-                        "E0205",
-                        "FOR/NEXT analysis is not implemented",
-                        statement.span,
-                    ));
+                    self.for_statement(statement, scope, result)?;
+                    // Even literal ranges may execute zero times for return analysis.
+                    true
                 }
                 ParsedStatement::Return { expression, span } => {
                     let expected = result.ok_or_else(|| {
@@ -429,6 +437,10 @@ pub(crate) fn analyze_module(
         probe_bytes: 0,
         probe_structure: 0,
         probe_encoded: 0,
+        #[cfg(test)]
+        loops: Vec::new(),
+        #[cfg(test)]
+        loop_state_nodes: 0,
     };
     let mut functions = Vec::new();
     for function in &module.functions {
@@ -491,5 +503,7 @@ pub(crate) fn analyze_module(
     Ok(ModuleAnalysis {
         contract: module.contract.name.clone(),
         functions,
+        #[cfg(test)]
+        loops: analyzer.loops,
     })
 }

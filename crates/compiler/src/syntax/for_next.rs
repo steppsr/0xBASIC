@@ -91,9 +91,7 @@ impl Parser<'_> {
 }
 
 fn parse(source: &str) -> Result<ParsedModule> {
-    let mut parser = super::parser("loops.bas", source.as_bytes(), true)?;
-    parser.for_next = true;
-    parser.module()
+    super::parse_for_next("loops.bas", source.as_bytes())
 }
 
 fn contract(body: &str) -> String {
@@ -304,15 +302,6 @@ fn for_next_parser_defers_types_scope_and_return_semantics() {
     ] {
         let source = contract(body);
         let parsed = parse(&source).unwrap();
-        let failure = crate::analysis::analyze_module("loops.bas", &parsed)
-            .err()
-            .unwrap();
-        assert_eq!(failure.code, "E0205");
-        assert!(
-            failure
-                .message
-                .contains("FOR/NEXT analysis is not implemented")
-        );
         let failure = crate::ir::lower_module("loops.bas", parsed).err().unwrap();
         assert_eq!(failure.code, "E0205");
     }
