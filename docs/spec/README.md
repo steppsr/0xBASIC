@@ -43,6 +43,8 @@ See the [generated regression checks](m5-generated-checks.md), [tutorial](paymen
 
 ## History and future work
 
+The [FOR/NEXT design proposal](for-next-design.md) specifies the next counted-loop increment and its planned acceptance matrix. It is not part of the released grammar or executable feature set.
+
 [M4 validation planning](m4-validation-plan.md), the [M5 work plan](m5-release-plan.md) and the original [M5 packaging checkpoint](m5-packaging.md) retain dated development history. Read their current-status notes before following old test handoffs. The [M5 release review](m5-release-review.md) records completion; the [development roadmap](../development.md) separates future work from the released interface.
 
 Loops, user recursion, division/remainder, floating point, modules, a language server and wallet/network tooling remain outside this release. Future specifications need explicit semantics and validation criteria before implementation. No new language feature or version is selected by this documentation cleanup.
