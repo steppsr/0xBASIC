@@ -25,6 +25,8 @@ Reproducible builds require the exact source bytes, bindings, compiler revision/
 
 ## Puzzle identity and execution scope
 
+The [artifact workflow](artifact-workflow.md) provides a same-version rebuild exercise, comparison script and guidance for evaluating a future upgrade. It does not assume a newer compiler can read old manifests.
+
 Serialized-byte SHA-256 and CLVM tree hash are different values. A changed bound puzzle hash identifies a different puzzle and cannot change the spending rules of an existing coin. Archive the matching reveal and supported tooling needed to exercise the original contract. Normalized equivalent fixed values may yield identical artifacts; source edits may change only provenance or may change puzzle bytes. Compare actual outputs rather than assuming either outcome.
 
 Keep the ABI 1 binding wrapper, declaration-order schemas, canonical scalar encodings and eager raw-input guards unless an explicit compatibility change is approved and tested. AST/IR debug representations from `explain` are compiler-versioned inspection formats, not stable standalone interchange schemas.

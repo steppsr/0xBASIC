@@ -12,6 +12,7 @@ This index describes the experimental release `v0.1.0-m3.8b-experimental`: compi
 | Supply fixed parameters or solution values | [ABI 1](abi-v1.md) |
 | Integrate CLI output or read artifacts | [CLI, manifests and diagnostics](cli-v1.md) |
 | Understand what artifact validation proves | [Manifest validation and diagnostic examples](manifest-validation.md) |
+| Inspect, rebuild and compare artifact identities | [Artifact workflow](artifact-workflow.md) |
 | Upgrade without confusing artifact identities | [Experimental compatibility](experimental-compatibility.md) |
 | Understand conversion, execution and size-limit failures | [Built-in failures and resource limits](limits-and-failures.md) |
 | Rebuild the distributed compiler or modify a dependency | [Source distribution](source-distribution.md) and [rebuild instructions](../../distribution/REBUILD.md) |
