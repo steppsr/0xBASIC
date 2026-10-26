@@ -221,7 +221,7 @@ impl Parser<'_> {
                 )?
             }
             Kind::Word(word)
-                if !super::is_reserved(word)
+                if !self.reserved(word)
                     || matches!(
                         word.as_str(),
                         "CONCAT"
@@ -284,7 +284,7 @@ impl Parser<'_> {
                         nodes,
                     )?
                 } else {
-                    if super::is_reserved(&name.to_ascii_uppercase()) {
+                    if self.reserved(&name.to_ascii_uppercase()) {
                         return Err(self.error("E0100", "Built-in calls require parentheses"));
                     }
                     self.expression_node(ExpressionKind::Name(name), start, 1, nodes)?

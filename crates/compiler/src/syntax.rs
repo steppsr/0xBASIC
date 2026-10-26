@@ -2,6 +2,10 @@ use crate::{Diagnostic, Result, Span};
 
 pub(crate) mod expression;
 
+// Parser prototype only: no production API or Cargo feature enables loops.
+#[cfg(test)]
+mod for_next;
+
 // Preserve the existing library paths while moving checked data out of syntax.
 pub use crate::ir::{Contract, HeightEmission};
 
@@ -61,6 +65,8 @@ pub(crate) enum ParsedStatement {
         span: Span,
     },
     If(ParsedIf),
+    #[cfg(test)]
+    For(Box<for_next::ParsedFor>),
     Local(ParsedLocalUpdate),
     Assert {
         expression: expression::Expression,
@@ -85,6 +91,8 @@ struct StatementCounts {
     emissions: usize,
     branches: usize,
     returns: usize,
+    #[cfg(test)]
+    loops: usize,
 }
 
 #[derive(Debug, serde::Serialize)]
@@ -329,9 +337,19 @@ struct Parser<'a> {
     tokens: Vec<Token>,
     pos: usize,
     functions: bool,
+    #[cfg(test)]
+    for_next: bool,
 }
 
 impl Parser<'_> {
+    fn reserved(&self, word: &str) -> bool {
+        #[cfg(test)]
+        if self.for_next && matches!(word, "FOR" | "TO" | "STEP" | "NEXT") {
+            return true;
+        }
+        is_reserved(word)
+    }
+
     fn current(&self) -> &Token {
         &self.tokens[self.pos]
     }
@@ -418,7 +436,7 @@ impl Parser<'_> {
         let Kind::Word(ref name) = token.kind else {
             return Err(self.error("E0100", "Expected an identifier"));
         };
-        if is_reserved(name) {
+        if self.reserved(name) {
             return Err(self.error("E0201", "Reserved and built-in names cannot be declared"));
         }
         let result = (
@@ -480,6 +498,10 @@ impl Parser<'_> {
         Ok(ty)
     }
     fn function(&mut self, counts: &mut StatementCounts) -> Result<ParsedFunction> {
+        #[cfg(test)]
+        {
+            counts.loops = 0;
+        }
         self.expect_word("FUNCTION")?;
         let (name, span) = self.identifier()?;
         self.expect(Kind::Symbol('('))?;
@@ -561,12 +583,16 @@ impl Parser<'_> {
         Ok(value_type)
     }
     fn contract(&mut self, counts: &mut StatementCounts) -> Result<ParsedContract> {
+        #[cfg(test)]
+        {
+            counts.loops = 0;
+        }
         self.expect_word("CONTRACT")?;
         let token = self.current();
         let Kind::Word(ref name) = token.kind else {
             return Err(self.error("E0100", "Expected a contract name"));
         };
-        if is_reserved(name) {
+        if self.reserved(name) {
             return Err(self.error("E0201", "A contract cannot use a reserved or built-in name"));
         }
         let mut contract = ParsedContract {
@@ -674,6 +700,17 @@ impl Parser<'_> {
             if self.current().kind == Kind::Eof {
                 return Err(self.error("E0100", "Expected block terminator"));
             }
+            #[cfg(test)]
+            if self.for_next {
+                if self.word("NEXT") {
+                    break;
+                }
+                if self.word("FOR") {
+                    let loop_statement = self.for_statement(counts, depth)?;
+                    statements.push(ParsedStatement::For(Box::new(loop_statement)));
+                    continue;
+                }
+            }
             if self.word("RETURN") && self.functions {
                 if counts.returns >= 4096 {
                     return Err(
@@ -712,7 +749,7 @@ impl Parser<'_> {
                 let Kind::Word(ref name) = token.kind else {
                     return Err(self.error("E0100", "Expected a local name"));
                 };
-                if is_reserved(name) {
+                if self.reserved(name) {
                     return Err(
                         self.error("E0201", "A local cannot use a reserved or built-in name")
                     );
@@ -758,7 +795,7 @@ impl Parser<'_> {
                     .get(self.pos + 1)
                     .is_some_and(|t| t.kind == Kind::Symbol('='))
             {
-                if is_reserved(target) {
+                if self.reserved(target) {
                     return Err(
                         self.error("E0203", "Assignment target must be an existing DIM local")
                     );
@@ -870,6 +907,8 @@ fn parser<'a>(name: &'a str, source: &'a [u8], functions: bool) -> Result<Parser
         tokens,
         pos: 0,
         functions,
+        #[cfg(test)]
+        for_next: false,
     })
 }
 

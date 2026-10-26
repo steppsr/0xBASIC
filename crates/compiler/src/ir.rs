@@ -533,6 +533,15 @@ impl Lowerer<'_> {
         let mut statements = statements.into_iter();
         while let Some(statement) = statements.next() {
             match statement {
+                #[cfg(test)]
+                crate::syntax::ParsedStatement::For(statement) => {
+                    return Err(Diagnostic::at(
+                        "E0205",
+                        "FOR/NEXT lowering is not implemented",
+                        name,
+                        statement.span,
+                    ));
+                }
                 crate::syntax::ParsedStatement::Return {
                     expression: result,
                     span,

@@ -4,6 +4,8 @@ Status: specification-first design checkpoint, 2026-10-25. **Not implemented in 
 
 This selects one counted-loop form for the next Core increment. It excludes WHILE/DO, collection iteration syntax, EXIT/CONTINUE, user recursion and modules. Internal generated loop recursion does not permit recursive user functions.
 
+Implementation checkpoint: the [private test-only parser/AST prototype](for-next-parser.md) covers the first syntax slice while preserving all public released behavior. It does not implement loop semantics or execution.
+
 ## Syntax
 
 ```basic

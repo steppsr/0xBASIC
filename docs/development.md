@@ -24,7 +24,7 @@ Update older source declarations and rebuild artifacts with the current compiler
 
 ## Roadmap
 
-Next Core design: [FOR/NEXT](spec/for-next-design.md), covering inclusive counted iteration, immutable scoped counters, carried locals, return/emission behavior and cost/resource constraints. This is a proposal for a future compiler/language version; the released compiler has no loop support. Parser/AST work is the next bounded implementation slice after resolving its compatibility checkpoint.
+Next Core design: [FOR/NEXT](spec/for-next-design.md), covering inclusive counted iteration, immutable scoped counters, carried locals, return/emission behavior and cost/resource constraints. The [private parser/AST prototype](spec/for-next-parser.md) passes Windows and native Linux checks. It exists only in compiler unit tests; the released compiler and normal builds still have no loop support. Semantic analysis and executable lowering remain future slices.
 
 | Stage | Scope | Status |
 | --- | --- | --- |

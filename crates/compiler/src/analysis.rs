@@ -293,6 +293,14 @@ impl Analyzer<'_> {
         let mut falls_through = true;
         for statement in statements {
             let next = match statement {
+                #[cfg(test)]
+                ParsedStatement::For(statement) => {
+                    return Err(self.error(
+                        "E0205",
+                        "FOR/NEXT analysis is not implemented",
+                        statement.span,
+                    ));
+                }
                 ParsedStatement::Return { expression, span } => {
                     let expected = result.ok_or_else(|| {
                         self.error("E0205", "RETURN is forbidden in contracts", *span)

@@ -103,6 +103,20 @@ impl Ast {
     fn statements(&mut self, statements: Vec<syntax::ParsedStatement>) -> Vec<usize> {
         use syntax::ParsedStatement as S;
         statements.into_iter().map(|s| match s {
+            #[cfg(test)]
+            S::For(statement) => {
+                let start=self.expression(statement.start);
+                let end=self.expression(statement.end);
+                let step=statement.step.map(|e| self.expression(e));
+                let body=self.statements(statement.body);
+                self.node("For",statement.span,json!({
+                    "counter":statement.counter,"counter_span":statement.counter_span,
+                    "for_span":statement.for_span,"to_span":statement.to_span,
+                    "step_span":statement.step_span,"header_span":statement.header_span,
+                    "next_span":statement.next_span,"next_counter_span":statement.next_counter_span,
+                    "start":start,"end":end,"step":step,"body":body
+                }))
+            }
             S::Return {expression,span} => {
                 let expression=self.expression(expression);
                 self.node("Return",span,json!({"expression":expression}))
@@ -127,7 +141,7 @@ impl Ast {
         }).collect()
     }
 }
-fn ast(module: syntax::ParsedModule) -> Value {
+pub(crate) fn ast(module: syntax::ParsedModule) -> Value {
     let mut view = Ast::default();
     let c = module.contract;
     let body = view.statements(c.statements);
