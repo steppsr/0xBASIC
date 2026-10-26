@@ -35,6 +35,10 @@ Next, harden maximum-depth and adversarial control-flow cases and establish cros
 
 Windows verification passed: all 316 Rust tests (39 private FOR/NEXT tests), formatting, Clippy with warnings denied, workspace build and three frozen production size/hash/cost/output regressions with exact cost-limit checks. The user confirmed native Linux formatting, Clippy and all 317 Rust tests passed. Hosted CI for `4f76533` covers the preceding function/return checkpoint.
 
+Published revision `40e6567` passed GitHub [compiler checks](https://github.com/steppsr/0xBASIC/actions/runs/40418997756), [simulator checks](https://github.com/steppsr/0xBASIC/actions/runs/40418997586), and [package checks](https://github.com/steppsr/0xBASIC/actions/runs/40418997629), including extracted-package smoke checks on both platforms.
+
+The subsequent [depth/golden-fixture checkpoint](for-next-hardening.md) adds maximum-depth execution and pinned program expectations.
+
 ## Native Linux verification
 
 This checkpoint also changes the compiler manifest to enable test-only counters. Copy both the manifest and source directory from the Windows workspace, from your existing native checkout:

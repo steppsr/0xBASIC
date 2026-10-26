@@ -1,0 +1,62 @@
+[
+  {
+    "cost": 48045,
+    "env_hex": "ff8080",
+    "heights": [
+      5,
+      3,
+      1
+    ],
+    "name": "signed_snapshot",
+    "program_bytes": 1593,
+    "result_hex": "ffff53ff0580ffff53ff0380ffff53ff018080",
+    "sha256": "ea5e98a28382a87a3b261954eb4a9de2bb85c6d7235c2a3507ad166e0f12906e",
+    "source": "CONTRACT Demo()\nDIM finish = 1\nDIM stride = -2\nFOR i = 5 TO finish STEP stride\nEMIT ASSERT_HEIGHT_ABSOLUTE(i)\nfinish = 99\nstride = 0\nNEXT i\nEND CONTRACT\n",
+    "tree_hash": "aaa5c41230cd4b9c717b60a8a03fc3e18a8ad17af57ba6ba1dcf1620ed54184b"
+  },
+  {
+    "cost": 92308,
+    "env_hex": "ff8080",
+    "heights": [
+      99,
+      11,
+      21,
+      22,
+      100
+    ],
+    "name": "nested_order",
+    "program_bytes": 3001,
+    "result_hex": "ffff53ff6380ffff53ff0b80ffff53ff1580ffff53ff1680ffff53ff648080",
+    "sha256": "8d2304f62933aab12f163f62b2f29b3c955a7d5280c7b95e7b2db25c49d3c5a0",
+    "source": "CONTRACT Demo()\nEMIT ASSERT_HEIGHT_ABSOLUTE(99)\nFOR i = 1 TO 2\nFOR j = 1 TO i\nEMIT ASSERT_HEIGHT_ABSOLUTE(i * 10 + j)\nNEXT j\nNEXT i\nEMIT ASSERT_HEIGHT_ABSOLUTE(100)\nEND CONTRACT\n",
+    "tree_hash": "6bddc74ef42bad237e9658187fbdcd83ffd98aa838b8d6ddce90a969d27d1d9f"
+  },
+  {
+    "cost": 44576,
+    "env_hex": "ff8080",
+    "heights": [
+      21
+    ],
+    "name": "nested_return",
+    "program_bytes": 3749,
+    "result_hex": "ffff53ff158080",
+    "sha256": "d9d043b5591fac1ac127bfc1746dadfedb13e329012df4c4ba5e89841d8a76af",
+    "source": "FUNCTION Find() AS INTEGER\nFOR i = 1 TO 3\nIF i = 2 THEN\nFOR j = 1 TO 2\nRETURN i * 10 + j\nNEXT j\nASSERT FALSE\nEND IF\nNEXT i\nRETURN 0\nEND FUNCTION\nCONTRACT Demo()\nEMIT ASSERT_HEIGHT_ABSOLUTE(Find())\nEND CONTRACT\n",
+    "tree_hash": "81a290c0459c526e7643485a81ab82608d6cfc85c2e09a6eaa3863aa6cd01c82"
+  },
+  {
+    "cost": 44792,
+    "env_hex": "ff80ff0380",
+    "heights": [
+      1,
+      2,
+      3
+    ],
+    "name": "solution_range",
+    "program_bytes": 1559,
+    "result_hex": "ffff53ff0180ffff53ff0280ffff53ff038080",
+    "sha256": "09c4b999027957a2c2a3561654537e6bd3fd508687c14736551b605142aeda52",
+    "source": "CONTRACT Demo()\nSOLUTION finish AS INTEGER\nFOR i = 1 TO finish\nEMIT ASSERT_HEIGHT_ABSOLUTE(i)\nNEXT i\nEND CONTRACT\n",
+    "tree_hash": "1174b84de19b7ae409aad78bdc8381d030c67c078db3d59e00e55ee3885b4f9d"
+  }
+]
