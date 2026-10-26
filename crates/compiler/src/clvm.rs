@@ -9,6 +9,8 @@ use sha2::{Digest, Sha256};
 use std::io::Cursor;
 #[cfg(test)]
 mod for_next;
+#[cfg(test)]
+mod for_next_metrics;
 mod utf8;
 
 pub const FLAGS: u32 = 0x0257;
@@ -507,6 +509,24 @@ fn integer_body(
     )
 }
 
+// Keep released non-loop encodings unchanged; private loop frames use tail assembly.
+fn append_block_conditions(
+    a: &mut Allocator,
+    _context: &BodyContext<'_>,
+    left: NodePtr,
+    right: NodePtr,
+) -> Result<NodePtr> {
+    #[cfg(test)]
+    if _context
+        .values
+        .iter()
+        .any(|v| matches!(v.kind, IntegerValueKind::For(_)))
+    {
+        return for_next::append_forward(a, left, right);
+    }
+    append_conditions(a, left, right)
+}
+
 fn block_program(
     a: &mut Allocator,
     context: &BodyContext<'_>,
@@ -553,7 +573,7 @@ fn block_program(
     for (slot, spread) in condition_slots.into_iter().rev() {
         let condition = slot_path(a, slot, count + bindings.len())?;
         program = if spread {
-            append_conditions(a, condition, program)?
+            append_block_conditions(a, context, condition, program)?
         } else {
             op(a, 4, &[condition, program])?
         };

@@ -40,6 +40,8 @@ After those private backend checks, complete public activation/version and keywo
 
 Windows verification passed: all 313 Rust tests (36 private FOR/NEXT tests), formatting, Clippy with warnings denied, workspace build, and three frozen production size/hash/cost/output regressions with exact cost-limit checks. The user confirmed native Linux formatting, Clippy and all 314 Rust tests passed. Hosted CI for `8bbdb4b` covers the preceding contract-only checkpoint.
 
+Published revision `4f76533` passed GitHub [compiler checks](https://github.com/steppsr/0xBASIC/actions/runs/40413159672), [simulator checks](https://github.com/steppsr/0xBASIC/actions/runs/40413159635), and [package checks](https://github.com/steppsr/0xBASIC/actions/runs/40413159623). The subsequent [emission/resource checkpoint](for-next-emissions.md) addresses the accumulation problem above and records measured scope and remaining limits.
+
 ## Native Linux verification
 
 From the existing native checkout:

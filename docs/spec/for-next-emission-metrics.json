@@ -1,0 +1,261 @@
+{
+  "profile": "chia-clvm-0.19-strict-v1",
+  "baseline_commit": "4f76533fbb2360aeb439cba63c3ad9d36efbf547",
+  "measurement": "clvmr 0.19.0 counters feature, compiler unit tests; VM counters are not process RSS or native stack bytes",
+  "before": [
+    {
+      "case": "EMIT n",
+      "size": 32,
+      "cost": 731099,
+      "counters": {
+        "val_stack_usage": 123,
+        "env_stack_usage": 42,
+        "op_stack_usage": 122,
+        "atom_count": 289,
+        "allocated_atom_count": 2,
+        "pair_count": 15799,
+        "allocated_pair_count": 15799,
+        "heap_size": 293,
+        "max_atom_count": 2,
+        "max_pair_count": 15799,
+        "max_heap_size": 6
+      }
+    },
+    {
+      "case": "EMIT n",
+      "size": 64,
+      "cost": 2371163,
+      "counters": {
+        "val_stack_usage": 219,
+        "env_stack_usage": 74,
+        "op_stack_usage": 218,
+        "atom_count": 321,
+        "allocated_atom_count": 2,
+        "pair_count": 52423,
+        "allocated_pair_count": 52423,
+        "heap_size": 325,
+        "max_atom_count": 2,
+        "max_pair_count": 52423,
+        "max_heap_size": 6
+      }
+    },
+    {
+      "case": "EMIT n",
+      "size": 128,
+      "cost": 8397948,
+      "counters": {
+        "val_stack_usage": 411,
+        "env_stack_usage": 138,
+        "op_stack_usage": 410,
+        "atom_count": 385,
+        "allocated_atom_count": 2,
+        "pair_count": 190183,
+        "allocated_pair_count": 190183,
+        "heap_size": 392,
+        "max_atom_count": 2,
+        "max_pair_count": 190183,
+        "max_heap_size": 6
+      }
+    },
+    {
+      "case": "EMIT n",
+      "size": 256,
+      "cost": 31439100,
+      "counters": {
+        "val_stack_usage": 795,
+        "env_stack_usage": 266,
+        "op_stack_usage": 794,
+        "atom_count": 513,
+        "allocated_atom_count": 2,
+        "pair_count": 723751,
+        "allocated_pair_count": 723751,
+        "heap_size": 648,
+        "max_atom_count": 2,
+        "max_pair_count": 723751,
+        "max_heap_size": 6
+      }
+    }
+  ],
+  "after": [
+    {
+      "case": "EMIT n",
+      "size": 32,
+      "cost": 375172,
+      "counters": {
+        "val_stack_usage": 38,
+        "env_stack_usage": 15,
+        "op_stack_usage": 37,
+        "atom_count": 368,
+        "allocated_atom_count": 2,
+        "pair_count": 7604,
+        "allocated_pair_count": 7604,
+        "heap_size": 372,
+        "max_atom_count": 2,
+        "max_pair_count": 7604,
+        "max_heap_size": 6
+      }
+    },
+    {
+      "case": "EMIT n",
+      "size": 64,
+      "cost": 742180,
+      "counters": {
+        "val_stack_usage": 38,
+        "env_stack_usage": 15,
+        "op_stack_usage": 37,
+        "atom_count": 400,
+        "allocated_atom_count": 2,
+        "pair_count": 14324,
+        "allocated_pair_count": 14324,
+        "heap_size": 404,
+        "max_atom_count": 2,
+        "max_pair_count": 14324,
+        "max_heap_size": 6
+      }
+    },
+    {
+      "case": "EMIT n",
+      "size": 128,
+      "cost": 1476485,
+      "counters": {
+        "val_stack_usage": 38,
+        "env_stack_usage": 15,
+        "op_stack_usage": 37,
+        "atom_count": 464,
+        "allocated_atom_count": 2,
+        "pair_count": 27764,
+        "allocated_pair_count": 27764,
+        "heap_size": 471,
+        "max_atom_count": 2,
+        "max_pair_count": 27764,
+        "max_heap_size": 6
+      }
+    },
+    {
+      "case": "EMIT n",
+      "size": 256,
+      "cost": 2947205,
+      "counters": {
+        "val_stack_usage": 38,
+        "env_stack_usage": 15,
+        "op_stack_usage": 37,
+        "atom_count": 592,
+        "allocated_atom_count": 2,
+        "pair_count": 54644,
+        "allocated_pair_count": 54644,
+        "heap_size": 727,
+        "max_atom_count": 2,
+        "max_pair_count": 54644,
+        "max_heap_size": 6
+      }
+    },
+    {
+      "case": "NEST depth",
+      "size": 1,
+      "cost": 30863,
+      "counters": {
+        "val_stack_usage": 37,
+        "env_stack_usage": 14,
+        "op_stack_usage": 36,
+        "atom_count": 419,
+        "allocated_atom_count": 0,
+        "pair_count": 1454,
+        "allocated_pair_count": 1454,
+        "heap_size": 419,
+        "max_atom_count": 0,
+        "max_pair_count": 1454,
+        "max_heap_size": 0
+      }
+    },
+    {
+      "case": "NEST depth",
+      "size": 4,
+      "cost": 458673,
+      "counters": {
+        "val_stack_usage": 123,
+        "env_stack_usage": 48,
+        "op_stack_usage": 122,
+        "atom_count": 1813,
+        "allocated_atom_count": 5,
+        "pair_count": 12401,
+        "allocated_pair_count": 12401,
+        "heap_size": 1825,
+        "max_atom_count": 5,
+        "max_pair_count": 12401,
+        "max_heap_size": 5
+      }
+    },
+    {
+      "case": "NEST depth",
+      "size": 8,
+      "cost": 9187565,
+      "counters": {
+        "val_stack_usage": 243,
+        "env_stack_usage": 96,
+        "op_stack_usage": 242,
+        "atom_count": 4709,
+        "allocated_atom_count": 24,
+        "pair_count": 189049,
+        "allocated_pair_count": 189049,
+        "heap_size": 4900,
+        "max_atom_count": 24,
+        "max_pair_count": 189049,
+        "max_heap_size": 24
+      }
+    },
+    {
+      "case": "SUM n",
+      "size": 32,
+      "cost": 242029,
+      "counters": {
+        "val_stack_usage": 36,
+        "env_stack_usage": 14,
+        "op_stack_usage": 35,
+        "atom_count": 413,
+        "allocated_atom_count": 0,
+        "pair_count": 4569,
+        "allocated_pair_count": 4569,
+        "heap_size": 431,
+        "max_atom_count": 0,
+        "max_pair_count": 4569,
+        "max_heap_size": 0
+      }
+    },
+    {
+      "case": "SUM n",
+      "size": 256,
+      "cost": 1870681,
+      "counters": {
+        "val_stack_usage": 36,
+        "env_stack_usage": 14,
+        "op_stack_usage": 35,
+        "atom_count": 861,
+        "allocated_atom_count": 0,
+        "pair_count": 29881,
+        "allocated_pair_count": 29881,
+        "heap_size": 1236,
+        "max_atom_count": 0,
+        "max_pair_count": 29881,
+        "max_heap_size": 0
+      }
+    },
+    {
+      "case": "SUM n",
+      "size": 1024,
+      "cost": 7470169,
+      "counters": {
+        "val_stack_usage": 36,
+        "env_stack_usage": 14,
+        "op_stack_usage": 35,
+        "atom_count": 2397,
+        "allocated_atom_count": 0,
+        "pair_count": 116665,
+        "allocated_pair_count": 116665,
+        "heap_size": 5076,
+        "max_atom_count": 0,
+        "max_pair_count": 116665,
+        "max_heap_size": 0
+      }
+    }
+  ]
+}

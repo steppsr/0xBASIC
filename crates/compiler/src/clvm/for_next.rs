@@ -15,6 +15,28 @@ fn args(a: &mut Allocator, values: &[NodePtr]) -> Result<NodePtr> {
     Ok(tail)
 }
 
+// Tail-recursive reverse(left) ++ right; each left element is visited once.
+fn reverse_append(a: &mut Allocator, left: NodePtr, right: NodePtr) -> Result<NodePtr> {
+    let this = path(a, 2)?;
+    let remaining = path(a, 5)?;
+    let accumulated = path(a, 11)?;
+    let head = op(a, 5, &[remaining])?;
+    let rest = op(a, 6, &[remaining])?;
+    let next = op(a, 4, &[head, accumulated])?;
+    let env = args(a, &[this, rest, next])?;
+    let recurse = op(a, 2, &[this, env])?;
+    let program = choose(a, remaining, recurse, accumulated)?;
+    let program = quote(a, program)?;
+    let env = args(a, &[program, left, right])?;
+    op(a, 2, &[program, env])
+}
+
+pub(super) fn append_forward(a: &mut Allocator, left: NodePtr, right: NodePtr) -> Result<NodePtr> {
+    let nil = quote(a, NodePtr::NIL)?;
+    let reversed = reverse_append(a, left, nil)?;
+    reverse_append(a, reversed, right)
+}
+
 pub(super) fn lower(
     a: &mut Allocator,
     body: &crate::ir::for_next::LoopBody,
@@ -36,7 +58,7 @@ pub(super) fn lower(
         Some(&body.outputs),
     )?;
     let program = quote(a, program)?;
-    // Kernel body receives [counter, state], state=[conditions, captures...].
+    // Kernel body receives [counter, state], state=[reversed-conditions, captures...].
     let counter = path(a, 2)?;
     let state = path(a, 5)?;
     let captures = op(a, 6, &[state])?;
@@ -49,7 +71,8 @@ pub(super) fn lower(
     let previous = path(a, 5)?;
     let current_conditions = op(a, 5, &[result])?;
     let previous_conditions = op(a, 5, &[previous])?;
-    let conditions = append_conditions(a, previous_conditions, current_conditions)?;
+    // Visit only this iteration's forward list, not the accumulated prefix.
+    let conditions = reverse_append(a, current_conditions, previous_conditions)?;
     let captures = op(a, 6, &[result])?;
     let next_state = op(a, 4, &[conditions, captures])?;
     let nil = quote(a, NodePtr::NIL)?;
@@ -82,7 +105,16 @@ pub(super) fn lower(
     let kernel = kernel(a)?;
     let kernel = quote(a, kernel)?;
     let result = op(a, 2, &[kernel, input])?;
-    op(a, 6, &[result])
+    let state = op(a, 6, &[result])?;
+    // Bind the kernel result once, then restore forward order at loop exit.
+    let env = args(a, &[state])?;
+    let state = path(a, 2)?;
+    let reversed = op(a, 5, &[state])?;
+    let captures = op(a, 6, &[state])?;
+    let forward = reverse_append(a, reversed, nil)?;
+    let normalized = op(a, 4, &[forward, captures])?;
+    let normalized = quote(a, normalized)?;
+    op(a, 2, &[normalized, env])
 }
 
 pub(super) fn kernel(a: &mut Allocator) -> Result<NodePtr> {
