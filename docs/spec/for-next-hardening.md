@@ -42,6 +42,8 @@ After this checkpoint passes native Linux, the next step is the public-activatio
 
 Windows verification passed: all 320 Rust tests (43 private FOR/NEXT tests), formatting, Clippy with warnings denied, workspace build and three frozen production size/hash/cost/output regressions with exact cost-limit checks. The user confirmed native Linux formatting, Clippy and all 321 Rust tests passed, including golden parity.
 
+The subsequent [activation compatibility plan](for-next-activation.md) selects future identities and the coordinated implementation checklist. It does not enable public loops.
+
 ## Native Linux verification
 
 From the existing native checkout, copy the manifest and source directory. The latter includes the new golden JSON file:

@@ -141,7 +141,7 @@ Use a simple independent host-side iteration model for range/state/output expect
 
 ## Versioning and implementation sequence
 
-Adding syntax and reserving identifiers requires a new compiler version and a recorded language-version decision before the feature becomes externally available. The proposal is to advance the language identity to `0.2` for the first loop-capable release; choose the exact compiler prerelease name in the implementation checkpoint. ABI 1 and the pinned VM profile can remain unchanged only if boundary encodings, currying and execution flags are preserved. Update manifest schema constants, version checks, documentation and fixtures together when the language identity changes. Do not modify the existing experimental tag or assets.
+Adding syntax and reserving identifiers requires a new compiler version and a recorded language-version decision before the feature becomes externally available. The [activation plan](for-next-activation.md) selects language `0.2` and compiler `0.2.0-alpha.1` for the first public loop-capable implementation; neither identity is active yet. ABI 1 and the pinned VM profile can remain unchanged only if boundary encodings, currying and execution flags are preserved. Update manifest schema constants, version checks, documentation and fixtures together when the language identity changes. Do not modify the existing experimental tag or assets.
 
 Implement in bounded slices:
 
@@ -151,4 +151,4 @@ Implement in bounded slices:
 4. Integration and compatibility: boundary/CLI/inspection tests, cost/size regressions, Windows then native Linux, followed by applicable spend/full-node cases.
 5. Documentation and release: promote the implemented subset into normative language/grammar/ABI/CLI documents, publish exact examples and migration notes, validate source-inclusive packages, then seek approval for a new release.
 
-No native Linux test is required for this design document. Each implementation handoff must provide exact commands and expected outcomes. Parser and semantic-analysis checkpoints have passed Windows and native Linux testing. Executable lowering is next; language identity and partial-feature exposure must be resolved before publishing executable behavior.
+No native Linux test is required for this design document. Each implementation handoff must provide exact commands and expected outcomes. Parser, semantic analysis, executable contract/function lowering, emission/resource checks and depth/golden fixtures have passed Windows and native Linux testing behind the private gate. The activation plan now governs coordinated public implementation and compatibility changes.
