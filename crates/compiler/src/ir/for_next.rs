@@ -1,9 +1,10 @@
-//! Private source-to-loop IR bridge. Functions remain gated in this slice.
+//! Private source-to-loop IR bridge with return-aware function frames.
 use super::*;
 
 #[derive(Debug, Serialize)]
 pub struct LoopBody {
     pub headers: [usize; 3],
+    pub return_index: Option<usize>,
     pub captures: Vec<usize>,
     pub capture_names: Vec<String>,
     pub values: Vec<IntegerValue>,
@@ -11,7 +12,7 @@ pub struct LoopBody {
     pub emissions: Vec<HeightEmission>,
 }
 
-fn count(values: &[IntegerValue]) -> usize {
+pub(super) fn count(values: &[IntegerValue]) -> usize {
     values.len()
         + values
             .iter()
@@ -25,13 +26,7 @@ fn count(values: &[IntegerValue]) -> usize {
 pub(crate) fn lower(source: &str) -> Result<Contract> {
     let module = crate::syntax::parse_for_next("loops.bas", source.as_bytes())?;
     crate::analysis::analyze_module("loops.bas", &module)?;
-    if !module.functions.is_empty() {
-        return Err(Diagnostic::new(
-            "E0205",
-            "Private loop lowering does not yet support functions",
-        ));
-    }
-    let contract = lower_contract("loops.bas", module.contract, &Callables::new())?;
+    let contract = lower_module_impl("loops.bas", module)?;
     if count(&contract.values) > MAX_INTEGER_VALUES {
         return Err(Diagnostic::new(
             "E0205",
@@ -89,7 +84,8 @@ impl Lowerer<'_> {
             .iter()
             .map(|id| 2 * nodes(&self.values[*id].value_type))
             .sum::<usize>()
-            + 1;
+            + 1
+            + self.result_type.as_ref().map_or(0, nodes);
         let total = self.loop_type_nodes.get().saturating_add(copies);
         if total > 65_536 {
             return Err(Diagnostic::at(
@@ -102,10 +98,10 @@ impl Lowerer<'_> {
         self.loop_type_nodes.set(total);
         let mut body = Lowerer {
             loop_type_nodes: self.loop_type_nodes.clone(),
-            result_type: None,
+            result_type: self.result_type.clone(),
             functions: self.functions,
-            in_function: false,
-            return_state: false,
+            in_function: self.in_function,
+            return_state: self.return_state,
             block_depth: self.block_depth,
             source: self.source,
             contract: self.contract.clone(),
@@ -143,6 +139,10 @@ impl Lowerer<'_> {
             &mut self.values,
             IntegerValueKind::For(Box::new(LoopBody {
                 headers: [start, end, step],
+                return_index: capture_names
+                    .iter()
+                    .position(|name| name == RETURN_STATE)
+                    .map(|index| index + 1),
                 captures,
                 capture_names: capture_names.clone(),
                 values: body.values,
@@ -348,7 +348,7 @@ fn for_next_source_dynamic_boundaries_cost_and_public_gate() {
             .code,
         "E0205"
     );
-    assert_eq!(lower("FUNCTION Helper() AS INTEGER\nRETURN 1\nEND FUNCTION\nCONTRACT Demo()\nFOR i = 1 TO 2\nNEXT i\nEND CONTRACT").unwrap_err().code, "E0205");
+    lower("FUNCTION Helper() AS INTEGER\nRETURN 1\nEND FUNCTION\nCONTRACT Demo()\nFOR i = 1 TO 2\nNEXT i\nEND CONTRACT").unwrap();
 }
 
 #[test]
@@ -415,5 +415,157 @@ fn for_next_source_value_budget_includes_isolated_bodies() {
     );
     let error = lower(&source).unwrap_err();
     assert_eq!(error.code, "E0205");
+    assert!(error.message.contains("4096 value"), "{error:?}");
+}
+
+fn execute_module(source: &str) -> Result<crate::clvm::Execution> {
+    let program = crate::clvm::generate(&lower(source)?)?;
+    crate::clvm::execute(&program, &[0xff, 0x80, 0x80], 100_000_000)
+}
+
+#[test]
+fn for_next_function_nested_return_skips_all_continuations() {
+    let source = "FUNCTION Find(limit AS INTEGER) AS INTEGER\nFOR i = -2 TO limit\nIF i > 0 THEN\nFOR j = 1 TO 3\nIF j = 2 THEN\nRETURN i * 10 + j\nEND IF\nNEXT j\nASSERT FALSE\nEND IF\nNEXT i\nRETURN 0\nEND FUNCTION\nCONTRACT Demo()\nASSERT Find(3) = 12\nASSERT Find(-3) = 0\nASSERT Find(0) = 0\nEND CONTRACT";
+    execute_module(source).unwrap();
+    execute_module("FUNCTION Stop() AS INTEGER\nFOR i = 1 TO 3\nRETURN 7\nASSERT FALSE\nNEXT i\nFOR j = 1 TO 2 STEP 0\nNEXT j\nRETURN 9\nEND FUNCTION\nCONTRACT Demo()\nASSERT Stop() = 7\nEND CONTRACT").unwrap();
+}
+
+#[test]
+fn for_next_function_typed_false_and_empty_returns_are_present() {
+    for (ty, value, assertion) in [
+        ("INTEGER", "0", "result = 0"),
+        ("BOOLEAN", "FALSE", "NOT result"),
+        ("BYTES", "0x", "BYTE_LENGTH(result) = 0"),
+        ("STRING", "\"\"", "BYTE_LENGTH(UTF8(result)) = 0"),
+        ("LIST OF INTEGER", "[]", "LIST_LENGTH(result) = 0"),
+        (
+            "PAIR OF (INTEGER, BOOLEAN)",
+            "PAIR(0, FALSE)",
+            "FIRST(result) = 0 AND NOT REST(result)",
+        ),
+        ("AMOUNT", "AS_AMOUNT(0)", "AMOUNT_VALUE(result) = 0"),
+        (
+            "PUZZLEHASH",
+            "AS_PUZZLEHASH(SHA256(0x))",
+            "HASH_BYTES(result) = SHA256(0x)",
+        ),
+    ] {
+        let source = format!(
+            "FUNCTION Find() AS {ty}\nFOR i = 1 TO 2\nRETURN {value}\nNEXT i\nASSERT FALSE\nRETURN {value}\nEND FUNCTION\nCONTRACT Demo()\nDIM result = Find()\nASSERT {assertion}\nEND CONTRACT"
+        );
+        execute_module(&source).unwrap_or_else(|e| panic!("{ty}: {e:?}"));
+    }
+    let fixtures: serde_json::Value = serde_json::from_str(include_str!(
+        "../../../../docs/spec/m3-publickey-cases.json"
+    ))
+    .unwrap();
+    let key = fixtures["cases"][0]["hex"].as_str().unwrap();
+    execute_module(&format!("FUNCTION Find() AS PUBLICKEY\nFOR i = 1 TO 1\nRETURN AS_PUBLICKEY(0x{key})\nNEXT i\nASSERT FALSE\nRETURN AS_PUBLICKEY(0x{key})\nEND FUNCTION\nCONTRACT Demo()\nASSERT KEY_BYTES(Find()) = 0x{key}\nEND CONTRACT")).unwrap();
+    let condition = execute_module("FUNCTION Find() AS CONDITION\nFOR i = 1 TO 1\nRETURN ASSERT_HEIGHT_ABSOLUTE(0)\nNEXT i\nASSERT FALSE\nRETURN ASSERT_HEIGHT_ABSOLUTE(1)\nEND FUNCTION\nCONTRACT Demo()\nEMIT Find()\nEND CONTRACT").unwrap();
+    assert_eq!(heights(&condition), [0]);
+}
+
+#[test]
+fn for_next_function_forward_dependencies_headers_and_condition_results() {
+    let source = "FUNCTION MakeHeight(n AS INTEGER) AS CONDITION\nDIM total = 0\nFOR i = Bound() TO n STEP Bound()\nFOR j = 1 TO 1\ntotal = total + Increment(i)\nNEXT j\nNEXT i\nRETURN ASSERT_HEIGHT_ABSOLUTE(total)\nEND FUNCTION\nFUNCTION Increment(n AS INTEGER) AS INTEGER\nFOR i = 1 TO 1\nRETURN n + 1\nNEXT i\nRETURN 0\nEND FUNCTION\nFUNCTION Bound() AS INTEGER\nRETURN 1\nEND FUNCTION\nCONTRACT Demo()\nFOR i = 1 TO 3\nEMIT MakeHeight(i)\nNEXT i\nEND CONTRACT";
+    let actual = execute_module(source).unwrap();
+    assert_eq!(heights(&actual), [2, 5, 9]);
+    let program = crate::clvm::generate(&lower(source).unwrap()).unwrap();
+    assert_eq!(
+        crate::clvm::execute(&program, &[0xff, 0x80, 0x80], actual.cost)
+            .unwrap()
+            .bytes,
+        actual.bytes
+    );
+    assert_eq!(
+        crate::clvm::execute(&program, &[0xff, 0x80, 0x80], actual.cost - 1)
+            .err()
+            .unwrap()
+            .code,
+        "E0501"
+    );
+    // A callee's return exits only that callee, not its caller's loop.
+    execute_module("FUNCTION Inner() AS INTEGER\nFOR j = 1 TO 3\nRETURN 2\nNEXT j\nRETURN 0\nEND FUNCTION\nFUNCTION Outer() AS INTEGER\nDIM total = 0\nFOR i = 1 TO 3\ntotal = total + Inner()\nNEXT i\nRETURN total\nEND FUNCTION\nCONTRACT Demo()\nASSERT Outer() = 6\nEND CONTRACT").unwrap();
+}
+
+#[test]
+fn for_next_function_unreachable_checks_and_runtime_failures() {
+    let function = |body: &str| {
+        format!(
+            "FUNCTION Find() AS INTEGER\n{body}\nEND FUNCTION\nCONTRACT Demo()\nASSERT Find() = 0\nEND CONTRACT"
+        )
+    };
+    for body in [
+        "FOR i = 1 TO 2\nRETURN 0\nNEXT i",
+        "RETURN 0\nFOR i = 1 TO 2\nRETURN TRUE\nNEXT i",
+    ] {
+        assert!(lower(&function(body)).is_err());
+    }
+    assert_eq!(
+        lower(&function("FOR i = 1 TO 0\nRETURN Find()\nNEXT i\nRETURN 0"))
+            .unwrap_err()
+            .code,
+        "E0206"
+    );
+    assert_eq!(
+        execute_module(&function(
+            "FOR i = 2 TO 1 STEP 0\nRETURN 0\nNEXT i\nRETURN 0"
+        ))
+        .err()
+        .unwrap()
+        .code,
+        "E0500"
+    );
+    execute_module(&function(
+        "IF FALSE THEN\nFOR i = 1 TO 2 STEP 0\nRETURN 1\nNEXT i\nEND IF\nRETURN 0",
+    ))
+    .unwrap();
+    execute_module(&function("RETURN 0\nFOR i = 1 TO 2 STEP 0\nNEXT i")).unwrap();
+    assert!(
+        crate::check(
+            "loops.bas",
+            function("FOR i = 1 TO 1\nRETURN 0\nNEXT i\nRETURN 0").as_bytes()
+        )
+        .is_err()
+    );
+}
+
+#[test]
+fn for_next_function_module_budgets_include_every_body() {
+    let mut ty = "INTEGER".to_owned();
+    let mut value = "0".to_owned();
+    for _ in 0..9 {
+        ty = format!("PAIR OF ({ty}, {ty})");
+        value = format!("PAIR({value}, {value})");
+    }
+    let function = |name, n| {
+        format!(
+            "FUNCTION {name}() AS INTEGER\nDIM state AS {ty} = {value}\n{}RETURN 0\nEND FUNCTION\n",
+            "FOR i = 1 TO 0\nstate = state\nNEXT i\n".repeat(n)
+        )
+    };
+    let source = |n| {
+        format!(
+            "{}{}CONTRACT Demo()\nEND CONTRACT",
+            function("Alpha", n),
+            function("Beta", n)
+        )
+    };
+    lower(&source(16)).unwrap();
+    let error = lower(&source(17)).unwrap_err();
+    assert!(error.message.contains("frame copies"), "{error:?}");
+    let body = "ASSERT i + 1 > 0\n".repeat(20);
+    let function = |name| {
+        format!(
+            "FUNCTION {name}() AS INTEGER\n{}RETURN 0\nEND FUNCTION\n",
+            format!("FOR i = 1 TO 1\n{body}NEXT i\n").repeat(25)
+        )
+    };
+    let error = lower(&format!(
+        "{}{}CONTRACT Demo()\nEND CONTRACT",
+        function("Alpha"),
+        function("Beta")
+    ))
+    .unwrap_err();
     assert!(error.message.contains("4096 value"), "{error:?}");
 }

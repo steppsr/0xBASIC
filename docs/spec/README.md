@@ -48,7 +48,7 @@ The [FOR/NEXT design proposal](for-next-design.md) specifies the next counted-lo
 
 The [parser/AST checkpoint](for-next-parser.md) records the private test-only implementation boundary and exact native Linux verification commands. It does not enable loops in normal builds.
 
-The subsequent [semantic-analysis checkpoint](for-next-analysis.md) adds header/counter checks and typed state metadata. The [private executable kernel](for-next-kernel.md) begins VM validation; the [private contract-lowering bridge](for-next-source.md) now exercises source-level contract loops. Function integration and public activation remain future work.
+The subsequent [semantic-analysis checkpoint](for-next-analysis.md) adds header/counter checks and typed state metadata. The [private executable kernel](for-next-kernel.md) begins VM validation; the [private contract-lowering bridge](for-next-source.md) now exercises source-level contract loops. The [function/return checkpoint](for-next-functions.md) adds calls and nested early returns behind the same private gate. Performance/resource work and public activation remain future work.
 
 [M4 validation planning](m4-validation-plan.md), the [M5 work plan](m5-release-plan.md) and the original [M5 packaging checkpoint](m5-packaging.md) retain dated development history. Read their current-status notes before following old test handoffs. The [M5 release review](m5-release-review.md) records completion; the [development roadmap](../development.md) separates future work from the released interface.
 

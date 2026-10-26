@@ -197,6 +197,8 @@ fn has_return(statements: &[crate::syntax::ParsedStatement]) -> bool {
     statements.iter().any(|s| match s {
         crate::syntax::ParsedStatement::Return { .. } => true,
         crate::syntax::ParsedStatement::If(b) => has_return(&b.yes) || has_return(&b.no),
+        #[cfg(test)]
+        crate::syntax::ParsedStatement::For(b) => has_return(&b.body),
         _ => false,
     })
 }
@@ -225,13 +227,24 @@ struct Lowerer<'a> {
 }
 
 pub(crate) fn lower(name: &str, parsed: ParsedContract) -> Result<Contract> {
-    lower_contract(name, parsed, &Callables::new())
+    lower_contract(
+        name,
+        parsed,
+        &Callables::new(),
+        #[cfg(test)]
+        Default::default(),
+    )
 }
 
-fn lower_contract(name: &str, parsed: ParsedContract, functions: &Callables) -> Result<Contract> {
+fn lower_contract(
+    name: &str,
+    parsed: ParsedContract,
+    functions: &Callables,
+    #[cfg(test)] loop_type_nodes: std::rc::Rc<std::cell::Cell<usize>>,
+) -> Result<Contract> {
     let mut lowerer = Lowerer {
         #[cfg(test)]
-        loop_type_nodes: Default::default(),
+        loop_type_nodes,
         functions,
         in_function: false,
         result_type: None,
@@ -326,6 +339,10 @@ pub(crate) fn lower_module(name: &str, module: crate::syntax::ParsedModule) -> R
             ));
         }
     }
+    lower_module_impl(name, module)
+}
+
+fn lower_module_impl(name: &str, module: crate::syntax::ParsedModule) -> Result<Contract> {
     if module.functions.is_empty()
         && !module.collection_syntax
         && module.contract.inputs.is_empty()
@@ -340,8 +357,16 @@ pub(crate) fn lower_module(name: &str, module: crate::syntax::ParsedModule) -> R
         .enumerate()
         .map(|(id, signature)| (signature.name.to_ascii_lowercase(), (id, signature)))
         .collect();
-    let mut contract = lower_contract(name, module.contract, &callables)?;
-    let mut total = contract.values.len();
+    #[cfg(test)]
+    let loop_type_nodes = std::rc::Rc::new(std::cell::Cell::new(0));
+    let mut contract = lower_contract(
+        name,
+        module.contract,
+        &callables,
+        #[cfg(test)]
+        loop_type_nodes.clone(),
+    )?;
+    let mut total = value_count(&contract.values);
     for mut function in module.functions {
         // Preserve existing encoding when there are no branch returns.
         // Full analysis has already checked abandoned continuations.
@@ -351,9 +376,15 @@ pub(crate) fn lower_module(name: &str, module: crate::syntax::ParsedModule) -> R
         if let Some(index) = top_return {
             function.statements.truncate(index + 1);
         }
-        let return_state = top_return.is_none() || function.statements.iter().any(|statement| {
-            matches!(statement, crate::syntax::ParsedStatement::If(branch) if has_return(&branch.yes) || has_return(&branch.no))
-        });
+        let return_state = top_return.is_none()
+            || function.statements.iter().any(|statement| match statement {
+                crate::syntax::ParsedStatement::If(branch) => {
+                    has_return(&branch.yes) || has_return(&branch.no)
+                }
+                #[cfg(test)]
+                crate::syntax::ParsedStatement::For(branch) => has_return(&branch.body),
+                _ => false,
+            });
         let final_expression = if return_state {
             None
         } else {
@@ -366,7 +397,7 @@ pub(crate) fn lower_module(name: &str, module: crate::syntax::ParsedModule) -> R
         };
         let mut lowerer = Lowerer {
             #[cfg(test)]
-            loop_type_nodes: Default::default(),
+            loop_type_nodes: loop_type_nodes.clone(),
             functions: &callables,
             in_function: true,
             result_type: Some(function.result.clone()),
@@ -424,7 +455,7 @@ pub(crate) fn lower_module(name: &str, module: crate::syntax::ParsedModule) -> R
                 function.span,
             )?
         };
-        total += lowerer.values.len();
+        total += value_count(&lowerer.values);
         if total > MAX_INTEGER_VALUES {
             return Err(Diagnostic::at(
                 "E0205",
@@ -572,7 +603,32 @@ impl Lowerer<'_> {
             match statement {
                 #[cfg(test)]
                 crate::syntax::ParsedStatement::For(statement) => {
+                    let may_return = self.return_state && has_return(&statement.body);
+                    let span = statement.span;
                     emissions.push(self.for_statement(*statement, names, constants)?);
+                    if may_return {
+                        let remaining: Vec<_> = statements.collect();
+                        if !remaining.is_empty() {
+                            let predicate = push(
+                                name,
+                                &mut self.values,
+                                IntegerValueKind::Not {
+                                    operand: names[RETURN_STATE],
+                                },
+                                ValueType::Boolean,
+                                span,
+                            )?;
+                            emissions.push(self.conditional_body(
+                                predicate,
+                                remaining,
+                                Vec::new(),
+                                span,
+                                names,
+                                constants,
+                            )?);
+                        }
+                        break;
+                    }
                 }
                 crate::syntax::ParsedStatement::Return {
                     expression: result,
@@ -788,6 +844,17 @@ impl Lowerer<'_> {
         Ok(emissions)
     }
 }
+pub(crate) fn value_count(values: &[IntegerValue]) -> usize {
+    #[cfg(test)]
+    {
+        for_next::count(values)
+    }
+    #[cfg(not(test))]
+    {
+        values.len()
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

@@ -425,12 +425,23 @@ struct BodyContext<'a> {
     functions: &'a [Option<NodePtr>],
 }
 
+fn functions_ready(values: &[crate::IntegerValue], programs: &[Option<NodePtr>]) -> bool {
+    values.iter().all(|v| match &v.kind {
+        IntegerValueKind::Call { function, .. } => {
+            programs.get(*function).is_some_and(Option::is_some)
+        }
+        #[cfg(test)]
+        IntegerValueKind::For(body) => functions_ready(&body.values, programs),
+        _ => true,
+    })
+}
+
 fn function_programs(a: &mut Allocator, contract: &Contract) -> Result<Vec<Option<NodePtr>>> {
-    let total = contract.values.len()
+    let total = crate::ir::value_count(&contract.values)
         + contract
             .functions
             .iter()
-            .map(|f| f.values.len())
+            .map(|f| crate::ir::value_count(&f.values))
             .sum::<usize>();
     if total > MAX_INTEGER_VALUES || contract.functions.len() > 256 {
         return Err(internal("module exceeds function/value limits"));
@@ -442,12 +453,7 @@ fn function_programs(a: &mut Allocator, contract: &Contract) -> Result<Vec<Optio
             if programs[id].is_some() {
                 continue;
             }
-            let ready = function.values.iter().all(|v| match &v.kind {
-                IntegerValueKind::Call { function, .. } => {
-                    programs.get(*function).is_some_and(Option::is_some)
-                }
-                _ => true,
-            });
+            let ready = functions_ready(&function.values, &programs);
             if !ready {
                 continue;
             }

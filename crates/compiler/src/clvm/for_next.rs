@@ -1,4 +1,4 @@
-//! Private executable kernel, not yet connected to source/IR lowering.
+//! Private executable kernel and typed source/IR adapter.
 //! Input: [start, end, step, state, body-program], all already evaluated.
 //! Body input: [counter, state]. Body result: (optional-return . next-state).
 //! An optional return is nil or a singleton list, including for a nil value.
@@ -53,7 +53,16 @@ pub(super) fn lower(
     let captures = op(a, 6, &[result])?;
     let next_state = op(a, 4, &[conditions, captures])?;
     let nil = quote(a, NodePtr::NIL)?;
-    let result = op(a, 4, &[nil, next_state])?;
+    let returned = if let Some(index) = body.return_index {
+        let mut slot = result;
+        for _ in 0..index {
+            slot = op(a, 6, &[slot])?;
+        }
+        op(a, 5, &[slot])?
+    } else {
+        nil
+    };
+    let result = op(a, 4, &[returned, next_state])?;
     let adapter = quote(a, result)?;
     let body_program = op(a, 2, &[adapter, adapter_env])?;
     let body_program = quote(a, body_program)?;

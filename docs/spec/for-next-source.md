@@ -40,6 +40,10 @@ Condition accumulation currently appends the accumulated prefix each iteration. 
 
 Windows verification passed: all 308 Rust tests (31 private FOR/NEXT tests), formatting, Clippy with warnings denied, workspace build, and three frozen production size/hash/cost/output regressions with exact cost-limit checks. The user confirmed native Linux formatting, Clippy and all 309 Rust tests passed. The hosted CI results for `65e7339` cover the preceding kernel checkpoint.
 
+Published revision `8bbdb4b` passed GitHub [compiler checks](https://github.com/steppsr/0xBASIC/actions/runs/40376021236), [simulator checks](https://github.com/steppsr/0xBASIC/actions/runs/40376021305), and [package checks](https://github.com/steppsr/0xBASIC/actions/runs/40376021147).
+
+The subsequent [function/return checkpoint](for-next-functions.md) extends the private bridge to functions and nested early returns. The function exclusions above describe this historical contract-only slice.
+
 ## Native Linux verification
 
 From the existing native checkout:
@@ -54,4 +58,4 @@ cargo clippy --workspace --all-targets --locked -- -D warnings
 cargo test --workspace --locked
 ```
 
-Expected: 308 Windows / 309 Linux Rust tests, including 31 private FOR/NEXT tests. No feature flag, dependency install, simulator rerun or release rebuild is required. After native confirmation, publish this checkpoint and proceed to function/return integration behind the private gate.
+Expected: 308 Windows / 309 Linux Rust tests, including 31 private FOR/NEXT tests. No feature flag, dependency install, simulator rerun or release rebuild is required. This checkpoint passed native Linux and was published as `8bbdb4b`; the function/return checkpoint is the next implementation slice.
