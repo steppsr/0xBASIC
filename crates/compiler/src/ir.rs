@@ -9,6 +9,8 @@ pub const MAX_INTEGER_DIGITS: usize = 4096;
 pub const MAX_INTEGER_VALUES: usize = 4096;
 
 pub(crate) mod expressions;
+#[cfg(test)]
+pub(crate) mod for_next;
 use expressions::{constant, expression, push, require_type};
 
 pub(crate) mod types;
@@ -29,6 +31,8 @@ pub enum IntegerOperation {
 
 #[derive(Debug, Serialize)]
 pub enum IntegerValueKind {
+    #[cfg(test)]
+    For(Box<for_next::LoopBody>),
     Fixed {
         index: usize,
     },
@@ -206,6 +210,8 @@ pub struct LocalBinding {
 }
 
 struct Lowerer<'a> {
+    #[cfg(test)]
+    loop_type_nodes: std::rc::Rc<std::cell::Cell<usize>>,
     result_type: Option<ValueType>,
     functions: &'a Callables,
     in_function: bool,
@@ -224,6 +230,8 @@ pub(crate) fn lower(name: &str, parsed: ParsedContract) -> Result<Contract> {
 
 fn lower_contract(name: &str, parsed: ParsedContract, functions: &Callables) -> Result<Contract> {
     let mut lowerer = Lowerer {
+        #[cfg(test)]
+        loop_type_nodes: Default::default(),
         functions,
         in_function: false,
         result_type: None,
@@ -357,6 +365,8 @@ pub(crate) fn lower_module(name: &str, module: crate::syntax::ParsedModule) -> R
             Some(expression)
         };
         let mut lowerer = Lowerer {
+            #[cfg(test)]
+            loop_type_nodes: Default::default(),
             functions: &callables,
             in_function: true,
             result_type: Some(function.result.clone()),
@@ -562,12 +572,7 @@ impl Lowerer<'_> {
             match statement {
                 #[cfg(test)]
                 crate::syntax::ParsedStatement::For(statement) => {
-                    return Err(Diagnostic::at(
-                        "E0205",
-                        "FOR/NEXT lowering is not implemented",
-                        name,
-                        statement.span,
-                    ));
+                    emissions.push(self.for_statement(*statement, names, constants)?);
                 }
                 crate::syntax::ParsedStatement::Return {
                     expression: result,

@@ -581,6 +581,13 @@ fn scalar_expression(
 ) -> Result<(NodePtr, usize)> {
     let values = context.values;
     let value = values.get(id).ok_or_else(|| internal("invalid value ID"))?;
+    #[cfg(test)]
+    if let IntegerValueKind::For(body) = &value.kind {
+        return Ok((
+            for_next::lower(a, body, context, value_slots, count)?,
+            id + 1,
+        ));
+    }
     if let IntegerValueKind::If {
         predicate,
         yes,
@@ -750,6 +757,8 @@ fn scalar_expression(
             }
             op(a, 2, &[program, args])?
         }
+        #[cfg(test)]
+        IntegerValueKind::For(_) => unreachable!("handled above"),
         IntegerValueKind::If { .. } => unreachable!("handled above"),
         IntegerValueKind::Project { bundle, index } => {
             let mut tuple = value_path(a, *bundle, value_slots, count)?;

@@ -32,6 +32,8 @@ Header expression evaluation and left-to-right snapshot timing, typed state layo
 
 Windows verification passed: all 300 Rust tests, formatting, Clippy with warnings denied, workspace build, and three frozen size/hash/cost/output regressions with exact cost-limit checks. The user confirmed native Linux formatting, Clippy and all 301 Rust tests passed. The hosted CI results for `636918e` cover the preceding semantic checkpoint, not this uncommitted kernel slice.
 
+Published revision `65e7339` passed GitHub [compiler checks](https://github.com/steppsr/0xBASIC/actions/runs/40343939343), [simulator checks](https://github.com/steppsr/0xBASIC/actions/runs/40343939346), and [package checks](https://github.com/steppsr/0xBASIC/actions/runs/40343939449). The subsequent [private contract-lowering checkpoint](for-next-source.md) connects typed source frames and emissions to this kernel; the limitations above describe the standalone kernel checkpoint.
+
 ## Native Linux verification
 
 From the existing native checkout:
@@ -48,4 +50,4 @@ cargo test --workspace --locked
 
 Expected: 300 Windows / 301 Linux Rust tests, including 23 private FOR/NEXT tests (nine parser, nine analysis, five kernel). No feature flag, package installation, simulator run or release rebuild is required.
 
-After this checkpoint passes native Linux, publish it and connect typed loop IR/state layout to this kernel in the next bounded slice. Preserve the public gate until complete execution semantics, compatibility/version changes and integration checks are ready.
+This checkpoint has passed native Linux and is published. The contract-lowering checkpoint is the subsequent implementation slice. Preserve the public gate until complete execution semantics, compatibility/version changes and integration checks are ready.

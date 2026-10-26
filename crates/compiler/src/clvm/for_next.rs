@@ -15,7 +15,68 @@ fn args(a: &mut Allocator, values: &[NodePtr]) -> Result<NodePtr> {
     Ok(tail)
 }
 
-fn kernel(a: &mut Allocator) -> Result<NodePtr> {
+pub(super) fn lower(
+    a: &mut Allocator,
+    body: &crate::ir::for_next::LoopBody,
+    context: &BodyContext<'_>,
+    slots: &[usize],
+    count: usize,
+) -> Result<NodePtr> {
+    let parameters = body.captures.len() + 1;
+    let program = block_program(
+        a,
+        &BodyContext {
+            values: &body.values,
+            functions: context.functions,
+        },
+        parameters..body.values.len(),
+        &body.emissions,
+        &(0..parameters).rev().collect::<Vec<_>>(),
+        parameters,
+        Some(&body.outputs),
+    )?;
+    let program = quote(a, program)?;
+    // Kernel body receives [counter, state], state=[conditions, captures...].
+    let counter = path(a, 2)?;
+    let state = path(a, 5)?;
+    let captures = op(a, 6, &[state])?;
+    let frame = op(a, 4, &[counter, captures])?;
+    let evaluated = op(a, 2, &[program, frame])?;
+    let adapter_env = args(a, &[evaluated, state])?;
+
+    // Adapter receives [body-result, old-state]; preserve ordered emissions.
+    let result = path(a, 2)?;
+    let previous = path(a, 5)?;
+    let current_conditions = op(a, 5, &[result])?;
+    let previous_conditions = op(a, 5, &[previous])?;
+    let conditions = append_conditions(a, previous_conditions, current_conditions)?;
+    let captures = op(a, 6, &[result])?;
+    let next_state = op(a, 4, &[conditions, captures])?;
+    let nil = quote(a, NodePtr::NIL)?;
+    let result = op(a, 4, &[nil, next_state])?;
+    let adapter = quote(a, result)?;
+    let body_program = op(a, 2, &[adapter, adapter_env])?;
+    let body_program = quote(a, body_program)?;
+
+    let mut captures = Vec::with_capacity(body.captures.len() + 1);
+    captures.push(nil);
+    for id in &body.captures {
+        captures.push(value_path(a, *id, slots, count)?);
+    }
+    let state = args(a, &captures)?;
+    let mut input = Vec::new();
+    for id in body.headers {
+        input.push(value_path(a, id, slots, count)?);
+    }
+    input.extend([state, body_program]);
+    let input = args(a, &input)?;
+    let kernel = kernel(a)?;
+    let kernel = quote(a, kernel)?;
+    let result = op(a, 2, &[kernel, input])?;
+    op(a, 6, &[result])
+}
+
+pub(super) fn kernel(a: &mut Allocator) -> Result<NodePtr> {
     // Transition environment: [body-result, self, counter, end, step, state, body].
     // Bind the body result once before checking its return flag or carrying state.
     let result = path(a, 2)?;
