@@ -3,7 +3,6 @@ use crate::{Diagnostic, Result, Span};
 pub(crate) mod expression;
 
 // Parser prototype only: no production API or Cargo feature enables loops.
-#[cfg(test)]
 pub(crate) mod for_next;
 
 // Preserve the existing library paths while moving checked data out of syntax.
@@ -65,7 +64,6 @@ pub(crate) enum ParsedStatement {
         span: Span,
     },
     If(ParsedIf),
-    #[cfg(test)]
     For(Box<for_next::ParsedFor>),
     Local(ParsedLocalUpdate),
     Assert {
@@ -91,7 +89,6 @@ struct StatementCounts {
     emissions: usize,
     branches: usize,
     returns: usize,
-    #[cfg(test)]
     loops: usize,
 }
 
@@ -337,14 +334,11 @@ struct Parser<'a> {
     tokens: Vec<Token>,
     pos: usize,
     functions: bool,
-    #[cfg(test)]
-    for_next: bool,
 }
 
 impl Parser<'_> {
     fn reserved(&self, word: &str) -> bool {
-        #[cfg(test)]
-        if self.for_next && matches!(word, "FOR" | "TO" | "STEP" | "NEXT") {
+        if matches!(word, "FOR" | "TO" | "STEP" | "NEXT") {
             return true;
         }
         is_reserved(word)
@@ -498,10 +492,7 @@ impl Parser<'_> {
         Ok(ty)
     }
     fn function(&mut self, counts: &mut StatementCounts) -> Result<ParsedFunction> {
-        #[cfg(test)]
-        {
-            counts.loops = 0;
-        }
+        counts.loops = 0;
         self.expect_word("FUNCTION")?;
         let (name, span) = self.identifier()?;
         self.expect(Kind::Symbol('('))?;
@@ -583,10 +574,7 @@ impl Parser<'_> {
         Ok(value_type)
     }
     fn contract(&mut self, counts: &mut StatementCounts) -> Result<ParsedContract> {
-        #[cfg(test)]
-        {
-            counts.loops = 0;
-        }
+        counts.loops = 0;
         self.expect_word("CONTRACT")?;
         let token = self.current();
         let Kind::Word(ref name) = token.kind else {
@@ -700,8 +688,7 @@ impl Parser<'_> {
             if self.current().kind == Kind::Eof {
                 return Err(self.error("E0100", "Expected block terminator"));
             }
-            #[cfg(test)]
-            if self.for_next {
+            {
                 if self.word("NEXT") {
                     break;
                 }
@@ -855,9 +842,7 @@ pub(crate) fn parse(name: &str, source: &[u8]) -> Result<ParsedContract> {
 
 #[cfg(test)]
 pub(crate) fn parse_for_next(name: &str, source: &[u8]) -> Result<ParsedModule> {
-    let mut parser = parser(name, source, true)?;
-    parser.for_next = true;
-    parser.module()
+    parse_module(name, source)
 }
 
 pub(crate) fn parse_module(name: &str, source: &[u8]) -> Result<ParsedModule> {
@@ -914,8 +899,6 @@ fn parser<'a>(name: &'a str, source: &'a [u8], functions: bool) -> Result<Parser
         tokens,
         pos: 0,
         functions,
-        #[cfg(test)]
-        for_next: false,
     })
 }
 

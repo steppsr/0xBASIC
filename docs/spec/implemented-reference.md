@@ -1,6 +1,6 @@
 # Implemented language reference
 
-Applies to compiler `0.1.0-m3.8b`, language `0.1`, ABI `1`. This page describes executable features. The [documentation index](README.md) maps the reference, normative contracts and validation evidence. The [language specification](../language-v0.1.md) gives complete syntax and evaluation rules; the [compatibility policy](experimental-compatibility.md) explains experimental version changes.
+Applies to development compiler `0.2.0-alpha.1`, language `0.2`, ABI `1`. This page describes executable features. The [documentation index](README.md) maps the reference, normative contracts and validation evidence. The [language specification](../language-v0.2.md) gives complete syntax and evaluation rules; the [compatibility policy](experimental-compatibility.md) explains experimental version changes.
 
 ## Program structure
 
@@ -12,7 +12,8 @@ Contract-header parameters are fixed when building the bound puzzle. Initial `SO
 | --- | --- | --- |
 | `DIM`, assignment | Explicit type or inference from initializer; no later type widening | [Locals](../../examples/m2-functions.bas) |
 | `CONST` | Compile-time values and supported operators/list literals; no function or built-in calls | [Strings](../../examples/m2-strings.bas) |
-| `IF` / `ELSEIF` / `ELSE` | Structured multiline branches with strict BOOLEAN conditions | [Language rules](../language-v0.1.md#expressions-and-control-flow) |
+| `FOR` / `TO` / `STEP` / `NEXT` | Inclusive INTEGER counted loops, typed outer state and function returns | [Counted loops](../language-v0.2.md#counted-loops) |
+| `IF` / `ELSEIF` / `ELSE` | Structured multiline branches with strict BOOLEAN conditions | [Language rules](../language-v0.2.md#expressions-and-control-flow) |
 | `ASSERT` | Abort local/on-chain CLVM evaluation when false | [Payment](../../examples/height-locked-payment.bas) |
 | `FUNCTION`, `RETURN` | Typed parameters and result, pure nonrecursive calls, all normal paths return | [Functions](../../examples/m2-functions.bas) |
 | `EMIT` | Append one CONDITION in execution order; functions can return a CONDITION but cannot emit | [Height lock](../../examples/height-lock.bas) |
@@ -47,10 +48,10 @@ INTEGER and AMOUNT JSON values are strings, not JSON numbers. Conversion does no
 | Collections | `PAIR`, `FIRST`, `REST`, `CONS`, `LIST_LENGTH` |
 | Conditions | `ASSERT_MY_AMOUNT`, `ASSERT_HEIGHT_ABSOLUTE`, `AGG_SIG_ME`, `CREATE_COIN` |
 
-The [built-in signature table](../language-v0.1.md#built-ins) gives accepted types and failure rules. There are no implicit domain conversions. `FIRST`/`REST` fail on an empty list. `CREATE_COIN` has two arguments and no memos. `AGG_SIG_ME` preserves the application message, with a 1024-byte limit; it does not sign or append coin/network context. `PaymentMessage` in the tutorial source is an ordinary function, not a built-in.
+The [built-in signature table](../language-v0.2.md#built-ins) gives accepted types and failure rules. There are no implicit domain conversions. `FIRST`/`REST` fail on an empty list. `CREATE_COIN` has two arguments and no memos. `AGG_SIG_ME` preserves the application message, with a 1024-byte limit; it does not sign or append coin/network context. `PaymentMessage` in the tutorial source is an ordinary function, not a built-in.
 
 ## Commands and validation scope
 
 `check` validates source; `build` writes a new artifact directory; `run` executes a bound artifact with a local cost limit; `explain --stage ast|ir|clvm` inspects it. A successful `run` is labeled `clvm-execution-only`. The compiler has no signing, wallet, RPC or submission commands. The separate Python harnesses test signing and confirmed spends using public test keys in isolated simulators. Follow the [payment tutorial](payment-tutorial.md) for the distinction and executable commands.
 
-Not implemented: loops, user recursion, floating point, division/remainder, bitwise source operators, SUB, modules/imports, runtime I/O, a package manager, formatter/language server, wallet funding/key management, or testnet deployment. Validated simulator examples do not add those capabilities to the CLI.
+Not implemented: WHILE/DO or other non-counted loops, user recursion, floating point, division/remainder, bitwise source operators, SUB, modules/imports, runtime I/O, a package manager, formatter/language server, wallet funding/key management, or testnet deployment. Validated simulator examples do not add those capabilities to the CLI.

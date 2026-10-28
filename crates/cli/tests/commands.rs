@@ -1,6 +1,219 @@
 use serde_json::{Value, json};
 
 #[test]
+fn loops_round_trip_public_artifacts_and_all_inspection_stages() {
+    let dir = fixture();
+    let dir = dir.path();
+    fs::write(dir.join("source file.bas"), "FUNCTION FirstIndex() AS INTEGER\nFOR j = 1 TO 2\nRETURN j\nNEXT j\nRETURN 0\nEND FUNCTION\nCONTRACT Demo(base AS INTEGER)\nSOLUTION count AS INTEGER\nSOLUTION flag AS BOOLEAN\nFOR i = FirstIndex() TO count\nEMIT ASSERT_HEIGHT_ABSOLUTE(base + i)\nNEXT i\nEND CONTRACT").unwrap();
+    fs::write(dir.join("bindings.json"), r#"{"base":"100"}"#).unwrap();
+    fs::write(dir.join("solution.json"), r#"{"count":"2","flag":false}"#).unwrap();
+    invoke(dir, &["check", "source file.bas"], 0);
+    let before = fs::read_dir(dir).unwrap().count();
+    let ast = invoke(dir, &["explain", "source file.bas", "--stage", "ast"], 0);
+    assert_eq!(
+        ast["result"]["representation"]["nodes"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .filter(|n| n["kind"] == "For")
+            .count(),
+        2
+    );
+    let ir = invoke(dir, &["explain", "source file.bas", "--stage", "ir"], 0);
+    assert!(
+        ir["result"]["representation"]
+            .to_string()
+            .contains("capture_names")
+    );
+    let explained = invoke(
+        dir,
+        &[
+            "explain",
+            "source file.bas",
+            "--stage",
+            "clvm",
+            "--bindings",
+            "bindings.json",
+        ],
+        0,
+    );
+    assert_eq!(before, fs::read_dir(dir).unwrap().count());
+    let built = invoke(
+        dir,
+        &[
+            "build",
+            "source file.bas",
+            "--out",
+            "out",
+            "--bindings",
+            "bindings.json",
+        ],
+        0,
+    );
+    for role in ["template", "puzzle"] {
+        assert_eq!(
+            explained["result"]["representation"][role]["tree_hash"],
+            built["result"][role]["tree_hash"]
+        );
+        assert_eq!(
+            explained["result"]["representation"][role]["hex"],
+            hex::encode(fs::read(dir.join(format!("out/{role}.clvm"))).unwrap())
+        );
+    }
+    let manifest: Value =
+        serde_json::from_slice(&fs::read(dir.join("out/manifest.json")).unwrap()).unwrap();
+    assert_eq!(manifest["compiler"]["version"], "0.2.0-alpha.1");
+    assert_eq!(manifest["language_version"], "0.2");
+    let result = invoke(
+        dir,
+        &["run", "out/manifest.json", "--solution", "solution.json"],
+        0,
+    );
+    let tree = &result["result"]["tree"];
+    assert_eq!(tree["pair"][0]["pair"][1]["pair"][0]["atom"], "65");
+    assert_eq!(
+        tree["pair"][1]["pair"][0]["pair"][1]["pair"][0]["atom"],
+        "66"
+    );
+    let cost = result["result"]["cost"]
+        .as_str()
+        .unwrap()
+        .parse::<u64>()
+        .unwrap();
+    invoke(
+        dir,
+        &[
+            "run",
+            "out/manifest.json",
+            "--solution",
+            "solution.json",
+            "--max-cost",
+            &cost.to_string(),
+        ],
+        0,
+    );
+    assert_eq!(
+        invoke(
+            dir,
+            &[
+                "run",
+                "out/manifest.json",
+                "--solution",
+                "solution.json",
+                "--max-cost",
+                &(cost - 1).to_string()
+            ],
+            3
+        )["diagnostics"][0]["code"],
+        "E0501"
+    );
+    let saved = fs::read(dir.join("out/manifest.json")).unwrap();
+    invoke(
+        dir,
+        &[
+            "build",
+            "source file.bas",
+            "--out",
+            "out",
+            "--bindings",
+            "bindings.json",
+        ],
+        4,
+    );
+    assert_eq!(fs::read(dir.join("out/manifest.json")).unwrap(), saved);
+    invoke(
+        dir,
+        &[
+            "build",
+            "source file.bas",
+            "--out",
+            "template",
+            "--template-only",
+        ],
+        0,
+    );
+    invoke(
+        dir,
+        &[
+            "run",
+            "template/manifest.json",
+            "--solution",
+            "solution.json",
+        ],
+        2,
+    );
+    fs::write(dir.join("raw.hex"), "ff80ff0280").unwrap(); // count=0, invalid unused BOOLEAN=2
+    assert_eq!(
+        invoke(
+            dir,
+            &["run", "out/manifest.json", "--solution-hex", "raw.hex"],
+            3
+        )["diagnostics"][0]["code"],
+        "E0500"
+    );
+}
+
+#[test]
+fn loop_zero_step_and_keyword_migration_have_public_diagnostics() {
+    let dir = fixture();
+    let dir = dir.path();
+    fs::write(
+        dir.join("source file.bas"),
+        "CONTRACT Demo()\nFOR i = 2 TO 1 STEP 0\nNEXT i\nEND CONTRACT",
+    )
+    .unwrap();
+    invoke(dir, &["check", "source file.bas"], 0);
+    build(dir, "zero");
+    assert_eq!(
+        invoke(dir, &["run", "zero/manifest.json"], 3)["diagnostics"][0]["code"],
+        "E0500"
+    );
+    for word in ["for", "To", "STEP", "next"] {
+        fs::write(
+            dir.join("source file.bas"),
+            format!("CONTRACT Demo()\nDIM {word} = 1\nEND CONTRACT"),
+        )
+        .unwrap();
+        assert_eq!(
+            invoke(dir, &["check", "source file.bas"], 1)["diagnostics"][0]["code"],
+            "E0201"
+        );
+    }
+    fs::write(
+        dir.join("source file.bas"),
+        "CONTRACT Demo()\nFOR i = TRUE TO 1\nNEXT i\nEND CONTRACT",
+    )
+    .unwrap();
+    invoke(dir, &["explain", "source file.bas", "--stage", "ast"], 0);
+    assert_eq!(
+        invoke(dir, &["explain", "source file.bas", "--stage", "ir"], 1)["diagnostics"][0]["code"],
+        "E0202"
+    );
+}
+
+#[test]
+fn activated_reader_rejects_previous_compiler_and_language_identities() {
+    let dir = fixture();
+    let dir = dir.path();
+    build(dir, "out");
+    let path = dir.join("out/manifest.json");
+    let original: Value = serde_json::from_slice(&fs::read(&path).unwrap()).unwrap();
+    for compiler in [false, true] {
+        let mut old = original.clone();
+        if compiler {
+            old["compiler"]["version"] = json!("0.1.0-m3.8b");
+        } else {
+            old["language_version"] = json!("0.1");
+        }
+        fs::write(&path, serde_json::to_vec(&old).unwrap()).unwrap();
+        assert_eq!(
+            invoke(dir, &["run", "out/manifest.json"], 2)["diagnostics"][0]["code"],
+            "E0400"
+        );
+    }
+}
+
+#[test]
 fn pure_function_artifacts_build_run_and_reject_missing_returns() {
     let dir = fixture();
     let dir = dir.path();

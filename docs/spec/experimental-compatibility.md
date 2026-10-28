@@ -1,13 +1,13 @@
 # Experimental compatibility and diagnostics policy
 
-Status: M5-2, 2026-10-24. This records the current experimental contract; it does not announce a release or promise compatibility across all future 0.x compiler versions. Compiler behavior and generated puzzle bytes are unchanged by this checkpoint.
+Status: development activation of `0.2.0-alpha.1` / language `0.2`. The existing `0.1.0-m3.8b` release is unchanged. This policy does not announce a new release or promise compatibility across all 0.x versions.
 
 ## Identities and upgrade rules
 
 | Identity | Current value | Compatibility meaning |
 | --- | --- | --- |
-| Compiler | `0.1.0-m3.8b` | Exact producer version required by the current artifact reader |
-| Language | `0.1` | Implemented subset is listed in development status; the version is not a claim that every planned feature exists |
+| Compiler | `0.2.0-alpha.1` | Exact producer version required by the current artifact reader |
+| Language | `0.2` | Implemented subset is listed in development status; the version is not a claim that every planned feature exists |
 | ABI | `1` | Fixed/solution tree encoding, validation and currying convention |
 | Target profile | `chia-clvm-0.19-strict-v1` | Pinned local VM dialect, flags and dependencies; not a universal network consensus profile |
 | Manifest and CLI JSON envelope | `schema_version: 1` | Structural format version; distinct from compiler, language and ABI versions |
@@ -69,3 +69,5 @@ cargo test --workspace --locked
 Expected totals: 277 Windows / 278 Linux Rust tests (three added). The `diagnostic_contract` integration test executable reports three passed. No Python package install or simulator rerun is needed for this test/documentation-only checkpoint. The test command builds required executables; no separate build step is necessary.
 
 Windows verification (2026-10-24): all 277 Rust tests passed, including all three new diagnostic-contract tests; `cargo fmt --all -- --check`, workspace Clippy with warnings denied, and `git diff --check` passed. The user subsequently confirmed native Linux verification passed (278 tests). M5-2 is complete.
+
+FOR, TO, STEP and NEXT are now reserved. Rename affected identifiers and boundary JSON keys; rebuild into a new directory rather than editing old manifests. Old/new compiler or language identities are rejected with E0400 even when a non-loop program has unchanged CLVM bytes. See [migration and examples](loops-tutorial.md).

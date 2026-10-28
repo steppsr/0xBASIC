@@ -103,7 +103,6 @@ impl Ast {
     fn statements(&mut self, statements: Vec<syntax::ParsedStatement>) -> Vec<usize> {
         use syntax::ParsedStatement as S;
         statements.into_iter().map(|s| match s {
-            #[cfg(test)]
             S::For(statement) => {
                 let start=self.expression(statement.start);
                 let end=self.expression(statement.end);

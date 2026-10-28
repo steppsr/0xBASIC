@@ -115,16 +115,16 @@ fn fixed_and_input_slots_keep_order_through_functions_and_branches() {
     let text = format!(
         "{}FUNCTION Sum(a AS INTEGER,b AS INTEGER) AS INTEGER\nRETURN a+b\nEND FUNCTION\n",
         source(
-            "base AS INTEGER, step AS INTEGER",
-            "SOLUTION offset AS INTEGER\nSOLUTION flag AS INTEGER\nDIM saved = base\nDIM n = Sum(base,offset)\nIF flag = 1 THEN\nn = n + step\nELSE\nn = 0\nEND IF\nASSERT saved = base\nEMIT ASSERT_HEIGHT_ABSOLUTE(n)\nEMIT ASSERT_HEIGHT_ABSOLUTE(offset)\n"
+            "base AS INTEGER, stride AS INTEGER",
+            "SOLUTION offset AS INTEGER\nSOLUTION flag AS INTEGER\nDIM saved = base\nDIM n = Sum(base,offset)\nIF flag = 1 THEN\nn = n + stride\nELSE\nn = 0\nEND IF\nASSERT saved = base\nEMIT ASSERT_HEIGHT_ABSOLUTE(n)\nEMIT ASSERT_HEIGHT_ABSOLUTE(offset)\n"
         )
     );
     let t = compile_template("slots.bas", text.as_bytes()).unwrap();
-    let b = t.bind(br#"{"STEP":"2","BASE":"100"}"#).unwrap();
+    let b = t.bind(br#"{"STRIDE":"2","BASE":"100"}"#).unwrap();
     let s = abi::encode_solution(&t.contract.inputs, br#"{"flag":"1","OFFSET":"7"}"#).unwrap();
     assert_eq!(
         serde_json::to_string(&b.bindings).unwrap(),
-        r#"{"base":"100","step":"2"}"#
+        r#"{"base":"100","stride":"2"}"#
     );
     let execution = clvm::execute(&b.puzzle, &s, clvm::DEFAULT_MAX_COST).unwrap();
     assert_eq!(hex::encode(&execution.bytes), "ffff53ff6d80ffff53ff078080");

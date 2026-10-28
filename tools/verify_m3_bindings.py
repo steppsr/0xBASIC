@@ -42,7 +42,7 @@ def main():
             manifest=json.loads((out/"manifest.json").read_text(encoding="utf-8"))
             values={k.lower():v for k,v in json.loads(c["bindings_json"]).items()}
             assert manifest["bindings"]==values
-            assert [f["name"] for f in manifest["fixed_parameters"]]==["base","step"]
+            assert [f["name"] for f in manifest["fixed_parameters"]]==["base","stride"]
             assert [f["name"] for f in manifest["inputs"]]==["offset"]
             failed="diagnostic" in c["execution"]
             result=invoke(binary,["run",out/"manifest.json","--solution",solution],3 if failed else 0)
@@ -50,7 +50,7 @@ def main():
             if failed: assert result["diagnostics"][0]["code"]=="E0500"
             else: assert result["result"]["tree"]==expected_tree(expected)
             if args.with_upstream:
-                height=f"(+ (q . {values['base']}) (q . {values['step']}) (f 1))"
+                height=f"(+ (q . {values['base']}) (q . {values['stride']}) (f 1))"
                 reference="(x)" if failed else f"(c (c (q . 83) (c {height} (q . ()))) (q . ()))"
                 upstream((out/"puzzle.clvm").read_bytes(),integer_list([7]),expected,result,reference)
         assert (root/"normal/puzzle.clvm").read_bytes()==(root/"case-and-order/puzzle.clvm").read_bytes()

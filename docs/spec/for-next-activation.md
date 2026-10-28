@@ -1,6 +1,6 @@
 # FOR/NEXT public-activation compatibility plan
 
-Status: selected implementation plan, 2026-10-26. **This document does not enable loops.** The public compiler remains `0.1.0-m3.8b`, language `0.1`. The [private depth/golden checkpoint](for-next-hardening.md) passed Windows and native Linux, including exact program hash, cost and result parity, and was published as `f50f2eb`.
+Status: selected implementation plan, 2026-10-26. The [public activation checkpoint](for-next-public.md) now implements this plan locally; statements below about the private gate describe the planning baseline. **This document does not enable loops.** The public compiler remains `0.1.0-m3.8b`, language `0.1`. The [private depth/golden checkpoint](for-next-hardening.md) passed Windows and native Linux, including exact program hash, cost and result parity, and was published as `f50f2eb`.
 
 ## Selected identities
 

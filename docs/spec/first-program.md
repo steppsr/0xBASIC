@@ -1,6 +1,6 @@
 # Your first 0xBASIC program
 
-Write a small contract, compile it to CLVM, inspect the generated program, and execute it locally. This walkthrough uses the experimental compiler **`0.1.0-m3.8b`**, language `0.1`, ABI `1`. It uses only released features; the proposed FOR/NEXT syntax is not available yet.
+Write a small contract, compile it to CLVM, inspect the generated program, and execute it locally. This walkthrough uses the experimental compiler **`0.1.0-m3.8b`**, language `0.1`, ABI `1`. It uses only released features; FOR/NEXT is unavailable in that release. The [development loop tutorial](loops-tutorial.md) targets the newer source-built compiler.
 
 0xBASIC programs describe conditions for spending Chia coins. They do not print messages or prompt for keyboard input. Our first example returns a condition requiring a minimum block height. It is a learning example, **not an ownership-protected payment contract**.
 
@@ -126,7 +126,7 @@ Our contract declares no `SOLUTION` fields, so no solution file is needed. For c
 
 ## What testers can use today
 
-These are the released language building blocks. Consult the [implemented reference](implemented-reference.md) and [language specification](../language-v0.1.md) for exact signatures and restrictions.
+These are the released language building blocks. Consult the historical [language specification](../language-v0.1.md) for exact signatures and restrictions.
 
 | Area | Supported syntax or names |
 | --- | --- |
@@ -146,7 +146,7 @@ These are the released language building blocks. Consult the [implemented refere
 
 Functions are pure and nonrecursive. Fixed parameters, SOLUTION fields and function parameters are immutable. There are no implicit conversions between distinct types. CONDITION cannot be an external fixed parameter or solution field. String text is quoted; byte literals use `0x` followed by pairs of hex digits.
 
-**Not supported yet:** `FOR/NEXT` or other loops, user recursion, `PRINT`, interactive `INPUT`, division/remainder, floating point, `GOTO`, `SUB`, imports/modules, runtime file I/O, or wallet/signing/submission commands. A design proposal is not an executable feature.
+**Not supported by this released compiler:** `FOR/NEXT` or other loops, user recursion, `PRINT`, interactive `INPUT`, division/remainder, floating point, `GOTO`, `SUB`, imports/modules, runtime file I/O, or wallet/signing/submission commands. A design proposal is not an executable feature.
 
 ## What can you do with the compiled result?
 

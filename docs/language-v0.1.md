@@ -1,6 +1,6 @@
 # 0xBASIC 0.1 language specification
 
-Status: normative 0.1 language rules, reconciled with compiler `0.1.0-m3.8b` at M5-4. The [implemented-feature reference](spec/implemented-reference.md) summarizes available capabilities and exclusions; the development roadmap separately describes future work. Changes require a recorded decision and corresponding conformance cases. Complete syntax: [grammar.ebnf](spec/grammar.ebnf). External representations: [ABI 1](spec/abi-v1.md).
+Status: historical normative 0.1 language rules, reconciled with compiler `0.1.0-m3.8b` at M5-4. This document describes the historical release. The [current implemented-feature reference](spec/implemented-reference.md) and [language 0.2](language-v0.2.md) describe newer development behavior. Changes require a recorded decision and corresponding conformance cases. Complete syntax: [grammar.ebnf](spec/grammar-v0.1.ebnf). External representations: [ABI 1](spec/abi-v1.md).
 
 ## Program and lexical rules
 

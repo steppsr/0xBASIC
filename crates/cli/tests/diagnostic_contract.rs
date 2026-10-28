@@ -154,7 +154,7 @@ fn diagnostic_contract_version_and_success_streams() {
     let version: Value = serde_json::from_slice(&output.stdout).unwrap();
     assert_eq!(
         version,
-        json!({"compiler": env!("CARGO_PKG_VERSION"), "language": "0.1",
+        json!({"compiler": env!("CARGO_PKG_VERSION"), "language": "0.2",
         "abi": 1, "target_profile": "chia-clvm-0.19-strict-v1"})
     );
     let dir = tempfile::tempdir().unwrap();

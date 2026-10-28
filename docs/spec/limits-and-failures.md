@@ -56,3 +56,7 @@ The [list-boundary tests](../../crates/compiler/tests/list_boundaries.rs) explic
 ## Audit outcome
 
 The built-in signature table required no semantic changes. The ABI and CLI specifications were missing explicit host budgets and the fact that result rendering can fail after successful VM reduction; those details are now documented. No compiler behavior, frozen byte/hash/cost expectation or release asset changed.
+
+## Language 0.2 loop budgets
+
+The development compiler additionally enforces 256 syntactic FOR statements per body, shared IF/FOR depth 32, aggregate value counts across isolated bodies, and separate 65,536-node state/frame type budgets. There is no implicit runtime iteration cap or new runtime EMIT count cap. See [normative counted loops](../language-v0.2.md#counted-loops).

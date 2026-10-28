@@ -59,7 +59,7 @@ def main():
         require(process.returncode == status and not process.stderr, f"{name}: unexpected status/stderr; inspect {run}")
         value = json.loads(process.stdout)
         if name == "version":
-            require(value == {"compiler": "0.1.0-m3.8b", "language": "0.1", "abi": 1,
+            require(value == {"compiler": "0.2.0-alpha.1", "language": "0.2", "abi": 1,
                               "target_profile": "chia-clvm-0.19-strict-v1"}, "Tutorial version identifiers changed")
         else:
             require(value["schema_version"] == 1 and value["ok"] == (status == 0), f"{name}: envelope")

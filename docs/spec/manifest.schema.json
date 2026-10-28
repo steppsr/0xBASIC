@@ -11,7 +11,7 @@
       "required": ["version", "rust_version", "cargo_lock_sha256"],
       "properties": {"version": {"type": "string"}, "rust_version": {"const": "1.95.0"}, "cargo_lock_sha256": {"$ref": "#/$defs/hash"}}
     },
-    "language_version": {"const": "0.1"},
+    "language_version": {"const": "0.2"},
     "abi_version": {"const": 1},
     "target_profile": {"const": "chia-clvm-0.19-strict-v1"},
     "optimization": {"const": "none"},

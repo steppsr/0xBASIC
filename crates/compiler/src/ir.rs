@@ -9,7 +9,6 @@ pub const MAX_INTEGER_DIGITS: usize = 4096;
 pub const MAX_INTEGER_VALUES: usize = 4096;
 
 pub(crate) mod expressions;
-#[cfg(test)]
 pub(crate) mod for_next;
 use expressions::{constant, expression, push, require_type};
 
@@ -31,7 +30,6 @@ pub enum IntegerOperation {
 
 #[derive(Debug, Serialize)]
 pub enum IntegerValueKind {
-    #[cfg(test)]
     For(Box<for_next::LoopBody>),
     Fixed {
         index: usize,
@@ -197,7 +195,7 @@ fn has_return(statements: &[crate::syntax::ParsedStatement]) -> bool {
     statements.iter().any(|s| match s {
         crate::syntax::ParsedStatement::Return { .. } => true,
         crate::syntax::ParsedStatement::If(b) => has_return(&b.yes) || has_return(&b.no),
-        #[cfg(test)]
+
         crate::syntax::ParsedStatement::For(b) => has_return(&b.body),
         _ => false,
     })
@@ -212,7 +210,6 @@ pub struct LocalBinding {
 }
 
 struct Lowerer<'a> {
-    #[cfg(test)]
     loop_type_nodes: std::rc::Rc<std::cell::Cell<usize>>,
     result_type: Option<ValueType>,
     functions: &'a Callables,
@@ -227,23 +224,16 @@ struct Lowerer<'a> {
 }
 
 pub(crate) fn lower(name: &str, parsed: ParsedContract) -> Result<Contract> {
-    lower_contract(
-        name,
-        parsed,
-        &Callables::new(),
-        #[cfg(test)]
-        Default::default(),
-    )
+    lower_contract(name, parsed, &Callables::new(), Default::default())
 }
 
 fn lower_contract(
     name: &str,
     parsed: ParsedContract,
     functions: &Callables,
-    #[cfg(test)] loop_type_nodes: std::rc::Rc<std::cell::Cell<usize>>,
+    loop_type_nodes: std::rc::Rc<std::cell::Cell<usize>>,
 ) -> Result<Contract> {
     let mut lowerer = Lowerer {
-        #[cfg(test)]
         loop_type_nodes,
         functions,
         in_function: false,
@@ -312,38 +302,12 @@ fn lower_contract(
 }
 
 pub(crate) fn lower_module(name: &str, module: crate::syntax::ParsedModule) -> Result<Contract> {
-    // Reject the entire test-only feature before fast paths or unreachable-code
-    // pruning; semantic acceptance must never accidentally enable execution.
-    #[cfg(test)]
-    {
-        fn first_loop(statements: &[crate::syntax::ParsedStatement]) -> Option<Span> {
-            statements.iter().find_map(|statement| match statement {
-                crate::syntax::ParsedStatement::For(statement) => Some(statement.span),
-                crate::syntax::ParsedStatement::If(branch) => {
-                    first_loop(&branch.yes).or_else(|| first_loop(&branch.no))
-                }
-                _ => None,
-            })
-        }
-        if let Some(span) = first_loop(&module.contract.statements).or_else(|| {
-            module
-                .functions
-                .iter()
-                .find_map(|f| first_loop(&f.statements))
-        }) {
-            return Err(Diagnostic::at(
-                "E0205",
-                "FOR/NEXT lowering is not implemented",
-                name,
-                span,
-            ));
-        }
-    }
     lower_module_impl(name, module)
 }
 
 fn lower_module_impl(name: &str, module: crate::syntax::ParsedModule) -> Result<Contract> {
     if module.functions.is_empty()
+        && !contains_loops(&module.contract.statements)
         && !module.collection_syntax
         && module.contract.inputs.is_empty()
         && module.contract.fixed.is_empty()
@@ -357,16 +321,16 @@ fn lower_module_impl(name: &str, module: crate::syntax::ParsedModule) -> Result<
         .enumerate()
         .map(|(id, signature)| (signature.name.to_ascii_lowercase(), (id, signature)))
         .collect();
-    #[cfg(test)]
+
     let loop_type_nodes = std::rc::Rc::new(std::cell::Cell::new(0));
-    let mut contract = lower_contract(
-        name,
-        module.contract,
-        &callables,
-        #[cfg(test)]
-        loop_type_nodes.clone(),
-    )?;
+    let mut contract = lower_contract(name, module.contract, &callables, loop_type_nodes.clone())?;
     let mut total = value_count(&contract.values);
+    if total > MAX_INTEGER_VALUES {
+        return Err(Diagnostic::new(
+            "E0205",
+            "Module exceeds 4096 value bindings across contract and functions",
+        ));
+    }
     for mut function in module.functions {
         // Preserve existing encoding when there are no branch returns.
         // Full analysis has already checked abandoned continuations.
@@ -381,7 +345,7 @@ fn lower_module_impl(name: &str, module: crate::syntax::ParsedModule) -> Result<
                 crate::syntax::ParsedStatement::If(branch) => {
                     has_return(&branch.yes) || has_return(&branch.no)
                 }
-                #[cfg(test)]
+
                 crate::syntax::ParsedStatement::For(branch) => has_return(&branch.body),
                 _ => false,
             });
@@ -396,7 +360,6 @@ fn lower_module_impl(name: &str, module: crate::syntax::ParsedModule) -> Result<
             Some(expression)
         };
         let mut lowerer = Lowerer {
-            #[cfg(test)]
             loop_type_nodes: loop_type_nodes.clone(),
             functions: &callables,
             in_function: true,
@@ -601,7 +564,6 @@ impl Lowerer<'_> {
         let mut statements = statements.into_iter();
         while let Some(statement) = statements.next() {
             match statement {
-                #[cfg(test)]
                 crate::syntax::ParsedStatement::For(statement) => {
                     let may_return = self.return_state && has_return(&statement.body);
                     let span = statement.span;
@@ -845,14 +807,15 @@ impl Lowerer<'_> {
     }
 }
 pub(crate) fn value_count(values: &[IntegerValue]) -> usize {
-    #[cfg(test)]
-    {
-        for_next::count(values)
-    }
-    #[cfg(not(test))]
-    {
-        values.len()
-    }
+    for_next::count(values)
+}
+
+fn contains_loops(statements: &[crate::syntax::ParsedStatement]) -> bool {
+    statements.iter().any(|s| match s {
+        crate::syntax::ParsedStatement::For(_) => true,
+        crate::syntax::ParsedStatement::If(b) => contains_loops(&b.yes) || contains_loops(&b.no),
+        _ => false,
+    })
 }
 
 #[cfg(test)]

@@ -8,7 +8,7 @@
 
 The goal is to make contract development easier to learn without hiding how Chia's coin and condition model works.
 
-**Early development · compiler `0.1.0-m3.8b` · Apache-2.0**
+**Early development · compiler `0.2.0-alpha.1` · Apache-2.0**
 
 The compiler and local runner work today, but the language is incomplete and has not been audited for production use. The CLI runner checks CLVM behavior; it does not validate a blockchain spend. Do not use this development version to secure funds.
 
@@ -25,6 +25,7 @@ END CONTRACT
 ## What works today
 
 - Case-insensitive names, `AS` declarations, constants, local reassignment, assertions, and `IF` / `ELSEIF` / `ELSE`.
+- `FOR` / `NEXT` counted loops with optional signed STEP, typed carried locals and nested early returns.
 - Pure, nonrecursive functions and typed INTEGER, BOOLEAN, BYTES, STRING, AMOUNT, PUZZLEHASH, PUBLICKEY, PAIR, LIST, and CONDITION values inside programs.
 - Byte operations, SHA256, integer encodings, strict UTF-8 conversion, and collection operations.
 - INTEGER, BOOLEAN, BYTES, STRING, AMOUNT, PUZZLEHASH, PUBLICKEY, and nested PAIR/LIST fixed parameters and solution fields, with JSON conversion and generated CLVM boundary validation.
@@ -32,7 +33,11 @@ END CONTRACT
 
 `ASSERT_HEIGHT_ABSOLUTE`, `ASSERT_MY_AMOUNT`, `CREATE_COIN`, and `AGG_SIG_ME` are implemented as blockchain condition constructors. Isolated SpendSim and full-node harnesses verify signed payments and rejection/state checks on Windows and Linux. The specifications describe the intended language as well as features still being implemented; see the [status and roadmap](docs/development.md).
 
+The following M4/M5 validation describes the released 0.1 baseline; loop-specific spend/package validation remains pending.
+
 The optional [simulator harness](simulator/README.md) passes its environment smoke test on Windows and Linux. Compiled, signed payment testing also passes on both platforms. Height/signature rejection tests pass on both platforms. All 15 planned payment scenarios, including replay and payment-mutation checks, now pass on Windows and Linux. Reproducible simulator reporting and Windows/Linux CI also pass; M4 is complete. Compiler testing has passed on both platforms. The isolated full-node payment gate also passes on both platforms. M5 is complete: the [experimental prerelease](https://github.com/steppsr/0xBASIC/releases/tag/v0.1.0-m3.8b-experimental) is available. See the [release scope and validation record](docs/spec/experimental-release.md).
+
+The current development compiler uses language `0.2`; the downloadable release above remains `0.1.0-m3.8b` without loops. See the [loop tutorial and migration guide](docs/spec/loops-tutorial.md) for source-build commands.
 
 ## Try it
 

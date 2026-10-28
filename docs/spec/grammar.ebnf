@@ -16,12 +16,14 @@ type = "INTEGER" | "BOOLEAN" | "BYTES" | "STRING" | "PUZZLEHASH"
      | "LIST", "OF", type
      | "PAIR", "OF", "(", type, ",", type, ")" ;
 block = { NL | statement } ;
-statement = local | assignment | conditional | emit | assertion | return ;
+statement = local | assignment | conditional | counted_loop | emit | assertion | return ;
 local = ( "DIM" | "CONST" ), IDENT, [ "AS", type ], "=", expression, NL ;
 assignment = IDENT, "=", expression, NL ;
 conditional = "IF", expression, "THEN", NL, block,
               { "ELSEIF", expression, "THEN", NL, block },
               [ "ELSE", NL, block ], "END", "IF", NL ;
+counted_loop = "FOR", IDENT, "=", expression, "TO", expression,
+               [ "STEP", expression ], NL, block, "NEXT", IDENT, NL ;
 emit = "EMIT", expression, NL ;
 assertion = "ASSERT", expression, NL ;
 return = "RETURN", expression, NL ;

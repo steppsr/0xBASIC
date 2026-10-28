@@ -7,7 +7,6 @@ use num_bigint::{BigInt, BigUint};
 use serde_json::{Value, json};
 use sha2::{Digest, Sha256};
 use std::io::Cursor;
-#[cfg(test)]
 mod for_next;
 #[cfg(test)]
 mod for_next_metrics;
@@ -432,7 +431,7 @@ fn functions_ready(values: &[crate::IntegerValue], programs: &[Option<NodePtr>])
         IntegerValueKind::Call { function, .. } => {
             programs.get(*function).is_some_and(Option::is_some)
         }
-        #[cfg(test)]
+
         IntegerValueKind::For(body) => functions_ready(&body.values, programs),
         _ => true,
     })
@@ -509,14 +508,13 @@ fn integer_body(
     )
 }
 
-// Keep released non-loop encodings unchanged; private loop frames use tail assembly.
+// Keep released non-loop encodings unchanged; loop frames use tail assembly.
 fn append_block_conditions(
     a: &mut Allocator,
     _context: &BodyContext<'_>,
     left: NodePtr,
     right: NodePtr,
 ) -> Result<NodePtr> {
-    #[cfg(test)]
     if _context
         .values
         .iter()
@@ -607,7 +605,7 @@ fn scalar_expression(
 ) -> Result<(NodePtr, usize)> {
     let values = context.values;
     let value = values.get(id).ok_or_else(|| internal("invalid value ID"))?;
-    #[cfg(test)]
+
     if let IntegerValueKind::For(body) = &value.kind {
         return Ok((
             for_next::lower(a, body, context, value_slots, count)?,
@@ -783,7 +781,7 @@ fn scalar_expression(
             }
             op(a, 2, &[program, args])?
         }
-        #[cfg(test)]
+
         IntegerValueKind::For(_) => unreachable!("handled above"),
         IntegerValueKind::If { .. } => unreachable!("handled above"),
         IntegerValueKind::Project { bundle, index } => {
