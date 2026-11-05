@@ -2,7 +2,7 @@
 
 ## Current checkpoint
 
-The local activation candidate is compiler `0.2.0-alpha.1`, language `0.2`, ABI 1. FOR/NEXT is enabled through public library and CLI paths with scoped counters, header snapshots, carried state, nested returns and ordered emissions. Windows validation and the expanded native Linux gate are recorded in the [activation checkpoint](spec/for-next-public.md). No new release has been published. The historical release evidence below applies to its original revision.
+The published development compiler is `0.2.0-alpha.1`, language `0.2`, ABI 1. FOR/NEXT is enabled through public library and CLI paths with scoped counters, header snapshots, carried state, nested returns and ordered emissions. Windows validation and the expanded native Linux gate are recorded in the [activation checkpoint](spec/for-next-public.md). No new release has been published. The historical release evidence below applies to its original revision.
 
 M5 is complete. The approved [experimental prerelease](https://github.com/steppsr/0xBASIC/releases/tag/v0.1.0-m3.8b-experimental) was published on 2026-10-25 at `b9411b67e9923549f9355eeb0c1eb5910da64368`. Windows/Linux compiler, simulator/full-node and source-inclusive package CI passed on that exact revision. At that released checkpoint the compiler was `0.1.0-m3.8b`, ABI 1; Rust totals are 277 Windows / 278 Linux. See the [release scope, runtime baselines and validation record](spec/experimental-release.md).
 
@@ -26,7 +26,7 @@ Update older source declarations and rebuild artifacts with the current compiler
 
 ## Roadmap
 
-The counted-loop implementation is now promoted from the private checkpoints into the [public activation candidate](spec/for-next-public.md), following the [activation compatibility plan](spec/for-next-activation.md). FOR/NEXT works in contracts and functions through ordinary library and CLI entry points. ABI/profile and frozen non-loop output baselines remain unchanged. Loop-specific spend/full-node and source-inclusive package validation remain later gates before a separately approved release.
+The counted-loop implementation is now promoted from the private checkpoints into the [public activation candidate](spec/for-next-public.md), following the [activation compatibility plan](spec/for-next-activation.md). FOR/NEXT works in contracts and functions through ordinary library and CLI entry points. ABI/profile and frozen non-loop output baselines remain unchanged. The [loop payment validation checkpoint](spec/loop-payment-validation.md) passed Windows and native Linux (LANDO) SpendSim and full-node checks. Source-inclusive package validation remains a later gate before a separately approved release.
 
 | Stage | Scope | Status |
 | --- | --- | --- |

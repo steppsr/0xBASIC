@@ -18,7 +18,7 @@ Current development documentation targets compiler `0.2.0-alpha.1`, language `0.
 | Understand conversion, execution and size-limit failures | [Built-in failures and resource limits](limits-and-failures.md) |
 | Rebuild the distributed compiler or modify a dependency | [Source distribution](source-distribution.md) and [rebuild instructions](../../distribution/REBUILD.md) |
 | Contribute to the compiler or run checks | [Architecture](../architecture.md) and [contribution guide](../../CONTRIBUTING.md) |
-| Test signed spends in isolation | [Simulator guide](../../simulator/README.md) |
+| Test signed spends in isolation | [Simulator guide](../../simulator/README.md), [loop payment validation](loop-payment-validation.md) |
 
 ## Released contracts and supporting evidence
 
@@ -26,7 +26,7 @@ The following documents specify different parts of the interface. Examples and m
 
 | Contract | Specification | Implementation and representative checks |
 | --- | --- | --- |
-| Lexical rules, syntax, types and evaluation | [Language 0.1](../language-v0.2.md), [token grammar](grammar.ebnf) | [Syntax](../../crates/compiler/src/syntax.rs), [analysis](../../crates/compiler/src/analysis.rs), [core conformance](../../crates/compiler/tests/core_conformance.rs), [short-circuit checks](../../crates/compiler/tests/short_circuit.rs) |
+| Lexical rules, syntax, types and evaluation | [Language 0.2](../language-v0.2.md), [token grammar](grammar.ebnf) | [Syntax](../../crates/compiler/src/syntax.rs), [analysis](../../crates/compiler/src/analysis.rs), [core conformance](../../crates/compiler/tests/core_conformance.rs), [short-circuit checks](../../crates/compiler/tests/short_circuit.rs) |
 | Currying, external representations and entry validation | [ABI 1](abi-v1.md) | [ABI conversion](../../crates/compiler/src/abi.rs), [generated CLVM](../../crates/compiler/src/clvm.rs), [scalar](../../crates/compiler/tests/scalar_boundaries.rs), [pair](../../crates/compiler/tests/pair_boundaries.rs) and [list](../../crates/compiler/tests/list_boundaries.rs) checks |
 | Commands, artifact integrity and diagnostics | [CLI v1](cli-v1.md), [manifest schema](manifest.schema.json), [compatibility](experimental-compatibility.md) | [CLI](../../crates/cli/src/main.rs), [artifact reader](../../crates/cli/src/artifact.rs), [command tests](../../crates/cli/tests/commands.rs), [diagnostic tests](../../crates/cli/tests/diagnostic_contract.rs) |
 | Pinned execution rules and dependency identities | [Target profile](target-profile.md) | [Cargo lock](../../Cargo.lock), [toolchain](../../rust-toolchain.toml), [CLVM adapter](../../crates/compiler/src/clvm.rs) |

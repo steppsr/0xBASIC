@@ -124,6 +124,10 @@ async def run_node(run, binary=None):
                     if binary is not None:
                         from full_node_payment import payment
                         outcome["payment"] = await payment(node, api, binary, run)
+                        from loop_payment import full_node
+                        loop_directory = run / "loop-payment"
+                        loop_directory.mkdir()
+                        outcome["loop_payment"] = await full_node(node, api, binary, loop_directory)
                         outcome["peak_height"] = int(node.blockchain.get_peak().height)
                         require(service._server.webserver is None and service.rpc_server is None
                                 and not service._server.all_connections, "Unexpected payment network service")
@@ -169,13 +173,14 @@ def worker(run, binary=None):
         report["binary_sha256"] = hashlib.sha256(binary.read_bytes()).hexdigest()
         report["payment_source_hashes"] = {str(path.relative_to(ROOT)).replace("\\", "/"):
             hashlib.sha256(path.read_bytes()).hexdigest() for path in
-            [BASE / "full_node_payment.py", BASE / "payment.py", ROOT / "examples/height-locked-payment.bas"]}
+            [BASE / "full_node_payment.py", BASE / "payment.py", BASE / "loop_payment.py",
+             ROOT / "examples/height-locked-payment.bas", ROOT / "examples/loop-payment.bas"]}
     (run / "result.json").write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--payment", action="store_true", help="Also confirm a compiled payment after a signature rejection")
+    parser.add_argument("--payment", action="store_true", help="Confirm legacy and loop payments, including adversarial rejection cases")
     parser.add_argument("--binary", type=Path, help="CLI executable for --payment")
     parser.add_argument("--worker", type=Path, help=argparse.SUPPRESS)
     args = parser.parse_args()
@@ -204,7 +209,7 @@ def main():
     report = json.loads((run / "result.json").read_text(encoding="utf-8"))
     require(report["outcome"]["resources_closed"], "Incomplete worker result")
     (run / "result.json").replace(destination)
-    message = "full-node funding, missing-signature rejection and exact payment verified" if args.payment else "full-node blocks and reward records verified"
+    message = "full-node legacy and loop payments, seven rejections and exact outputs verified" if args.payment else "full-node blocks and reward records verified"
     print(f"PASS: {message}; resources closed. Report: {destination}")
 
 
