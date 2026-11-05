@@ -37,6 +37,8 @@ SpendSim runs twice from fresh environments and requires identical complete resu
 
 Reports: `.work/m4/loop-payment-windows.json`, `.work/m4/verification-windows.json` and `.work/m5/full-node-payment-windows.json`. The full-node report adds `outcome.loop_payment` and hashes the new fixture/harness. [Simulator CI](../../.github/workflows/simulator.yml) runs and uploads the new SpendSim report on both platforms and exercises loops through its existing full-node payment step.
 
+Hosted simulator CI pins Ubuntu 24.04: the Ubuntu 26.04 runner selected by `ubuntu-latest` lacks the required setup-python 3.13.7 build. The Python and dependency pins remain the same.
+
 ## Native Linux commands
 
 Run from the existing native checkout, preserving its isolated Python 3.13.7 environment and native Cargo target. If that environment is missing, first follow the [locked Linux setup](../../simulator/README.md#linux-setup-project-root-on-a-native-linux-filesystem); do not copy the Windows virtual environment.

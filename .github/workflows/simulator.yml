@@ -14,7 +14,8 @@ jobs:
             bin: Scripts
             python: python.exe
             executable: 0xbasic.exe
-          - os: ubuntu-latest
+          # Python 3.13.7 is available on 24.04; ubuntu-latest may select 26.04.
+          - os: ubuntu-24.04
             platform: linux
             bin: bin
             python: python
