@@ -16,6 +16,7 @@ Current development documentation targets compiler `0.2.0-alpha.1`, language `0.
 | Inspect, rebuild and compare artifact identities | [Artifact workflow](artifact-workflow.md) |
 | Upgrade without confusing artifact identities | [Experimental compatibility](experimental-compatibility.md) |
 | Understand conversion, execution and size-limit failures | [Built-in failures and resource limits](limits-and-failures.md) |
+| Test loop packages and offline rebuilds | [Loop package checkpoint](loop-package-validation.md), [packaged loop walkthrough](package-loops.md) |
 | Rebuild the distributed compiler or modify a dependency | [Source distribution](source-distribution.md) and [rebuild instructions](../../distribution/REBUILD.md) |
 | Contribute to the compiler or run checks | [Architecture](../architecture.md) and [contribution guide](../../CONTRIBUTING.md) |
 | Test signed spends in isolation | [Simulator guide](../../simulator/README.md), [loop payment validation](loop-payment-validation.md) |

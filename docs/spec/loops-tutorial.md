@@ -1,6 +1,6 @@
 # Counted loops with the development compiler
 
-This guide targets source-built compiler `0.2.0-alpha.1`, language `0.2`, ABI 1. The downloadable `0.1.0-m3.8b` release remains unchanged and cannot compile these loops. The activation candidate is undergoing native validation; it is not a newly published release.
+This guide targets source-built compiler `0.2.0-alpha.1`, language `0.2`, ABI 1. The downloadable `0.1.0-m3.8b` release remains unchanged and cannot compile these loops. Public activation and isolated loop-payment validation passed Windows and native Linux. No new release has been published. Candidate archives include a [packaged loop walkthrough](package-loops.md).
 
 From the repository root, build and check the version:
 

@@ -8,7 +8,7 @@ import shutil
 import subprocess
 import tarfile
 
-from verify_package import require
+from verify_package import require, has_loops, verify_loop
 
 
 def verify_sources(data, root, metadata, rebuild=False):
@@ -42,11 +42,18 @@ def verify_sources(data, root, metadata, rebuild=False):
             "Missing rebuild inputs")
     for name in ("REBUILD.md", "THIRD-PARTY-NOTICES.txt"):
         require(files[name] == metadata["files"][name], f"Source/binary notice mismatch: {name}")
+    if has_loops(metadata):
+        required = {"examples/counted-heights.bas", "examples/loop-payment.bas", "docs/language-v0.2.md",
+                    "docs/spec/loops-tutorial.md", "crates/compiler/tests/loops.rs"}
+        required.update(f"crates/compiler/src/{part}/for_next.rs" for part in ("syntax", "analysis", "ir", "clvm"))
+        require(required <= set(index), "Missing loop source inputs")
     if not rebuild:
         return {"source_files_verified": len(index), "offline_rebuilds": 0}
     env = os.environ.copy()
     env.update(CARGO_HOME=str(root / "empty-cargo-home"), CARGO_TARGET_DIR=str(root / "source-target"),
                CARGO_NET_OFFLINE="true", RUSTUP_TOOLCHAIN="1.95.0")
+
+    rebuilt_loops = []
 
     def build(label, locked):
         command = ["cargo", "build", "--release", "--offline", "-p", "oxbasic-cli"]
@@ -57,11 +64,16 @@ def verify_sources(data, root, metadata, rebuild=False):
         require(process.returncode == 0, f"{label} failed: {process.stderr.decode(errors='replace')}")
         executable = root / "source-target/release" / ("0xbasic.exe" if os.name == "nt" else "0xbasic")
 
-        def invoke(args):
+        def call(args, status=0):
             result = subprocess.run([str(executable), *args, "--json"], cwd=source, env=env,
                                     capture_output=True, timeout=20)
-            require(result.returncode == 0 and not result.stderr, f"{label}: rebuilt CLI failure")
-            return json.loads(result.stdout)["result"]
+            require(result.returncode == status and not result.stderr, f"{label}: rebuilt CLI failure: {result.stdout!r}")
+            envelope = json.loads(result.stdout)
+            require(envelope["schema_version"] == 1 and envelope["ok"] == (status == 0), "Rebuilt CLI envelope mismatch")
+            return envelope
+
+        def invoke(args):
+            return call(args)["result"]
 
         invoke(["build", "examples/height-locked-payment.bas", "--bindings",
                 "examples/height-locked-payment.bindings.json", "--out", label])
@@ -70,6 +82,8 @@ def verify_sources(data, root, metadata, rebuild=False):
         require(manifest["puzzle"]["tree_hash"] == metadata["payment_tree_hash"]
                 and result["tree"] == metadata["payment_result"] and result["cost"] == "1487727",
                 f"{label}: rebuilt payment differs")
+        if has_loops(metadata):
+            rebuilt_loops.append(verify_loop(call, source, label + "-loops"))
 
     build("original-source", True)
     modified = source / "modified-libraries/malachite-bigint"
@@ -82,4 +96,5 @@ def verify_sources(data, root, metadata, rebuild=False):
     resolved = json.loads(subprocess.check_output(["cargo", "metadata", "--offline", "--format-version", "1"], cwd=source, env=env))
     package = next(p for p in resolved["packages"] if p["name"] == "malachite-bigint")
     require(package["source"] is None and "modified-libraries" in package["manifest_path"], "Local library override not used")
-    return {"source_files_verified": len(index), "offline_rebuilds": 2, "modified_library": "malachite-bigint 0.9.2"}
+    return {"source_files_verified": len(index), "offline_rebuilds": 2, "modified_library": "malachite-bigint 0.9.2",
+            "rebuilt_loops": rebuilt_loops}

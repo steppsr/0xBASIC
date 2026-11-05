@@ -26,7 +26,7 @@ Update older source declarations and rebuild artifacts with the current compiler
 
 ## Roadmap
 
-The counted-loop implementation is now promoted from the private checkpoints into the [public activation candidate](spec/for-next-public.md), following the [activation compatibility plan](spec/for-next-activation.md). FOR/NEXT works in contracts and functions through ordinary library and CLI entry points. ABI/profile and frozen non-loop output baselines remain unchanged. The [loop payment validation checkpoint](spec/loop-payment-validation.md) passed Windows and native Linux (LANDO) SpendSim and full-node checks. Source-inclusive package validation remains a later gate before a separately approved release.
+The counted-loop implementation is now promoted from the private checkpoints into the [public activation candidate](spec/for-next-public.md), following the [activation compatibility plan](spec/for-next-activation.md). FOR/NEXT works in contracts and functions through ordinary library and CLI entry points. ABI/profile and frozen non-loop output baselines remain unchanged. The [loop payment validation checkpoint](spec/loop-payment-validation.md) passed Windows and native Linux (LANDO) SpendSim and full-node checks. The [loop package validation checkpoint](spec/loop-package-validation.md) passed Windows and native Linux (LANDO) extracted-binary checks and both offline source rebuilds. Release documentation and candidate review are next.
 
 | Stage | Scope | Status |
 | --- | --- | --- |

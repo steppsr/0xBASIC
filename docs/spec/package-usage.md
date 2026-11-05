@@ -1,6 +1,6 @@
 # 0xBASIC experimental package
 
-This archive contains a native compiler/local runner, its license, package provenance and public payment examples. It is a development candidate, not a published production release. No Rust or Python installation is needed to run the executable. Native operating-system runtime libraries are still required; this package is tested on its build/smoke platform, not certified for every Windows version or older Linux distribution. Linux uses the GNU/glibc target; the builder's libc version is recorded in `package.json`. macOS and ARM packages are not provided.
+This archive contains a native compiler/local runner, its license, package provenance and public payment and counted-loop examples. It is a development candidate, not a published production release. No Rust or Python installation is needed to run the executable. Native operating-system runtime libraries are still required; this package is tested on its build/smoke platform, not certified for every Windows version or older Linux distribution. Linux uses the GNU/glibc target; the builder's libc version is recorded in `package.json`. macOS and ARM packages are not provided.
 
 Check the adjacent `.sha256` file against the downloaded archive before extraction. Checksums detect changes; they are not a publisher signature. Extract into a new directory and run commands from its root. On Linux retain executable permissions for `bin/0xbasic`. On Windows substitute `./bin/0xbasic.exe` for `./bin/0xbasic` below. No administrator installation or global PATH change is required.
 
@@ -12,6 +12,8 @@ Check the adjacent `.sha256` file against the downloaded archive before extracti
 ./bin/0xbasic build examples/height-locked-payment.bas --bindings examples/height-locked-payment.bindings.json --out payment-build --json
 ./bin/0xbasic run payment-build/manifest.json --json
 ```
+
+Compiler `0.2.0-alpha.1` candidate archives also include `LOOPS.md` and `examples/counted-heights.bas`; follow that walkthrough to inspect and execute a loop without a Rust installation.
 
 `payment-build` must not already exist. Expect local cost `1487727` and validation label `clvm-execution-only`; the result is a raw condition tree for amount, height, signature requirement and recipient output. This command does not sign, contact a node, fund a coin or confirm a spend. Example bindings are public fixtures, not wallet credentials. Keep generated artifacts separate from the executable installation.
 

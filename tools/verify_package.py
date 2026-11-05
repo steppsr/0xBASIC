@@ -15,6 +15,47 @@ def require(ok, message):
         raise RuntimeError(message)
 
 
+def has_loops(metadata):
+    return metadata["compiler"] == "0.2.0-alpha.1"
+
+
+def verify_loop(call, root, label):
+    """Exercise the tutorial with an independent expected condition tree."""
+    source = "examples/counted-heights.bas"
+    call(["check", source])
+    for stage in ("ast", "ir"):
+        call(["explain", source, "--stage", stage])
+    view = call(["explain", source, "--stage", "clvm"])["result"]["representation"]
+    call(["build", source, "--out", label])
+    manifest_path = f"{label}/manifest.json"
+    manifest = json.loads((root / manifest_path).read_text(encoding="utf-8"))
+    blob = (root / label / "puzzle.clvm").read_bytes()
+    require(manifest["puzzle"]["tree_hash"] == view["puzzle"]["tree_hash"]
+            and hashlib.sha256(blob).hexdigest() == view["puzzle"]["program_sha256"], "Loop inspection mismatch")
+    execution = call(["run", manifest_path])["result"]
+
+    def tree(value):
+        if isinstance(value, int):
+            return {"atom": bytes([value]).hex()}
+        result = {"atom": ""}
+        for item in reversed(value):
+            result = {"pair": [tree(item), result]}
+        return result
+
+    require(execution["tree"] == tree([[83, 5], [83, 3], [83, 1]])
+            and execution["validation"] == "clvm-execution-only", "Loop tutorial result mismatch")
+    cost = int(execution["cost"])
+    require(cost > 0, "Missing loop cost")
+    require(call(["run", manifest_path, "--max-cost", str(cost)])["result"] == execution, "Loop exact cost mismatch")
+    require(call(["run", manifest_path, "--max-cost", str(cost - 1)], 3)["diagnostics"][0]["code"] == "E0501",
+            "Loop cost-minus-one gate mismatch")
+    before = {p.name: p.read_bytes() for p in (root / label).iterdir()}
+    require(call(["build", source, "--out", label], 4)["diagnostics"][0]["code"] == "E0600", "Loop overwrite gate mismatch")
+    require(before == {p.name: p.read_bytes() for p in (root / label).iterdir()}, "Loop artifacts overwritten")
+    return {"program_sha256": hashlib.sha256(blob).hexdigest(), "tree_hash": manifest["puzzle"]["tree_hash"],
+            "cost": execution["cost"], "tree": execution["tree"]}
+
+
 def verify(archive, rebuild_source=False):
     archive = archive.resolve()
     checksum = archive.with_name(archive.name + ".sha256").read_text(encoding="ascii").strip()
@@ -54,6 +95,8 @@ def verify(archive, rebuild_source=False):
         for name, expected in metadata["files"].items():
             require(hashlib.sha256(entries[name]).hexdigest() == expected, f"File hash mismatch: {name}")
         require({"source.tar.gz", "THIRD-PARTY-NOTICES.txt", "REBUILD.md"} <= set(entries), "Missing source or notice materials")
+        if has_loops(metadata):
+            require({"examples/counted-heights.bas", "LOOPS.md"} <= set(entries), "Missing loop package inputs")
         from verify_package_sources import verify_sources
         source_evidence = verify_sources(entries["source.tar.gz"], root, metadata, rebuild_source)
         binary_name = "bin/0xbasic.exe" if os.name == "nt" else "bin/0xbasic"
@@ -96,6 +139,10 @@ def verify(archive, rebuild_source=False):
         before = {p.name: p.read_bytes() for p in (root / "payment-build").iterdir()}
         require(call(["build", source, "--bindings", bindings, "--out", "payment-build"], 4)["diagnostics"][0]["code"] == "E0600", "Overwrite gate mismatch")
         require(before == {p.name: p.read_bytes() for p in (root / "payment-build").iterdir()}, "Package overwrote artifacts")
+        if has_loops(metadata):
+            loop = verify_loop(call, root, "loop-build")
+            require(all(result == loop for result in source_evidence.get("rebuilt_loops", [])), "Rebuilt loop differs from packaged binary")
+            source_evidence["packaged_loop"] = loop
     return {"schema_version": 1, "archive": archive.name, "archive_sha256": digest,
             "compiler": metadata["compiler"], "target": metadata["target"], "commands_passed": calls,
             "path_empty": True, "outside_checkout": True, "resources_closed": True, **source_evidence}
@@ -111,7 +158,7 @@ def main():
     report = verify(args.archive, args.rebuild_source)
     args.report.parent.mkdir(parents=True, exist_ok=True)
     args.report.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    print(f"PASS: extracted package verified; 8 CLI commands passed with empty PATH. Report: {args.report}")
+    print(f"PASS: extracted package verified; {report['commands_passed']} CLI commands passed with empty PATH. Report: {args.report}")
 
 
 if __name__ == "__main__":

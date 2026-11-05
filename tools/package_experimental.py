@@ -39,8 +39,9 @@ def main():
     binary = target / host / "release" / executable
     payload = {f"bin/{executable}": binary.read_bytes(), "LICENSE": (ROOT / "LICENSE").read_bytes(),
                "PACKAGE.md": (ROOT / "docs/spec/package-usage.md").read_bytes()}
-    for name in ("height-locked-payment.bas", "height-locked-payment.bindings.json"):
+    for name in ("height-locked-payment.bas", "height-locked-payment.bindings.json", "counted-heights.bas"):
         payload[f"examples/{name}"] = (ROOT / "examples" / name).read_bytes()
+    payload["LOOPS.md"] = (ROOT / "docs/spec/package-loops.md").read_bytes()
     payload.update(assemble(staging))
     sources = [ROOT / name for name in ("Cargo.toml", "Cargo.lock", "rust-toolchain.toml")]
     sources += sorted(path for path in (ROOT / "crates").rglob("*") if path.suffix in {".rs", ".toml"})
@@ -75,7 +76,7 @@ def main():
     archive.replace(out / archive.name)
     checksum.replace(out / checksum.name)
     report.write_text(json.dumps(evidence, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    print(f"PASS: experimental package built and verified; 8 extracted CLI commands passed. Archive: {out / archive.name}")
+    print(f"PASS: experimental package built and verified; {evidence['commands_passed']} extracted CLI commands passed. Archive: {out / archive.name}")
     print(f"Evidence: {report}")
 
 

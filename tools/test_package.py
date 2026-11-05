@@ -9,6 +9,7 @@ import unittest
 import zipfile
 
 from verify_package import verify
+from verify_package_sources import verify_sources
 
 
 def archive(root, files, kind="zip"):
@@ -57,6 +58,32 @@ class PackageRejectionTests(unittest.TestCase):
             path = archive(Path(temp), {"package.json": json.dumps(metadata).encode()})
             with self.assertRaisesRegex(RuntimeError, "Missing source or notice"):
                 verify(path)
+
+    def test_current_package_requires_loop_materials(self):
+        with tempfile.TemporaryDirectory() as temp:
+            files = {name: b"fixture" for name in ("source.tar.gz", "THIRD-PARTY-NOTICES.txt", "REBUILD.md")}
+            metadata = {"schema_version": 1, "experimental": True, "compiler": "0.2.0-alpha.1",
+                        "files": {name: hashlib.sha256(data).hexdigest() for name, data in files.items()}}
+            files["package.json"] = json.dumps(metadata).encode()
+            with self.assertRaisesRegex(RuntimeError, "Missing loop package inputs"):
+                verify(archive(Path(temp), files))
+
+    def test_source_inventory_requires_loop_implementation(self):
+        files = {name: b"fixture" for name in ("Cargo.lock", ".cargo/config.toml",
+                 "vendor/malachite-bigint/src/lib.rs", "REBUILD.md", "THIRD-PARTY-NOTICES.txt")}
+        index = {name: hashlib.sha256(data).hexdigest() for name, data in files.items()}
+        metadata = {"compiler": "0.2.0-alpha.1", "source_hashes": {}, "cargo_lock_sha256": index["Cargo.lock"],
+                    "files": index}
+        files["SOURCE-MANIFEST.json"] = json.dumps(index).encode()
+        data = io.BytesIO()
+        with tarfile.open(fileobj=data, mode="w:gz") as handle:
+            for name, content in files.items():
+                entry = tarfile.TarInfo(name)
+                entry.size = len(content)
+                handle.addfile(entry, io.BytesIO(content))
+        with tempfile.TemporaryDirectory() as temp:
+            with self.assertRaisesRegex(RuntimeError, "Missing loop source inputs"):
+                verify_sources(data.getvalue(), Path(temp), metadata)
 
 
 if __name__ == "__main__":
