@@ -50,6 +50,8 @@ jobs:
         run: .work/m4/venv/${{ matrix.bin }}/${{ matrix.python }} simulator/verify.py --binary target/debug/${{ matrix.executable }}
       - name: Verify loop payments and identical fresh reruns
         run: .work/m4/venv/${{ matrix.bin }}/${{ matrix.python }} simulator/loop_payment.py --binary target/debug/${{ matrix.executable }}
+      - name: Verify payment and change scenarios
+        run: .work/m4/venv/${{ matrix.bin }}/${{ matrix.python }} simulator/payment_change.py --binary target/debug/${{ matrix.executable }}
       - name: Verify full-node compiled payment
         run: .work/m4/venv/${{ matrix.bin }}/${{ matrix.python }} simulator/full_node_smoke.py --payment --binary target/debug/${{ matrix.executable }}
       - name: Upload full-node payment evidence
@@ -67,6 +69,7 @@ jobs:
           path: |
             .work/m4/verification-${{ matrix.platform }}.json
             .work/m4/loop-payment-${{ matrix.platform }}.json
+            .work/m4/payment-change-${{ matrix.platform }}.json
           include-hidden-files: true
           if-no-files-found: error
           retention-days: 30

@@ -249,3 +249,7 @@ Windows M5-1b passed on 2026-10-24, including all 12 reporting/isolation tests a
 ## Public FOR/NEXT payment gate
 
 The [loop payment checkpoint](../docs/spec/loop-payment-validation.md) adds a six-mojo fixture emitting three distinct children through FOR/NEXT. `loop_payment.py` verifies six adversarial rejections and a signed positive control twice in fresh SpendSim instances. `full_node_smoke.py --payment` now checks both the legacy payment and the loop payment through actual full-block inclusion. Windows and native Linux (LANDO) passed, confirmed on 2026-11-04. See the checkpoint for exact sync/test commands and evidence scope.
+
+## Payment and change: PC-2
+
+[PC-2](../docs/spec/payment-change-spendsim.md) adds twelve fresh SpendSim scenarios with ten rejected attempts and twelve confirmed controls per run, repeated twice with identical evidence. Partial payments create exact recipient/change children; exact payments create no change child. Signature/domain/amount/replay and malformed raw-input cases check state before and after farming. Windows and native LANDO passed, confirmed on 2026-11-07. See the checkpoint for exact commands and scope.

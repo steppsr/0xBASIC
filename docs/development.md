@@ -26,7 +26,7 @@ Update older source declarations and rebuild artifacts with the current compiler
 
 ## Payment and change
 
-The user selected the [payment/change milestone](spec/payment-change-plan.md) after the counted-loop release. [PC-1](spec/payment-change-local.md) adds a contract example with partial/exact payments and independent local verification using existing compiler features. Windows and native Linux (LANDO) passed 8 positive and 25 negative cases across 72 CLI calls, confirmed on 2026-11-06. Actual signature and confirmed-spend checks follow in PC-2/PC-3. Compiler and release identities are unchanged.
+The user selected the [payment/change milestone](spec/payment-change-plan.md) after the counted-loop release. [PC-1](spec/payment-change-local.md) adds a contract example with partial/exact payments and independent local verification using existing compiler features. Windows and native Linux (LANDO) passed 8 positive and 25 negative cases across 72 CLI calls, confirmed on 2026-11-06. [PC-2 SpendSim](spec/payment-change-spendsim.md) passed Windows and native Linux signature/replay/rejection checks and confirmed partial/exact payments in two identical fresh runs, confirmed on 2026-11-07. PC-3 adds real full-node payment/change validation next. Compiler and release identities are unchanged.
 
 ## Roadmap
 
