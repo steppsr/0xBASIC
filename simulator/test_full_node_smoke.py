@@ -50,6 +50,24 @@ class FullNodeGateTests(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, "source mismatch"):
                 smoke.source_check()
 
+    def test_payment_worker_without_change_evidence_cannot_publish(self):
+        with tempfile.TemporaryDirectory() as directory:
+            work = Path(directory)
+            name = "windows" if smoke.sys.platform == "win32" else "linux"
+            destination = work / f"full-node-payment-{name}.json"
+            destination.write_text('{"old_success": true}')
+
+            def incomplete_worker(command, **kwargs):
+                run = Path(command[command.index("--worker") + 1])
+                (run / "result.json").write_text(json.dumps({"outcome": {"resources_closed": True}}))
+
+            with patch.object(smoke, "WORK", work), patch.object(smoke, "contained", side_effect=Path), \
+                    patch.object(smoke.sys, "argv", ["full_node_smoke.py", "--payment", "--binary", "test-cli"]), \
+                    patch.object(smoke.subprocess, "run", side_effect=incomplete_worker):
+                with self.assertRaises(KeyError):
+                    smoke.main()
+            self.assertFalse(destination.exists())
+
 
 if __name__ == "__main__":
     unittest.main()

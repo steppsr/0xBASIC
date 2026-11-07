@@ -253,3 +253,7 @@ The [loop payment checkpoint](../docs/spec/loop-payment-validation.md) adds a si
 ## Payment and change: PC-2
 
 [PC-2](../docs/spec/payment-change-spendsim.md) adds twelve fresh SpendSim scenarios with ten rejected attempts and twelve confirmed controls per run, repeated twice with identical evidence. Partial payments create exact recipient/change children; exact payments create no change child. Signature/domain/amount/replay and malformed raw-input cases check state before and after farming. Windows and native LANDO passed, confirmed on 2026-11-07. See the checkpoint for exact commands and scope.
+
+## Payment and change: PC-3
+
+[PC-3](../docs/spec/payment-change-full-node.md) extends `full_node_smoke.py --payment` with three signature/amount rejections and confirmed partial/exact payments. The combined run covers ten rejections and four confirmed payments, with exact block coin changes and resource cleanup. Windows and native LANDO passed all 21 reporting tests and the full-node run, confirmed on 2026-11-07. Follow the checkpoint for current sync/test commands and evidence scope.
