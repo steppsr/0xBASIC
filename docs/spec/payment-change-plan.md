@@ -1,6 +1,6 @@
 # Payment and change: selected milestone
 
-Status: direction selected by the user on 2026-11-06. The prior counted-loop release plan is complete. [PC-1 local example and verification](payment-change-local.md) passed Windows and native Linux (LANDO), confirmed on 2026-11-06. [PC-2 SpendSim validation](payment-change-spendsim.md) passed Windows and native Linux (LANDO), confirmed on 2026-11-07. This plan adds no compiler behavior.
+Status: direction selected by the user on 2026-11-06. The prior counted-loop release plan is complete. [PC-1 local example and verification](payment-change-local.md) passed Windows and native Linux (LANDO), confirmed on 2026-11-06. [PC-2 SpendSim validation](payment-change-spendsim.md) passed Windows and native Linux (LANDO), confirmed on 2026-11-07. The [PC-4 tutorial and milestone review](payment-change-review.md) passed Windows and native LANDO command verification, confirmed on 2026-11-07. This plan adds no compiler behavior.
 
 ## First contract
 

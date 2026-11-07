@@ -10,6 +10,8 @@ The [public fixture bindings](../../examples/payment-change.bindings.json) fix i
 
 The application message uses the domain and fixed-width encoding specified in the plan, committing the owner, both destinations, input amount and requested payment. Changing the solution amount changes the message without changing the bound puzzle. Emitting AGG_SIG_ME is a signature requirement, not proof of authorization. Signature generation, verification, coin existence and confirmation are later simulator gates.
 
+For a step-by-step explanation of the source, inputs and artifacts, see the [payment/change tutorial](payment-change-tutorial.md). The [milestone review](payment-change-review.md) records the completed simulator gates and current tutorial gate.
+
 ## Try it locally
 
 Build the current CLI, then run these commands from the repository root. On Windows, substitute `target/debug/0xbasic.exe`; with a custom Cargo target directory, substitute its `debug/0xbasic` path. The output directory must not already exist.

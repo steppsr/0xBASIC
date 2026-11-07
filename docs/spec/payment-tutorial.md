@@ -2,7 +2,7 @@
 
 This tutorial uses the working [payment source](../../examples/height-locked-payment.bas) and its [public fixture bindings](../../examples/height-locked-payment.bindings.json). The fixed terms are an owner public key, recipient puzzle hash, amount of 1000 mojos and earliest height 10. The solution is empty. The fixture values are test data; local execution does not require a private key or a running node.
 
-Use compiler `0.1.0-m3.8b`. Build the repository with `cargo build --workspace --locked` using the pinned Rust toolchain, or use an already-built executable. In the command blocks below, `0xbasic` means that executable: replace it with `./target/debug/0xbasic` on Linux or `./target/debug/0xbasic.exe` in PowerShell. If using a native `CARGO_TARGET_DIR`, use its `debug/0xbasic` path instead. Run from the repository root. `payment-tutorial-build` must not already exist; choose a new output name rather than deleting an existing artifact.
+Use compiler `0.2.0-alpha.1`. Build the repository with `cargo build --workspace --locked` using the pinned Rust toolchain, or use an already-built executable. In the command blocks below, `0xbasic` means that executable: replace it with `./target/debug/0xbasic` on Linux or `./target/debug/0xbasic.exe` in PowerShell. If using a native `CARGO_TARGET_DIR`, use its `debug/0xbasic` path instead. Run from the repository root. `payment-tutorial-build` must not already exist; choose a new output name rather than deleting an existing artifact.
 
 The nine marked command blocks below are read and executed verbatim as argument lists by `tools/verify_tutorial.py`, substituting only the executable path. Verification uses an isolated working directory with copied example files; it will not overwrite your own tutorial build.
 
@@ -24,7 +24,7 @@ The contract checks that the fixed amount is positive and the height is within t
 0xbasic --version
 ```
 
-Expect identifiers for compiler `0.1.0-m3.8b`, language `0.1`, ABI `1` and target `chia-clvm-0.19-strict-v1`.
+Expect identifiers for compiler `0.2.0-alpha.1`, language `0.2`, ABI `1` and target `chia-clvm-0.19-strict-v1`.
 
 <!-- tutorial:check -->
 ```text

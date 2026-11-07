@@ -9,7 +9,7 @@ Current development documentation targets compiler `0.2.0-alpha.1`, language `0.
 | Download and run the compiler | [Release record](loop-release-review.md), then [package usage](package-usage.md) |
 | Write and compile your first program | [Beginner walkthrough](first-program.md) |
 | Learn the implemented language | [Implemented reference](implemented-reference.md) |
-| Pay part of an input and return change | [Payment/change local example](payment-change-local.md), [SpendSim validation](payment-change-spendsim.md), [full-node validation](payment-change-full-node.md), [selected plan](payment-change-plan.md) |
+| Pay part of an input and return change | [Walkthrough](payment-change-tutorial.md), [milestone review](payment-change-review.md), [local example](payment-change-local.md), [SpendSim validation](payment-change-spendsim.md), [full-node validation](payment-change-full-node.md), [selected plan](payment-change-plan.md) |
 | Compile and inspect a payment contract | [Payment tutorial](payment-tutorial.md) |
 | Supply fixed parameters or solution values | [ABI 1](abi-v1.md) |
 | Integrate CLI output or read artifacts | [CLI, manifests and diagnostics](cli-v1.md) |
