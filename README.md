@@ -35,9 +35,9 @@ END CONTRACT
 
 The following M4/M5 validation describes the released 0.1 baseline; loop-specific spend/package validation remains pending.
 
-The optional [simulator harness](simulator/README.md) passes its environment smoke test on Windows and Linux. Compiled, signed payment testing also passes on both platforms. Height/signature rejection tests pass on both platforms. All 15 planned payment scenarios, including replay and payment-mutation checks, now pass on Windows and Linux. Reproducible simulator reporting and Windows/Linux CI also pass; M4 is complete. Compiler testing has passed on both platforms. The isolated full-node payment gate also passes on both platforms. M5 is complete: the [experimental prerelease](https://github.com/steppsr/0xBASIC/releases/tag/v0.1.0-m3.8b-experimental) is available. See the [release scope and validation record](docs/spec/experimental-release.md).
+The optional [simulator harness](simulator/README.md) passes its environment smoke test on Windows and Linux. Compiled, signed payment testing also passes on both platforms. Height/signature rejection tests pass on both platforms. All 15 planned payment scenarios, including replay and payment-mutation checks, now pass on Windows and Linux. Reproducible simulator reporting and Windows/Linux CI also pass; M4 is complete. Compiler testing has passed on both platforms. The isolated full-node payment gate also passes on both platforms. M5 and the counted-loop release gates are complete: [0.2.0-alpha.1 experimental prerelease](https://github.com/steppsr/0xBASIC/releases/tag/v0.2.0-alpha.1-experimental) is available. See the [release scope and validation record](docs/spec/loop-release-review.md).
 
-The current development compiler uses language `0.2`; the downloadable release above remains `0.1.0-m3.8b` without loops. See the [loop tutorial and migration guide](docs/spec/loops-tutorial.md) for source-build commands.
+The current compiler and counted-loop prerelease use language `0.2`. The [older 0.1 release](docs/spec/experimental-release.md) remains available without loops. See the [loop tutorial and migration guide](docs/spec/loops-tutorial.md) for source-build commands.
 
 ## Try it
 

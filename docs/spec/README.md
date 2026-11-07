@@ -1,12 +1,12 @@
 # Documentation index
 
-Current development documentation targets compiler `0.2.0-alpha.1`, language `0.2`, ABI 1, including public FOR/NEXT. See the [activation checkpoint](for-next-public.md) and [loop tutorial](loops-tutorial.md). The downloadable [experimental release](experimental-release.md) remains `0.1.0-m3.8b` / language `0.1`; its binaries and tag are unchanged. Historical checkpoints below record their original scope.
+Current development documentation targets compiler `0.2.0-alpha.1`, language `0.2`, ABI 1, including public FOR/NEXT. See the [activation checkpoint](for-next-public.md) and [loop tutorial](loops-tutorial.md). The [counted-loop prerelease](loop-release-review.md) provides `0.2.0-alpha.1` / language `0.2`. The [older experimental release](experimental-release.md) remains available unchanged. Historical checkpoints below record their original scope.
 
 ## Choose a starting point
 
 | Task | Read |
 | --- | --- |
-| Download and run the compiler | [Release record](experimental-release.md), then [package usage](package-usage.md) |
+| Download and run the compiler | [Release record](loop-release-review.md), then [package usage](package-usage.md) |
 | Write and compile your first program | [Beginner walkthrough](first-program.md) |
 | Learn the implemented language | [Implemented reference](implemented-reference.md) |
 | Compile and inspect a payment contract | [Payment tutorial](payment-tutorial.md) |
