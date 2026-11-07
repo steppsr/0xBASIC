@@ -24,6 +24,10 @@ Compiler `0.1.0-m3.2.1` renames the solution-field declaration to `SOLUTION name
 
 Update older source declarations and rebuild artifacts with the current compiler. The ABI and generated boundary semantics are unchanged; manifests still require the matching compiler version. The README uses a fixed height-lock example without solution fields. That historical keyword-change checkpoint passed 199 Windows Rust tests; current release totals are listed above.
 
+## Payment and change
+
+The user selected the [payment/change milestone](spec/payment-change-plan.md) after the counted-loop release. [PC-1](spec/payment-change-local.md) adds a contract example with partial/exact payments and independent local verification using existing compiler features. Windows and native Linux (LANDO) passed 8 positive and 25 negative cases across 72 CLI calls, confirmed on 2026-11-06. Actual signature and confirmed-spend checks follow in PC-2/PC-3. Compiler and release identities are unchanged.
+
 ## Roadmap
 
 The counted-loop implementation is now promoted from the private checkpoints into the [public activation candidate](spec/for-next-public.md), following the [activation compatibility plan](spec/for-next-activation.md). FOR/NEXT works in contracts and functions through ordinary library and CLI entry points. ABI/profile and frozen non-loop output baselines remain unchanged. The [loop payment validation checkpoint](spec/loop-payment-validation.md) passed Windows and native Linux (LANDO) SpendSim and full-node checks. The [loop package validation checkpoint](spec/loop-package-validation.md) passed Windows and native Linux (LANDO) extracted-binary checks and both offline source rebuilds. The [counted-loop prerelease](spec/loop-release-review.md) is published; its exact revision, assets and validation scope are recorded.
