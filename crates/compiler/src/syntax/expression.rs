@@ -242,6 +242,7 @@ impl Parser<'_> {
                             | "ASSERT_MY_AMOUNT"
                             | "CREATE_COIN"
                             | "AGG_SIG_ME"
+                            | "RESERVE_FEE"
                             | "PAIR"
                             | "FIRST"
                             | "REST"

@@ -62,3 +62,4 @@ jobs:
       - run: python tools/verify_tutorial.py
       - run: python tools/verify_payment_change.py
       - run: python tools/verify_payment_change_tutorial.py
+      - run: python tools/verify_reserve_fee.py

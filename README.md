@@ -8,7 +8,7 @@
 
 The goal is to make contract development easier to learn without hiding how Chia's coin and condition model works.
 
-**Early development · compiler `0.2.0-alpha.1` · Apache-2.0**
+**Early development · compiler `0.3.0-alpha.1` · Apache-2.0**
 
 The compiler and local runner work today, but the language is incomplete and has not been audited for production use. The CLI runner checks CLVM behavior; it does not validate a blockchain spend. Do not use this development version to secure funds.
 
@@ -31,13 +31,13 @@ END CONTRACT
 - INTEGER, BOOLEAN, BYTES, STRING, AMOUNT, PUZZLEHASH, PUBLICKEY, and nested PAIR/LIST fixed parameters and solution fields, with JSON conversion and generated CLVM boundary validation.
 - `check`, `build`, `run`, and `explain --stage ast|ir|clvm` commands; reproducible artifacts, tree hashes, structured diagnostics, and execution-cost reporting.
 
-`ASSERT_HEIGHT_ABSOLUTE`, `ASSERT_MY_AMOUNT`, `CREATE_COIN`, and `AGG_SIG_ME` are implemented as blockchain condition constructors. Isolated SpendSim and full-node harnesses verify signed payments and rejection/state checks on Windows and Linux. The specifications describe the intended language as well as features still being implemented; see the [status and roadmap](docs/development.md).
+`ASSERT_HEIGHT_ABSOLUTE`, `ASSERT_MY_AMOUNT`, `CREATE_COIN`, `AGG_SIG_ME`, and `RESERVE_FEE` are implemented as blockchain condition constructors. Isolated SpendSim and full-node harnesses verify signed payments and rejection/state checks on Windows and Linux. The specifications describe the intended language as well as features still being implemented; see the [status and roadmap](docs/development.md).
 
 The following M4/M5 validation describes the released 0.1 baseline; loop-specific spend/package validation remains pending.
 
 The optional [simulator harness](simulator/README.md) passes its environment smoke test on Windows and Linux. Compiled, signed payment testing also passes on both platforms. Height/signature rejection tests pass on both platforms. All 15 planned payment scenarios, including replay and payment-mutation checks, now pass on Windows and Linux. Reproducible simulator reporting and Windows/Linux CI also pass; M4 is complete. Compiler testing has passed on both platforms. The isolated full-node payment gate also passes on both platforms. M5 and the counted-loop release gates are complete: [0.2.0-alpha.1 experimental prerelease](https://github.com/steppsr/0xBASIC/releases/tag/v0.2.0-alpha.1-experimental) is available. See the [release scope and validation record](docs/spec/loop-release-review.md).
 
-The current compiler and counted-loop prerelease use language `0.2`. The [older 0.1 release](docs/spec/experimental-release.md) remains available without loops. See the [loop tutorial and migration guide](docs/spec/loops-tutorial.md) for source-build commands.
+The development compiler uses language `0.3` and profile v2; [RESERVE_FEE activation](docs/spec/reserve-fee-activation.md) records its current verification gate. The counted-loop prerelease retains language `0.2` and profile v1. The [older 0.1 release](docs/spec/experimental-release.md) remains available without loops. See the [loop tutorial and migration guide](docs/spec/loops-tutorial.md) for source-build commands.
 
 ## Try it
 
@@ -72,8 +72,8 @@ Start with the [documentation index](docs/spec/README.md) for released specifica
 - [Your first 0xBASIC program](docs/spec/first-program.md): write a small contract, compile it, view its CLVM and run it locally.
 - [Examples](examples): small programs demonstrating implemented features. `height-locked-payment.bas` compiles and runs locally using its companion bindings file; separate simulator harnesses test signed, confirmed payments.
 - [Implemented-feature reference](docs/spec/implemented-reference.md) and [payment tutorial](docs/spec/payment-tutorial.md).
-- [Architecture](docs/architecture.md) and [language specification](docs/language-v0.1.md).
-- [ABI](docs/spec/abi-v1.md), [CLI and artifact format](docs/spec/cli-v1.md), and [pinned target profile](docs/spec/target-profile.md).
+- [Architecture](docs/architecture.md) and [language specification](docs/language-v0.3.md).
+- [ABI](docs/spec/abi-v1.md), [CLI and artifact format](docs/spec/cli-v1.md), and [pinned target profile](docs/spec/target-profile-v2.md).
 - [Development status and roadmap](docs/development.md).
 - [Contribution and testing guide](CONTRIBUTING.md).
 

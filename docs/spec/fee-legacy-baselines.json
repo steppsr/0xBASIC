@@ -1,0 +1,349 @@
+{
+  "producer": "0.2.0-alpha.1",
+  "cases": [
+    {
+      "name": "height-locked-payment",
+      "bindings": "height-locked-payment.bindings.json",
+      "solution": null,
+      "source_sha256": "a629dd9f35730b0776da172e864a3f0a6cb60747b53dc2a8d416b9773b249cfa",
+      "template": {
+        "binary": "template.clvm",
+        "hex": "template.hex",
+        "program_sha256": "4f6f19aadc68a1d6ac118ff939edfe83be863c74a433fc2de056dc3aa3d56ceb",
+        "tree_hash": "7ca5477b5af67db55da0ba64aea376b80448340ec7e4cf54667be340c8406cf6"
+      },
+      "puzzle": {
+        "binary": "puzzle.clvm",
+        "hex": "puzzle.hex",
+        "program_sha256": "6949a6a511716438d9afaf30fb60ef57e1c7a1026cf47affc4c5d934055c0e81",
+        "tree_hash": "f8bac319ef0beaf4dacbd7b0770d115d013a97a25f8656cb350280698a25ccea"
+      },
+      "execution": {
+        "cost": "1487727",
+        "tree": {
+          "pair": [
+            {
+              "pair": [
+                {
+                  "atom": "49"
+                },
+                {
+                  "pair": [
+                    {
+                      "atom": "03e8"
+                    },
+                    {
+                      "atom": ""
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "pair": [
+                {
+                  "pair": [
+                    {
+                      "atom": "53"
+                    },
+                    {
+                      "pair": [
+                        {
+                          "atom": "0a"
+                        },
+                        {
+                          "atom": ""
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "pair": [
+                    {
+                      "pair": [
+                        {
+                          "atom": "32"
+                        },
+                        {
+                          "pair": [
+                            {
+                              "atom": "97f1d3a73197d7942695638c4fa9ac0fc3688c4f9774b905a14e3a3f171bac586c55e83ff97a1aeffb3af00adb22c6bb"
+                            },
+                            {
+                              "pair": [
+                                {
+                                  "atom": "1b882dfcb8d7291c35b6ac73897228ed89b073c344d68435010bbc30a2959660"
+                                },
+                                {
+                                  "atom": ""
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "pair": [
+                        {
+                          "pair": [
+                            {
+                              "atom": "33"
+                            },
+                            {
+                              "pair": [
+                                {
+                                  "atom": "1111111111111111111111111111111111111111111111111111111111111111"
+                                },
+                                {
+                                  "pair": [
+                                    {
+                                      "atom": "03e8"
+                                    },
+                                    {
+                                      "atom": ""
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "atom": ""
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "validation": "clvm-execution-only"
+      },
+      "source_sha256_lf": "e6a7043559bbdcf306d0cd6f279ba85254303a42b29a74a9b41779c28e38f067"
+    },
+    {
+      "name": "counted-heights",
+      "bindings": null,
+      "solution": null,
+      "source_sha256": "de070d4d23370b67cbf13b53d2caceb0023984d39fcb19105e4b247c969d4f95",
+      "template": {
+        "binary": "template.clvm",
+        "hex": "template.hex",
+        "program_sha256": "0ee06f4bffbe2b870c32c7b3010a8067391cd3b7b07dea01ac595ca9403f7141",
+        "tree_hash": "86559808f1b72c552ee2a8d2a2c82e2fac4d0bd29fa155e94da73c7661a725fc"
+      },
+      "puzzle": {
+        "binary": "puzzle.clvm",
+        "hex": "puzzle.hex",
+        "program_sha256": "a2c1eb0f5fa4775b1e245975be846763fe83530e13b4825d3ffacda7a3f49172",
+        "tree_hash": "51b586eaa58af4e0764cc27c6798002df5329b06f873a523290cbff51d5d31f0"
+      },
+      "execution": {
+        "cost": "43832",
+        "tree": {
+          "pair": [
+            {
+              "pair": [
+                {
+                  "atom": "53"
+                },
+                {
+                  "pair": [
+                    {
+                      "atom": "05"
+                    },
+                    {
+                      "atom": ""
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "pair": [
+                {
+                  "pair": [
+                    {
+                      "atom": "53"
+                    },
+                    {
+                      "pair": [
+                        {
+                          "atom": "03"
+                        },
+                        {
+                          "atom": ""
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "pair": [
+                    {
+                      "pair": [
+                        {
+                          "atom": "53"
+                        },
+                        {
+                          "pair": [
+                            {
+                              "atom": "01"
+                            },
+                            {
+                              "atom": ""
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "atom": ""
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "validation": "clvm-execution-only"
+      },
+      "source_sha256_lf": "4104310e1b098f40606e607ef43b2fe7268ced5e27b95e2137b8e0155ca8e259"
+    },
+    {
+      "name": "payment-change",
+      "bindings": "payment-change.bindings.json",
+      "solution": "payment-change.partial.json",
+      "source_sha256": "2c59d20f79780e3821ce8dfe436896ad25404e539fc04f4a42af8cfc1c63d80f",
+      "template": {
+        "binary": "template.clvm",
+        "hex": "template.hex",
+        "program_sha256": "31a0585ca97bd7f770e6c9a8d98196d657b429e450b82f7a807a9c6bf633b383",
+        "tree_hash": "aaaeeaa4666222c2824a704f3ee834f405139238ad838c47f024319c96b2282a"
+      },
+      "puzzle": {
+        "binary": "puzzle.clvm",
+        "hex": "puzzle.hex",
+        "program_sha256": "2e81581fc3c49d4eecd239df50219734b1c644cc108f743eff57997530109c4c",
+        "tree_hash": "c0fe6ddb493aff62d1949a656365a90c879cde6d6ed9406ce75e19cca7837011"
+      },
+      "execution": {
+        "cost": "1504303",
+        "tree": {
+          "pair": [
+            {
+              "pair": [
+                {
+                  "atom": "49"
+                },
+                {
+                  "pair": [
+                    {
+                      "atom": "03e8"
+                    },
+                    {
+                      "atom": ""
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "pair": [
+                {
+                  "pair": [
+                    {
+                      "atom": "32"
+                    },
+                    {
+                      "pair": [
+                        {
+                          "atom": "97f1d3a73197d7942695638c4fa9ac0fc3688c4f9774b905a14e3a3f171bac586c55e83ff97a1aeffb3af00adb22c6bb"
+                        },
+                        {
+                          "pair": [
+                            {
+                              "atom": "afdf08f08a4ca59d6a873d746f4ead828e12452507a1503b48a18828af088842"
+                            },
+                            {
+                              "atom": ""
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "pair": [
+                    {
+                      "pair": [
+                        {
+                          "atom": "33"
+                        },
+                        {
+                          "pair": [
+                            {
+                              "atom": "1111111111111111111111111111111111111111111111111111111111111111"
+                            },
+                            {
+                              "pair": [
+                                {
+                                  "atom": "0258"
+                                },
+                                {
+                                  "atom": ""
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "pair": [
+                        {
+                          "pair": [
+                            {
+                              "atom": "33"
+                            },
+                            {
+                              "pair": [
+                                {
+                                  "atom": "2222222222222222222222222222222222222222222222222222222222222222"
+                                },
+                                {
+                                  "pair": [
+                                    {
+                                      "atom": "0190"
+                                    },
+                                    {
+                                      "atom": ""
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "atom": ""
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "validation": "clvm-execution-only"
+      },
+      "source_sha256_lf": "2c59d20f79780e3821ce8dfe436896ad25404e539fc04f4a42af8cfc1c63d80f"
+    }
+  ]
+}

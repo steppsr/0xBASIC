@@ -1,6 +1,6 @@
 # Documentation index
 
-Current development documentation targets compiler `0.2.0-alpha.1`, language `0.2`, ABI 1, including public FOR/NEXT. See the [activation checkpoint](for-next-public.md) and [loop tutorial](loops-tutorial.md). The [counted-loop prerelease](loop-release-review.md) provides `0.2.0-alpha.1` / language `0.2`. The [older experimental release](experimental-release.md) remains available unchanged. Historical checkpoints below record their original scope.
+Current development documentation targets compiler `0.3.0-alpha.1`, language `0.3`, ABI 1, profile `chia-clvm-0.19-strict-v2`. [RESERVE_FEE activation](reserve-fee-activation.md) adds a fee-reservation constructor alongside FOR/NEXT. Windows/native validation status is recorded there. The downloadable [counted-loop prerelease](loop-release-review.md) remains `0.2.0-alpha.1` / language `0.2` / profile v1; it does not support RESERVE_FEE. Historical checkpoints retain their original scope.
 
 ## Choose a starting point
 

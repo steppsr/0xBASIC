@@ -16,7 +16,7 @@ def require(ok, message):
 
 
 def has_loops(metadata):
-    return metadata["compiler"] == "0.2.0-alpha.1"
+    return metadata["compiler"] in {"0.2.0-alpha.1", "0.3.0-alpha.1"}
 
 
 def verify_loop(call, root, label):

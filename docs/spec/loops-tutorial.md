@@ -1,6 +1,6 @@
 # Counted loops with the development compiler
 
-This guide targets source-built compiler `0.2.0-alpha.1`, language `0.2`, ABI 1. The downloadable `0.1.0-m3.8b` release remains unchanged and cannot compile these loops. Public activation and isolated loop-payment validation passed Windows and native Linux. The [counted-loop prerelease](loop-release-review.md) is now published. Its archives include a [packaged loop walkthrough](package-loops.md).
+This guide targets source-built compiler `0.3.0-alpha.1`, language `0.3`, ABI 1. The downloadable `0.1.0-m3.8b` release remains unchanged and cannot compile these loops. Public activation and isolated loop-payment validation passed Windows and native Linux. The [counted-loop prerelease](loop-release-review.md) remains compiler `0.2.0-alpha.1`, language `0.2`, profile v1. The new source-built identity is tracked in [FP-1](reserve-fee-activation.md). Its archives include a [packaged loop walkthrough](package-loops.md).
 
 From the repository root, build and check the version:
 
@@ -9,7 +9,7 @@ cargo build --workspace --locked
 cargo run --locked -p oxbasic-cli -- --version
 ```
 
-Expect compiler `0.2.0-alpha.1`, language `0.2`, ABI `1`, and target profile `chia-clvm-0.19-strict-v1`. No feature flag enables loops: they are part of this compiler's default public language.
+Expect compiler `0.3.0-alpha.1`, language `0.3`, ABI `1`, and target profile `chia-clvm-0.19-strict-v2`. No feature flag enables loops: they are part of this compiler's default public language.
 
 ## A complete program
 
@@ -42,7 +42,7 @@ cargo run --locked -p oxbasic-cli -- run counted-heights-build/manifest.json --j
 
 Headers evaluate once in source order. Outer DIM locals keep their types and carry updates through iterations and following statements; body-local declarations initialize each time and cannot escape. Nested loops, IF/ELSEIF/ELSE, all supported local types, assertions, calls and EMIT work inside the appropriate contract/function context. RETURN in a function exits through nested loops and skips subsequent work. Functions still cannot EMIT or recurse.
 
-There is no runtime iteration cap; VM cost and existing output limits remain. Use assertions for application bounds when loop headers come from solution data. The compiler has static source, nesting, value and type-work limits described in [language 0.2](../language-v0.2.md#counted-loops).
+There is no runtime iteration cap; VM cost and existing output limits remain. Use assertions for application bounds when loop headers come from solution data. The compiler has static source, nesting, value and type-work limits described in [language 0.3](../language-v0.3.md#counted-loops).
 
 WHILE/DO, EXIT/CONTINUE, GOTO, PRINT, interactive INPUT, user recursion, division/remainder, floating point, imports/modules and runtime file I/O remain unsupported.
 

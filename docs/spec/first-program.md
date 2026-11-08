@@ -161,3 +161,5 @@ This height-only example does not require an owner's signature or specify where 
 ## Walkthrough verification
 
 The source, bindings and command blocks were checked with the published Windows experimental executable. The generated CLVM bytes/hashes match the saved artifacts, and local execution returns the exact condition tree shown above. This tutorial documents existing released behavior; it introduces no new compiler feature or native Linux test requirement.
+
+For the source-built language 0.3 candidate, `RESERVE_FEE(AMOUNT)` is also available. The released 0.2 archives do not include it. See [FP-1](reserve-fee-activation.md) and the [current reference](implemented-reference.md) before mixing source-built and downloaded compiler identities.

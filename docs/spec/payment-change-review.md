@@ -1,6 +1,6 @@
 # Payment/change milestone review
 
-Status: PC-1 through PC-3 passed Windows, native Linux (LANDO) and exact-revision GitHub CI. PC-4 tutorial commands passed Windows and native LANDO, confirmed by the user on 2026-11-07; publication CI is the final gate. This milestone uses compiler `0.2.0-alpha.1`, language 0.2 and ABI 1 without compiler or dependency changes.
+Status: PC-1 through PC-3 passed Windows, native Linux (LANDO) and exact-revision GitHub CI. PC-4 tutorial commands passed Windows and native LANDO, confirmed by the user on 2026-11-07. PC-4 is published and its exact-revision CI passed; the payment/change milestone is complete. This milestone uses compiler `0.2.0-alpha.1`, language 0.2 and ABI 1 without compiler or dependency changes.
 
 Start with the [payment/change tutorial](payment-change-tutorial.md). The [selected plan](payment-change-plan.md) defines the contract and authorization message. Coverage is intentionally split by validation layer:
 
@@ -11,7 +11,7 @@ Start with the [payment/change tutorial](payment-change-tutorial.md). The [selec
 | [PC-3 full node](payment-change-full-node.md) | Three representative rejections and two confirmed payments for this example, plus preserved legacy/loop coverage. Combined run: ten rejections and four confirmed payments. Exact block/store/coin changes and resource cleanup checked. Twenty-one reporting/isolation tests pass. |
 | PC-4 tutorial | Five actual documentation command blocks executed in a fresh directory. Independent partial/exact condition oracle, different payment messages, unchanged artifacts, inspection/build bytes and hashes, and explicit local-only validation. Windows and native LANDO passed, confirmed on 2026-11-07. |
 
-PC-3's published revision is `c73f9cda1418706e248a1ccfd5810a65009689b5`. [Compiler CI](https://github.com/steppsr/0xBASIC/actions/runs/42396043661), [simulator CI](https://github.com/steppsr/0xBASIC/actions/runs/42396043714) and [package CI](https://github.com/steppsr/0xBASIC/actions/runs/42396043663) passed for that exact revision on both platforms, including both extracted-package smoke tests. Those results precede the PC-4 documentation/verifier changes and do not certify the pending revision.
+PC-3's published revision is `c73f9cda1418706e248a1ccfd5810a65009689b5`. [Compiler CI](https://github.com/steppsr/0xBASIC/actions/runs/42396043661), [simulator CI](https://github.com/steppsr/0xBASIC/actions/runs/42396043714) and [package CI](https://github.com/steppsr/0xBASIC/actions/runs/42396043663) passed for that exact revision on both platforms, including both extracted-package smoke tests. Those results certify PC-3. PC-4 was subsequently published at `c29ff9b4879092c41364e3627a7071a46d97917c`; its [compiler CI](https://github.com/steppsr/0xBASIC/actions/runs/42403903368), [simulator CI](https://github.com/steppsr/0xBASIC/actions/runs/42403903325) and [package CI](https://github.com/steppsr/0xBASIC/actions/runs/42403903318) all passed on Windows and Linux, including both extracted-package smoke tests.
 
 Compiler CI now invokes `verify_payment_change_tutorial.py` alongside the existing local verifier. Simulator CI already runs the full SpendSim matrix and extended full-node payment command, uploading both platforms' evidence. No additional simulator scenario or workflow is needed for PC-4. Local evidence paths are `.work/payment-change/local-<platform>.json`, `.work/payment-change/tutorial-<platform>.json`, `.work/m4/payment-change-<platform>.json`, and `.work/m5/full-node-payment-<platform>.json`. A report belongs to its recorded source/binary hashes; hosted artifacts have finite retention.
 
@@ -38,7 +38,7 @@ python3 tools/verify_tutorial.py --binary "$CARGO_TARGET_DIR/debug/0xbasic"
 
 Expected: specification verification, all five payment/change commands and all nine existing payment commands pass. The existing payment tutorial's version prose is corrected to match its already-current executable checks. Preserve `.work/payment-change/tutorial-linux.json` and `.work/m5/tutorial-linux.json`.
 
-Native confirmation is complete. Publish PC-4 and verify exact-revision CI before marking the milestone complete. The published `v0.2.0-alpha.1-experimental` release and its assets remain unchanged. This example-only milestone does not require a compiler version bump; a refreshed package or another release is a separate scope decision with its own validation and publication approval.
+Native confirmation, publication and exact-revision CI are complete. These commands are retained for reproduction; no additional native testing is required for the completed milestone. The published `v0.2.0-alpha.1-experimental` release and its assets remain unchanged. This example-only milestone does not require a compiler version bump; a refreshed package or another release is a separate scope decision with its own validation and publication approval.
 
 ## Remaining boundaries
 

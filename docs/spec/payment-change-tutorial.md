@@ -1,6 +1,6 @@
 # Build a payment with optional change
 
-This walkthrough uses compiler `0.2.0-alpha.1`, language 0.2 and ABI 1. Start with the [beginner walkthrough](first-program.md) for compiler setup and the [implemented reference](implemented-reference.md) for the full supported language. The source and JSON fixtures below are in the current repository; older downloadable archives may not include these newer examples.
+This walkthrough uses compiler `0.3.0-alpha.1`, language 0.3 and ABI 1. Start with the [beginner walkthrough](first-program.md) for compiler setup and the [implemented reference](implemented-reference.md) for the full supported language. The source and JSON fixtures below are in the current repository; older downloadable archives may not include these newer examples.
 
 ## Understand the source and inputs
 

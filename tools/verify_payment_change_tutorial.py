@@ -58,7 +58,7 @@ def main():
             require({p.name: p.read_bytes() for p in artifact.iterdir()} == snapshot, "Execution changed artifacts")
     require(set(snapshot) == {"manifest.json", "template.clvm", "template.hex", "puzzle.clvm", "puzzle.hex"}, "Artifact inventory")
     manifest = json.loads(snapshot["manifest.json"])
-    require(manifest["compiler"]["version"] == "0.2.0-alpha.1", "Tutorial compiler identity differs")
+    require(manifest["compiler"]["version"] == "0.3.0-alpha.1", "Tutorial compiler identity differs")
     view = results["clvm"]["representation"]
     for role in ("template", "puzzle"):
         require(bytes.fromhex(view[role]["hex"]) == snapshot[f"{role}.clvm"], "Inspection/build bytes differ")

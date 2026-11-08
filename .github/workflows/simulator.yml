@@ -44,7 +44,10 @@ jobs:
           .work/m4/tools/${{ matrix.bin }}/uv venv --python 3.13.7 --no-python-downloads .work/m4/venv
           .work/m4/tools/${{ matrix.bin }}/uv pip install --python .work/m4/venv/${{ matrix.bin }}/${{ matrix.python }} --require-hashes -r simulator/requirements-${{ matrix.platform }}.lock --build-constraints simulator/build-requirements.lock
           .work/m4/tools/${{ matrix.bin }}/uv pip check --python .work/m4/venv/${{ matrix.bin }}/${{ matrix.python }}
-      - name: Test reporting failure paths
+      - name: Verify fee constructor with independent VM
+        # The compiler constructor gate uses the pinned independent Chia VM.
+        run: .work/m4/venv/${{ matrix.bin }}/${{ matrix.python }} tools/verify_reserve_fee.py --with-upstream --binary target/debug/${{ matrix.executable }}
+      - name: Test simulator reporting failure paths
         run: .work/m4/venv/${{ matrix.bin }}/${{ matrix.python }} -m unittest discover -s simulator -p 'test_*.py'
       - name: Verify all scenarios and identical fresh reruns
         run: .work/m4/venv/${{ matrix.bin }}/${{ matrix.python }} simulator/verify.py --binary target/debug/${{ matrix.executable }}

@@ -54,7 +54,7 @@ Manifest loading establishes internal consistency, not authorship. It checks the
 
 Artifact filenames are fixed by role (`template.clvm`, `template.hex`, `puzzle.clvm`, `puzzle.hex`). All four resolved paths must remain beneath the manifest directory. This checks static path/symlink escapes; it does not provide a filesystem snapshot against concurrent modification by another process. Publication's no-overwrite guarantee is separate from these reader checks.
 
-`program_sha256` hashes serialized bytes; `tree_hash` is the CLVM tree hash. Treat them as different values. A dependency/toolchain change requires a new lock digest and compatibility checks even if bytes happen to match. Language 0.2 fixes optimization to `none` (required lowering is not an optional optimization). No unrecorded optimizer modes.
+`program_sha256` hashes serialized bytes; `tree_hash` is the CLVM tree hash. Treat them as different values. A dependency/toolchain change requires a new lock digest and compatibility checks even if bytes happen to match. Language 0.3 fixes optimization to `none` (required lowering is not an optional optimization). No unrecorded optimizer modes.
 
 `--version` reports compiler, language, ABI, and target-profile identifiers. Do not claim an unimplemented command or language feature is supported.
 
@@ -108,3 +108,7 @@ Generated on-chain checks fail via CLVM raise, not a promise of source-level dia
 ## Counted-loop activation
 
 Development compiler `0.2.0-alpha.1`, language `0.2`, accepts FOR/NEXT through check/build/run and all explain stages. AST exposes For spans and optional STEP; IR includes typed captures, outputs and return-state linkage. CLVM inspection and artifacts agree for the same bindings. Entered zero STEP fails with E0500; VM budget exhaustion remains E0501. Artifact identities must match exactly; older-version manifests are rejected with E0400. See [the loop tutorial](loops-tutorial.md). No new CLI flags or JSON envelope fields were added.
+
+## Fee constructor activation
+
+Development compiler `0.3.0-alpha.1`, language `0.3`, profile `chia-clvm-0.19-strict-v2` adds `RESERVE_FEE(AMOUNT)`. It returns a condition; only EMIT includes it in output. ABI and JSON schema version remain 1. Exact compiler/language/profile identities are required; previous artifacts fail E0400. Rebuild from source into a new directory. No new CLI flags; local run remains execution-only and does not validate aggregate fees. See [FP-1](reserve-fee-activation.md).

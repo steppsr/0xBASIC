@@ -1,5 +1,7 @@
 # Initial target and dependency profile
 
+Historical v1 profile: retained for released compilers through `0.2.0-alpha.1`. The development successor is [profile v2](target-profile-v2.md); do not add conditions to the v1 allowlist.
+
 Profile ID: `chia-clvm-0.19-strict-v1`. Source assessment date: 2026-10-04. This is a reproducible local compiler/runner profile, not a declaration that every network height uses identical flags/costs.
 
 Current status: the pinned profile is used by the [experimental release](experimental-release.md). Original source-assessment notes below describe M0 evidence; subsequent native and hosted compiler, SpendSim and full-node validation passed during M4/M5. Compiler VM execution and each simulator environment retain their separately documented constants and costs.

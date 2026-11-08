@@ -62,8 +62,8 @@ fn loops_round_trip_public_artifacts_and_all_inspection_stages() {
     }
     let manifest: Value =
         serde_json::from_slice(&fs::read(dir.join("out/manifest.json")).unwrap()).unwrap();
-    assert_eq!(manifest["compiler"]["version"], "0.2.0-alpha.1");
-    assert_eq!(manifest["language_version"], "0.2");
+    assert_eq!(manifest["compiler"]["version"], "0.3.0-alpha.1");
+    assert_eq!(manifest["language_version"], "0.3");
     let result = invoke(
         dir,
         &["run", "out/manifest.json", "--solution", "solution.json"],

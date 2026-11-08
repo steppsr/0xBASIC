@@ -107,6 +107,7 @@ const MAX_CONSTANT_BYTE_WORK: usize = 8 * 1024 * 1024;
 pub(crate) fn payment_builtin(name: &str) -> Option<(u8, Vec<ValueType>)> {
     match name.to_ascii_uppercase().as_str() {
         "AGG_SIG_ME" => Some((50, vec![ValueType::PublicKey, ValueType::Bytes])),
+        "RESERVE_FEE" => Some((52, vec![ValueType::Amount])),
         "ASSERT_MY_AMOUNT" => Some((73, vec![ValueType::Amount])),
         "CREATE_COIN" => Some((51, vec![ValueType::PuzzleHash, ValueType::Amount])),
         _ => None,

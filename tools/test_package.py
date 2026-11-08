@@ -8,7 +8,7 @@ import tempfile
 import unittest
 import zipfile
 
-from verify_package import verify
+from verify_package import has_loops, verify
 from verify_package_sources import verify_sources
 
 
@@ -30,6 +30,11 @@ def archive(root, files, kind="zip"):
 
 
 class PackageRejectionTests(unittest.TestCase):
+    def test_fee_candidate_retains_loop_package_checks(self):
+        self.assertTrue(has_loops({"compiler": "0.3.0-alpha.1"}))
+        self.assertTrue(has_loops({"compiler": "0.2.0-alpha.1"}))
+        self.assertFalse(has_loops({"compiler": "0.1.0-m3.8b"}))
+
     def test_changed_archive_fails_checksum(self):
         with tempfile.TemporaryDirectory() as temp:
             path = archive(Path(temp), {"file": b"original"})
