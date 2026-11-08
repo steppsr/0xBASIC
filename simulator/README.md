@@ -257,3 +257,7 @@ The [loop payment checkpoint](../docs/spec/loop-payment-validation.md) adds a si
 ## Payment and change: PC-3
 
 [PC-3](../docs/spec/payment-change-full-node.md) extends `full_node_smoke.py --payment` with three signature/amount rejections and confirmed partial/exact payments. The combined run covers ten rejections and four confirmed payments, with exact block coin changes and resource cleanup. Windows and native LANDO passed all 21 reporting tests and the full-node run, confirmed on 2026-11-07. Follow the checkpoint for current sync/test commands and evidence scope.
+
+## Fee-aware payments: FP-3
+
+[FP-3](../docs/spec/fee-payment-spendsim.md) adds signed partial/exact/zero-fee payments, signature/amount/raw-input rejections and aggregate fee controls. `fee_payment.py` checks fee-reservation sums against measured mempool and confirmed coin accounting, including a labeled unreserved comparison. Windows passed 20 scenarios, 14 rejections and 20 confirmed control bundles per run in two identical fresh runs, plus all 25 reporting tests, on 2026-11-08. Native LANDO testing passed, confirmed on 2026-11-08; use the checkpoint commands. This is SpendSim evidence; real full-node fee validation remains FP-4.
