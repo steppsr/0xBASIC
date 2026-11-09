@@ -132,6 +132,10 @@ async def run_node(run, binary=None):
                         change_directory = run / "payment-change"
                         change_directory.mkdir()
                         outcome["payment_change"] = await payment_change(node, api, binary, change_directory)
+                        from full_node_fee_payment import fee_payment
+                        fee_directory = run / "fee-payment"
+                        fee_directory.mkdir()
+                        outcome["fee_payment"] = await fee_payment(node, api, binary, fee_directory)
                         outcome["peak_height"] = int(node.blockchain.get_peak().height)
                         require(service._server.webserver is None and service.rpc_server is None
                                 and not service._server.all_connections, "Unexpected payment network service")
@@ -178,13 +182,14 @@ def worker(run, binary=None):
         report["payment_source_hashes"] = {str(path.relative_to(ROOT)).replace("\\", "/"):
             hashlib.sha256(path.read_bytes()).hexdigest() for path in
             [BASE / "full_node_payment.py", BASE / "payment.py", BASE / "loop_payment.py", BASE / "full_node_payment_change.py",
+             BASE / "full_node_fee_payment.py", ROOT / "examples/payment-fee.bas",
              ROOT / "examples/height-locked-payment.bas", ROOT / "examples/loop-payment.bas", ROOT / "examples/payment-change.bas"]}
     (run / "result.json").write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--payment", action="store_true", help="Confirm legacy, loop and payment/change cases with adversarial rejections")
+    parser.add_argument("--payment", action="store_true", help="Confirm legacy, loop, change and fee payments with adversarial rejections")
     parser.add_argument("--binary", type=Path, help="CLI executable for --payment")
     parser.add_argument("--worker", type=Path, help=argparse.SUPPRESS)
     args = parser.parse_args()
@@ -215,8 +220,10 @@ def main():
     if args.payment:
         from full_node_payment_change import audit
         audit(report["outcome"]["payment_change"])
+        from full_node_fee_payment import audit as audit_fees
+        audit_fees(report["outcome"]["fee_payment"])
     (run / "result.json").replace(destination)
-    message = "full-node legacy, loop and payment/change cases, ten rejections and four confirmed payments verified" if args.payment else "full-node blocks and reward records verified"
+    message = "full-node legacy, loop, change and fee cases, fourteen rejections and seven confirmed control bundles verified" if args.payment else "full-node blocks and reward records verified"
     print(f"PASS: {message}; resources closed. Report: {destination}")
 
 

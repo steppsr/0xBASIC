@@ -59,3 +59,5 @@ The [height-locked payment example](../examples/height-locked-payment.bas) now c
 See [CONTRIBUTING](../CONTRIBUTING.md) for local commands. The [CI workflow](../.github/workflows/ci.yml) defines the full Windows/Linux check matrix. Default Python verifiers use the standard library; selected scripts also offer optional upstream-reference modes. Those modes require the separately documented reference dependencies and are not needed for normal builds.
 
 Golden fixtures and synthetic signing vectors are public test data, never wallet credentials. VM execution results do not establish that a spend will be accepted by consensus.
+
+[FP-4](spec/fee-payment-full-node.md) extends the isolated full-node gate with fee authorization and additive aggregate reservation checks. Windows passed 28 reporting tests and the combined 14 rejections/seven confirmed control bundles; native LANDO passed, confirmed on 2026-11-08. Follow that checkpoint for exact commands, then publish and verify CI before FP-5.

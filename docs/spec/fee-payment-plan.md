@@ -1,6 +1,6 @@
 # Fee-aware payments: selected milestone
 
-Status: selected by the user on 2026-11-07 after completion of payment/change. The [FP-0 semantics and compatibility decision](fee-payment-semantics.md) resolves fee reservation, aggregate accounting and activation identities. [FP-1](reserve-fee-activation.md) passed Windows and native LANDO, confirmed on 2026-11-07. [FP-2 local fee-payment validation](fee-payment-local.md) passed Windows and native LANDO, confirmed on 2026-11-08. [FP-3 signed SpendSim validation](fee-payment-spendsim.md) passed Windows and native LANDO, confirmed on 2026-11-08. This plan does not itself activate compiler behavior. The existing payment/change fixtures and published releases retain their current meanings.
+Status: selected by the user on 2026-11-07 after completion of payment/change. The [FP-0 semantics and compatibility decision](fee-payment-semantics.md) resolves fee reservation, aggregate accounting and activation identities. [FP-1](reserve-fee-activation.md) passed Windows and native LANDO, confirmed on 2026-11-07. [FP-2 local fee-payment validation](fee-payment-local.md) passed Windows and native LANDO, confirmed on 2026-11-08. [FP-3 signed SpendSim validation](fee-payment-spendsim.md) passed Windows and native LANDO, confirmed on 2026-11-08. [FP-4 full-node validation](fee-payment-full-node.md) passed Windows and native LANDO, confirmed on 2026-11-08. This plan does not itself activate compiler behavior. The existing payment/change fixtures and published releases retain their current meanings.
 
 ## Objective and scope
 
