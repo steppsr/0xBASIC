@@ -1,6 +1,6 @@
 # Fee-payment milestone review
 
-Status: FP-1 through FP-4 passed Windows, native Linux (LANDO) and exact-revision GitHub CI. FP-5 adds the [fee-payment walkthrough](fee-payment-tutorial.md), command verification and fee-specific package/rebuild checks. FP-5 Windows validation passed: six fee tutorial commands, five existing payment/change commands, nine package tests and 30 extracted CLI commands with two matching offline rebuilds. Native LANDO passed, confirmed by the user on 2026-11-09. Publication and exact-revision CI are the remaining gates.
+Status: FP-1 through FP-4 passed Windows, native Linux (LANDO) and exact-revision GitHub CI. FP-5 adds the [fee-payment walkthrough](fee-payment-tutorial.md), command verification and fee-specific package/rebuild checks. FP-5 Windows validation passed: six fee tutorial commands, five existing payment/change commands, nine package tests and 30 extracted CLI commands with two matching offline rebuilds. Native LANDO passed, confirmed by the user on 2026-11-09. FP-5 is published at `e7e97b3c03b983250bd352579b04a5384578a9ea`; [compiler CI](https://github.com/steppsr/0xBASIC/actions/runs/42736695887), [simulator CI](https://github.com/steppsr/0xBASIC/actions/runs/42736695978) and [package CI](https://github.com/steppsr/0xBASIC/actions/runs/42736695743) passed on both platforms. The fee-payment milestone is complete.
 
 | Layer | Evidence and limits |
 | --- | --- |
@@ -45,4 +45,4 @@ python3 tools/package_experimental.py
 )
 ```
 
-Expected: six fee tutorial commands, five existing payment/change tutorial commands, nine package tests and successful package creation with 30 extracted CLI commands and two offline rebuilds. Preserve `.work/payment-fee/tutorial-linux.json` and `.work/packages/package-linux.json`. The package report must include `packaged_fee`, two matching `rebuilt_fees`, and `offline_rebuilds: 2`. Native confirmation is complete. Commit/push, verify exact-revision CI, then close FP-5 and review the next direction or a separately approved release.
+Expected: six fee tutorial commands, five existing payment/change tutorial commands, nine package tests and successful package creation with 30 extracted CLI commands and two offline rebuilds. Preserve `.work/payment-fee/tutorial-linux.json` and `.work/packages/package-linux.json`. The package report must include `packaged_fee`, two matching `rebuilt_fees`, and `offline_rebuilds: 2`. Native confirmation, publication and exact-revision CI are complete. These commands remain for reproduction; no further native testing is needed. The [prerelease review](fee-release-review.md) prepares a separately approved publication.

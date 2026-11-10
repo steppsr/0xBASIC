@@ -63,3 +63,5 @@ Golden fixtures and synthetic signing vectors are public test data, never wallet
 [FP-4](spec/fee-payment-full-node.md) extends the isolated full-node gate with fee authorization and additive aggregate reservation checks. Windows passed 28 reporting tests and the combined 14 rejections/seven confirmed control bundles; native LANDO passed, confirmed on 2026-11-08. Follow that checkpoint for exact commands, then publish and verify CI before FP-5.
 
 [FP-5](spec/fee-payment-review.md) adds a [fee-payment walkthrough](spec/fee-payment-tutorial.md), executable documentation checks, and fee coverage for extracted packages and both offline rebuilds. Windows passed the tutorial, nine package tests and 30 extracted CLI commands with two matching offline rebuilds; native LANDO passed, confirmed on 2026-11-09. See the review for exact native commands.
+
+The fee-payment milestone is complete through FP-5 and exact-revision CI. The [0.3 prerelease review](spec/fee-release-review.md) records the original CI assets and exact source revision; the user approved publication on 2026-11-09. The prerelease is published and its remote tag and all five uploaded assets were verified.
