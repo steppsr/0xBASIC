@@ -37,3 +37,5 @@ Tests need no Chia installation or keys beyond the deliberately public fixtures.
 ## Confirmation observations (TN-4a)
 
 `confirmation.py` checks exact coin spends, expected children, explicit confirmation depth and prior block anchors through an injected read-only RPC callable. It has no CLI or transport; its expectations must come from independent preparation/signature validation. [TN-4a documentation](../docs/spec/testnet-confirmation.md) defines statuses, caller responsibilities and the native gate. Fourteen new fixture tests bring the integration suite to 40 tests. Authenticated RPC wiring and the full-node rehearsal remain TN-4b work.
+
+`confirmation_transport.py` adds an explicit mutual-TLS transport for the two additional confirmation reads, retaining the original probe's narrower allowlist. [TN-4b1](../docs/spec/testnet-confirmation-transport.md) exercises the complete read sequence against a real loopback TLS fixture server; the suite now has 48 tests. Actual full-node RPC rehearsal remains the next gate.

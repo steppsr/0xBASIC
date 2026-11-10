@@ -84,10 +84,13 @@ class Transport:
         self.context.load_verify_locations(cafile=str(ca))
         self.context.load_cert_chain(str(cert), str(key), password=lambda: "")
 
-    def call(self, route, request):
+    def validate_request(self, route, request):
         require(route in ROUTES, "RPC route not allowed")
         require(request == {} if route != "get_coin_record_by_name" else
                 type(request) is dict and set(request) == {"name"} and hex32(request["name"]), "Invalid RPC request")
+
+    def call(self, route, request):
+        self.validate_request(route, request)
         connection = http.client.HTTPSConnection(self.host, self.port, timeout=self.timeout, context=self.context)
         try:
             connection.request("POST", "/" + route, body=json.dumps(request).encode(),

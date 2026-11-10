@@ -75,3 +75,5 @@ After the completed fee-payment release, [testnet integration](spec/testnet-inte
 [TN-3a detached-signature verification](spec/testnet-signing.md) revalidates unsigned preparations and assembles signature-verified bundles offline. Windows passed 26 integration tests and seven positive/26 negative signing cases; native LANDO passed, confirmed on 2026-11-10. No user keys or live node are used.
 
 [TN-4a confirmation observations](spec/testnet-confirmation.md) checks exact spends and child records, explicit depth and reorg anchors through synthetic RPC fixtures. Windows passed all 40 integration tests; native LANDO passed, confirmed on 2026-11-10. This slice adds no transport or submission command. Full-node RPC rehearsal and live signer setup remain separate work.
+
+[TN-4b1 authenticated confirmation reads](spec/testnet-confirmation-transport.md) connects the observer to a separate read-only mutual-TLS transport. Windows passed all 48 integration tests; native LANDO passed, confirmed on 2026-11-10. These are real TLS connections to synthetic fixture responses, preceding the actual full-node rehearsal.
