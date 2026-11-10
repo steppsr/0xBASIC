@@ -65,3 +65,5 @@ Keep reusable test credentials outside report and source artifacts. Reports may 
 No mainnet operation, automatic wallet discovery, background daemon, fee estimator, general coin selector, production key custody, IDE or new language syntax is included. Any publicly submitted transaction is reviewed with its concrete network, inputs, destinations and amounts first. The plan itself does not grant that authorization.
 
 Alternative next milestones are compiler/language extensions or developer tooling/diagnostics. The user selected testnet. TN-0 records the design and outstanding operator choices; begin TN-1 with isolated fixtures before connecting to a live node. Do not ask the user to rerun the completed fee-payment tests merely to begin this design.
+
+[TN-2 offline preparation](testnet-preparation.md) is implemented; Windows and native LANDO passed, confirmed on 2026-11-09.

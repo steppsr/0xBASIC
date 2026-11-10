@@ -47,6 +47,8 @@ jobs:
       - name: Verify fee constructor with independent VM
         # The compiler constructor gate uses the pinned independent Chia VM.
         run: .work/m4/venv/${{ matrix.bin }}/${{ matrix.python }} tools/verify_reserve_fee.py --with-upstream --binary target/debug/${{ matrix.executable }}
+      - name: Verify offline testnet fee preparation
+        run: .work/m4/venv/${{ matrix.bin }}/${{ matrix.python }} integration/verify_preparation.py --binary target/debug/${{ matrix.executable }}
       - name: Test simulator reporting failure paths
         run: .work/m4/venv/${{ matrix.bin }}/${{ matrix.python }} -m unittest discover -s simulator -p 'test_*.py'
       - name: Verify all scenarios and identical fresh reruns
@@ -79,3 +81,10 @@ jobs:
           include-hidden-files: true
           if-no-files-found: error
           retention-days: 30
+      - name: Upload offline testnet preparation evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: testnet-preparation-${{ matrix.platform }}
+          path: .work/testnet/preparation-${{ matrix.platform }}.json
+          include-hidden-files: true
+          if-no-files-found: error

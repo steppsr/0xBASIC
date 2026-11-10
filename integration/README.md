@@ -25,3 +25,7 @@ python3 -m unittest discover -s integration -p 'test_*.py'
 ```
 
 Tests need no Chia installation or keys beyond the deliberately public fixtures. The source-inclusive compiler archive carries this directory for reproducibility; the integration tool is not an installed compiler command and remains experimental. Host selection and live-node observation are pending.
+
+## Offline preparation (TN-2)
+
+`prepare_fee.py` prepares only the reviewed fee-payment contract from a complete artifact, a coin-bearing observation and an explicit solution/fee budget. It requires the existing pinned simulator Python environment for independent execution; it never creates a node, signs or submits. See [TN-2](../docs/spec/testnet-preparation.md) for its format, limits and exact native test commands. `verify_preparation.py --binary PATH` exercises synthetic observations only.

@@ -60,3 +60,5 @@ WHILE/DO loops, user recursion, division/remainder, floating point, modules, a l
 Testnet integration is selected for future implementation: [plan](testnet-integration-plan.md), [TN-0 design and upstream audit](testnet-design.md). No live-node or public-spend capability is implemented by these documents.
 
 [TN-1 read-only integration and native gate](testnet-readonly.md) documents the experimental probe and isolated tests.
+
+[TN-2 offline unsigned fee preparation](testnet-preparation.md) documents the review format and native gate.
