@@ -69,3 +69,5 @@ Alternative next milestones are compiler/language extensions or developer toolin
 [TN-2 offline preparation](testnet-preparation.md) is implemented; Windows and native LANDO passed, confirmed on 2026-11-09.
 
 TN-3 is split into [TN-3a detached-signature verification](testnet-signing.md), Windows and native LANDO passed (confirmed 2026-11-10), and TN-3b operator signing/key-custody setup before live use. Fixture signing in isolated tests does not select a user key-management approach.
+
+TN-4 is split into [TN-4a confirmation observation rules](testnet-confirmation.md), implemented with Windows validation passed and native LANDO passed (confirmed 2026-11-10), and TN-4b authenticated RPC wiring and isolated end-to-end full-node rehearsal. TN-4a uses synthetic RPC responses and does not complete the full-node exit gate. Isolated rehearsal can use public fixture keys while TN-3b live custody choices remain open.

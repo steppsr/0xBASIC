@@ -33,3 +33,7 @@ Tests need no Chia installation or keys beyond the deliberately public fixtures.
 ## Detached signature boundary (TN-3a)
 
 `verify_signed_fee.py` revalidates a TN-2 preparation and verifies a detached AugSchemeMPL response before assembling a one-coin bundle offline. It has no private-key or RPC path. [TN-3a documentation](../docs/spec/testnet-signing.md) defines the response, output and native test gate. The independent `verify_signing.py --binary PATH` matrix uses public fixture keys only. Operator key custody/signing setup remains a separate TN-3b decision.
+
+## Confirmation observations (TN-4a)
+
+`confirmation.py` checks exact coin spends, expected children, explicit confirmation depth and prior block anchors through an injected read-only RPC callable. It has no CLI or transport; its expectations must come from independent preparation/signature validation. [TN-4a documentation](../docs/spec/testnet-confirmation.md) defines statuses, caller responsibilities and the native gate. Fourteen new fixture tests bring the integration suite to 40 tests. Authenticated RPC wiring and the full-node rehearsal remain TN-4b work.

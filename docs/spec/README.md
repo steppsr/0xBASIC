@@ -64,3 +64,6 @@ Testnet integration is selected for future implementation: [plan](testnet-integr
 [TN-2 offline unsigned fee preparation](testnet-preparation.md) documents the review format and native gate.
 
 [TN-3a detached fee signatures](testnet-signing.md) defines offline verification and its native gate.
+## Confirmation observation checkpoint
+
+[TN-4a confirmation observations](testnet-confirmation.md) specifies exact spend/child checks, explicit depth, conflicting spends and reorg observations. This fixture-tested read-only function precedes full-node RPC rehearsal.
