@@ -39,9 +39,12 @@ def main():
     binary = target / host / "release" / executable
     payload = {f"bin/{executable}": binary.read_bytes(), "LICENSE": (ROOT / "LICENSE").read_bytes(),
                "PACKAGE.md": (ROOT / "docs/spec/package-usage.md").read_bytes()}
-    for name in ("height-locked-payment.bas", "height-locked-payment.bindings.json", "counted-heights.bas"):
+    for name in ("height-locked-payment.bas", "height-locked-payment.bindings.json", "counted-heights.bas",
+                 "payment-fee.bas", "payment-fee.bindings.json", "payment-fee.partial.json",
+                 "payment-fee.exact.json", "payment-fee.zero-fee.json"):
         payload[f"examples/{name}"] = (ROOT / "examples" / name).read_bytes()
     payload["LOOPS.md"] = (ROOT / "docs/spec/package-loops.md").read_bytes()
+    payload["FEES.md"] = (ROOT / "docs/spec/package-fees.md").read_bytes()
     payload.update(assemble(staging))
     sources = [ROOT / name for name in ("Cargo.toml", "Cargo.lock", "rust-toolchain.toml")]
     sources += sorted(path for path in (ROOT / "crates").rglob("*") if path.suffix in {".rs", ".toml"})

@@ -30,7 +30,7 @@ def assemble(staging):
         '[source.crates-io]\nreplace-with = "vendored-sources"\n\n[source.vendored-sources]\ndirectory = "vendor"\n', encoding="utf-8")
     for name in ("Cargo.toml", "Cargo.lock", "rust-toolchain.toml", "LICENSE", "README.md", "CONTRIBUTING.md", "0xBASIC-logo.jpg"):
         shutil.copyfile(ROOT / name, source / name)
-    for name in ("architecture.md", "development.md", "language-v0.1.md", "language-v0.2.md"):
+    for name in ("architecture.md", "development.md", "language-v0.1.md", "language-v0.2.md", "language-v0.3.md"):
         (source / "docs").mkdir(exist_ok=True)
         shutil.copyfile(ROOT / "docs" / name, source / "docs" / name)
     for name in (".github", "simulator", "crates", "examples", "docs/spec", "tools", "distribution"):

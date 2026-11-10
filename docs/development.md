@@ -61,3 +61,5 @@ See [CONTRIBUTING](../CONTRIBUTING.md) for local commands. The [CI workflow](../
 Golden fixtures and synthetic signing vectors are public test data, never wallet credentials. VM execution results do not establish that a spend will be accepted by consensus.
 
 [FP-4](spec/fee-payment-full-node.md) extends the isolated full-node gate with fee authorization and additive aggregate reservation checks. Windows passed 28 reporting tests and the combined 14 rejections/seven confirmed control bundles; native LANDO passed, confirmed on 2026-11-08. Follow that checkpoint for exact commands, then publish and verify CI before FP-5.
+
+[FP-5](spec/fee-payment-review.md) adds a [fee-payment walkthrough](spec/fee-payment-tutorial.md), executable documentation checks, and fee coverage for extracted packages and both offline rebuilds. Windows passed the tutorial, nine package tests and 30 extracted CLI commands with two matching offline rebuilds; native LANDO passed, confirmed on 2026-11-09. See the review for exact native commands.

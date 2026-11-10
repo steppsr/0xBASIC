@@ -8,7 +8,7 @@ import tempfile
 import unittest
 import zipfile
 
-from verify_package import has_loops, verify
+from verify_package import has_loops, has_fees, verify
 from verify_package_sources import verify_sources
 
 
@@ -34,6 +34,21 @@ class PackageRejectionTests(unittest.TestCase):
         self.assertTrue(has_loops({"compiler": "0.3.0-alpha.1"}))
         self.assertTrue(has_loops({"compiler": "0.2.0-alpha.1"}))
         self.assertFalse(has_loops({"compiler": "0.1.0-m3.8b"}))
+
+    def test_fee_checks_preserve_older_package_support(self):
+        self.assertTrue(has_fees({"compiler": "0.3.0-alpha.1"}))
+        for version in ("0.2.0-alpha.1", "0.1.0-m3.8b"):
+            self.assertFalse(has_fees({"compiler": version}))
+
+    def test_fee_candidate_requires_fee_materials(self):
+        with tempfile.TemporaryDirectory() as temp:
+            files = {name: b"fixture" for name in ("source.tar.gz", "THIRD-PARTY-NOTICES.txt",
+                     "REBUILD.md", "examples/counted-heights.bas", "LOOPS.md")}
+            metadata = {"schema_version": 1, "experimental": True, "compiler": "0.3.0-alpha.1",
+                        "files": {name: hashlib.sha256(data).hexdigest() for name, data in files.items()}}
+            files["package.json"] = json.dumps(metadata).encode()
+            with self.assertRaisesRegex(RuntimeError, "Missing fee package inputs"):
+                verify(archive(Path(temp), files))
 
     def test_changed_archive_fails_checksum(self):
         with tempfile.TemporaryDirectory() as temp:

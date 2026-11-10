@@ -8,7 +8,7 @@ import shutil
 import subprocess
 import tarfile
 
-from verify_package import require, has_loops, verify_loop
+from verify_package import require, has_loops, verify_loop, has_fees, verify_fee, FEE_FILES
 
 
 def verify_sources(data, root, metadata, rebuild=False):
@@ -47,6 +47,9 @@ def verify_sources(data, root, metadata, rebuild=False):
                     "docs/spec/loops-tutorial.md", "crates/compiler/tests/loops.rs"}
         required.update(f"crates/compiler/src/{part}/for_next.rs" for part in ("syntax", "analysis", "ir", "clvm"))
         require(required <= set(index), "Missing loop source inputs")
+    if has_fees(metadata):
+        require(FEE_FILES | {"docs/language-v0.3.md", "docs/spec/fee-payment-tutorial.md",
+                "docs/spec/target-profile-v2.md", "crates/compiler/tests/reserve_fee.rs"} <= set(index), "Missing fee source inputs")
     if not rebuild:
         return {"source_files_verified": len(index), "offline_rebuilds": 0}
     env = os.environ.copy()
@@ -54,6 +57,7 @@ def verify_sources(data, root, metadata, rebuild=False):
                CARGO_NET_OFFLINE="true", RUSTUP_TOOLCHAIN="1.95.0")
 
     rebuilt_loops = []
+    rebuilt_fees = []
 
     def build(label, locked):
         command = ["cargo", "build", "--release", "--offline", "-p", "oxbasic-cli"]
@@ -85,6 +89,9 @@ def verify_sources(data, root, metadata, rebuild=False):
         if has_loops(metadata):
             rebuilt_loops.append(verify_loop(call, source, label + "-loops"))
 
+        if has_fees(metadata):
+            rebuilt_fees.append(verify_fee(call, source, label + "-fees"))
+
     build("original-source", True)
     modified = source / "modified-libraries/malachite-bigint"
     shutil.copytree(source / "vendor/malachite-bigint", modified)
@@ -97,4 +104,4 @@ def verify_sources(data, root, metadata, rebuild=False):
     package = next(p for p in resolved["packages"] if p["name"] == "malachite-bigint")
     require(package["source"] is None and "modified-libraries" in package["manifest_path"], "Local library override not used")
     return {"source_files_verified": len(index), "offline_rebuilds": 2, "modified_library": "malachite-bigint 0.9.2",
-            "rebuilt_loops": rebuilt_loops}
+            "rebuilt_loops": rebuilt_loops, "rebuilt_fees": rebuilt_fees}

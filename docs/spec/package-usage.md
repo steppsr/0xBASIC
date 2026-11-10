@@ -1,6 +1,6 @@
 # 0xBASIC experimental package
 
-This archive contains a native compiler/local runner, its license, package provenance and public payment and counted-loop examples. It is a development candidate, not a published production release. No Rust or Python installation is needed to run the executable. Native operating-system runtime libraries are still required; this package is tested on its build/smoke platform, not certified for every Windows version or older Linux distribution. Linux uses the GNU/glibc target; the builder's libc version is recorded in `package.json`. macOS and ARM packages are not provided.
+This archive contains a native compiler/local runner, its license, package provenance and public payment, counted-loop and fee-payment examples. It is a development candidate, not a published production release. No Rust or Python installation is needed to run the executable. Native operating-system runtime libraries are still required; this package is tested on its build/smoke platform, not certified for every Windows version or older Linux distribution. Linux uses the GNU/glibc target; the builder's libc version is recorded in `package.json`. macOS and ARM packages are not provided.
 
 Check the adjacent `.sha256` file against the downloaded archive before extraction. Checksums detect changes; they are not a publisher signature. Extract into a new directory and run commands from its root. On Linux retain executable permissions for `bin/0xbasic`. On Windows substitute `./bin/0xbasic.exe` for `./bin/0xbasic` below. No administrator installation or global PATH change is required.
 
@@ -13,7 +13,7 @@ Check the adjacent `.sha256` file against the downloaded archive before extracti
 ./bin/0xbasic run payment-build/manifest.json --json
 ```
 
-Compiler `0.2.0-alpha.1` candidate archives also include `LOOPS.md` and `examples/counted-heights.bas`; follow that walkthrough to inspect and execute a loop without a Rust installation.
+Compiler `0.2.0-alpha.1` and `0.3.0-alpha.1` candidate archives also include `LOOPS.md` and `examples/counted-heights.bas`; follow that walkthrough to inspect and execute a loop without a Rust installation.
 
 `payment-build` must not already exist. Expect local cost `1487727` and validation label `clvm-execution-only`; the result is a raw condition tree for amount, height, signature requirement and recipient output. This command does not sign, contact a node, fund a coin or confirm a spend. Example bindings are public fixtures, not wallet credentials. Keep generated artifacts separate from the executable installation.
 
@@ -24,3 +24,5 @@ Compiler errors are structured with `--json`. Exit codes: 0 success, 1 source/ty
 The repository supplies the complete language reference and isolated simulator harnesses: https://github.com/steppsr/0xBASIC . The root LICENSE applies to project code. Third-party dependency attribution/distribution review and final release authorization are part of the separate release gate; this candidate archive is not that approval.
 
 The accompanying `source.tar.gz` includes application and locked dependency sources. `THIRD-PARTY-NOTICES.txt` contains dependency terms and credits; `REBUILD.md` explains offline builds and replacement of a library with modified source. Keep these materials with the executable when distributing the candidate.
+
+Compiler `0.3.0-alpha.1` candidates also include `FEES.md` and the `examples/payment-fee.*` fixtures for partial, exact and zero-fee execution. The source archive includes the language 0.3 specification and full fee-payment walkthrough. These local executions do not sign or submit transactions.

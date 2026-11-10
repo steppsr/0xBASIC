@@ -64,3 +64,5 @@ Supply exact native Linux commands for every executable slice. Native confirmati
 ## Exclusions and alternatives
 
 No wallet discovery, real key management, fee estimation, automatic coin selection, public-network submission or changes to existing payment/change fixtures. Testnet integration, additional language features and developer tooling remain future directions outside this selected milestone.
+
+[FP-5 implementation and evidence review](fee-payment-review.md) covers the tutorial, CI and package/rebuild gates. Windows and native LANDO passed, confirmed on 2026-11-09; publication and exact-revision CI remain.
