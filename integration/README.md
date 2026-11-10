@@ -29,3 +29,7 @@ Tests need no Chia installation or keys beyond the deliberately public fixtures.
 ## Offline preparation (TN-2)
 
 `prepare_fee.py` prepares only the reviewed fee-payment contract from a complete artifact, a coin-bearing observation and an explicit solution/fee budget. It requires the existing pinned simulator Python environment for independent execution; it never creates a node, signs or submits. See [TN-2](../docs/spec/testnet-preparation.md) for its format, limits and exact native test commands. `verify_preparation.py --binary PATH` exercises synthetic observations only.
+
+## Detached signature boundary (TN-3a)
+
+`verify_signed_fee.py` revalidates a TN-2 preparation and verifies a detached AugSchemeMPL response before assembling a one-coin bundle offline. It has no private-key or RPC path. [TN-3a documentation](../docs/spec/testnet-signing.md) defines the response, output and native test gate. The independent `verify_signing.py --binary PATH` matrix uses public fixture keys only. Operator key custody/signing setup remains a separate TN-3b decision.

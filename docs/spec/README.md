@@ -62,3 +62,5 @@ Testnet integration is selected for future implementation: [plan](testnet-integr
 [TN-1 read-only integration and native gate](testnet-readonly.md) documents the experimental probe and isolated tests.
 
 [TN-2 offline unsigned fee preparation](testnet-preparation.md) documents the review format and native gate.
+
+[TN-3a detached fee signatures](testnet-signing.md) defines offline verification and its native gate.

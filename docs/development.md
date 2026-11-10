@@ -71,3 +71,5 @@ After the completed fee-payment release, [testnet integration](spec/testnet-inte
 [TN-1 read-only integration](spec/testnet-readonly.md) adds a separate explicit-credential RPC probe and isolated mutual-TLS tests. It has no signing/submission capability. Windows and native LANDO validation passed, confirmed on 2026-11-09; no live node has been contacted.
 
 [TN-2 offline preparation](spec/testnet-preparation.md) adds an unsigned fee-payment review artifact with independent execution, message and output checks. Windows and native LANDO validation passed, confirmed on 2026-11-09. No signing or live connection is implemented by this slice.
+
+[TN-3a detached-signature verification](spec/testnet-signing.md) revalidates unsigned preparations and assembles signature-verified bundles offline. Windows passed 26 integration tests and seven positive/26 negative signing cases; native LANDO passed, confirmed on 2026-11-10. No user keys or live node are used.

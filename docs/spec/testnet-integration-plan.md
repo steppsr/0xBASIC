@@ -67,3 +67,5 @@ No mainnet operation, automatic wallet discovery, background daemon, fee estimat
 Alternative next milestones are compiler/language extensions or developer tooling/diagnostics. The user selected testnet. TN-0 records the design and outstanding operator choices; begin TN-1 with isolated fixtures before connecting to a live node. Do not ask the user to rerun the completed fee-payment tests merely to begin this design.
 
 [TN-2 offline preparation](testnet-preparation.md) is implemented; Windows and native LANDO passed, confirmed on 2026-11-09.
+
+TN-3 is split into [TN-3a detached-signature verification](testnet-signing.md), Windows and native LANDO passed (confirmed 2026-11-10), and TN-3b operator signing/key-custody setup before live use. Fixture signing in isolated tests does not select a user key-management approach.
