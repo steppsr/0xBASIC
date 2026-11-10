@@ -56,3 +56,7 @@ The subsequent [semantic-analysis checkpoint](for-next-analysis.md) adds header/
 [M4 validation planning](m4-validation-plan.md), the [M5 work plan](m5-release-plan.md) and the original [M5 packaging checkpoint](m5-packaging.md) retain dated development history. Read their current-status notes before following old test handoffs. The [M5 release review](m5-release-review.md) records completion; the [development roadmap](../development.md) separates future work from the released interface.
 
 WHILE/DO loops, user recursion, division/remainder, floating point, modules, a language server and wallet/network tooling remain outside this release. Future specifications need explicit semantics and validation criteria before implementation. The activation candidate uses the selected identities; the current downloadable release remains unchanged.
+
+Testnet integration is selected for future implementation: [plan](testnet-integration-plan.md), [TN-0 design and upstream audit](testnet-design.md). No live-node or public-spend capability is implemented by these documents.
+
+[TN-1 read-only integration and native gate](testnet-readonly.md) documents the experimental probe and isolated tests.

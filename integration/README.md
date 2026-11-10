@@ -1,0 +1,27 @@
+# Experimental testnet integration
+
+TN-1 adds `testnet_probe.py`, a separate standard-library Python read-only client. It does not change the compiler or connect automatically. See the [design](../docs/spec/testnet-design.md) and [TN-1 checkpoint](../docs/spec/testnet-readonly.md).
+
+The only allowed POST routes are get_version, get_network_info, get_blockchain_state and get_coin_record_by_name. Network testnet11, prefix txch, reviewed genesis and exact node version2.7.5 are required. The endpoint must use HTTPS with a literal loopback IP and explicit port; localhost/DNS names and non-loopback addresses are rejected. Remote access requires a separately established SSH tunnel. The tool does not discover nodes, use environment proxies, follow redirects, load default credentials, start services or send transactions.
+
+All credential paths and the output report are explicit. Provide a private-CA certificate plus an unencrypted client certificate/key pair; encrypted private keys are rejected without an interactive password prompt. The CA's private key is not needed. Do not use the public test fixtures with a live node. RPC certificate trust follows the reviewed Chia private-CA scheme with chain verification enabled and hostname matching disabled. Each socket operation has a configurable timeout in(0,30] seconds, default10; responses are capped at1MiB. The timeout is not a total wall-clock deadline for an adversarial trickle response.
+
+Run `python3 integration/testnet_probe.py --help` for arguments. No live connection is requested as part of this checkpoint. Once a host/endpoint/certificate set is explicitly selected, the command form is:
+
+```text
+python3 integration/testnet_probe.py --endpoint https://127.0.0.1:PORT --ca-cert /explicit/ca.crt --client-cert /explicit/client.crt --client-key /explicit/client.key --report .work/testnet/observation.json
+```
+
+Optionally add `--coin-id HEX --expected-puzzle-hash HEX --expected-amount DECIMAL`. Amount and puzzle expectations require a coin ID. Coin lookup checks canonical coin identity, uint64 amount, unspent status and confirmation fields. Amounts are decimal strings in the report. Missing coins have a distinct error; malformed or failed RPC replies do not become successful observations. Node-supplied errors and tracebacks are not echoed.
+
+The client compares the chain peak before and after lookup and rejects changes. Even equal peaks are not an atomic snapshot or proof of chain correctness. Reports explicitly say rpc-observation-only, atomic_snapshot=false, spend_validated=false and transactions_submitted=0. No-coin mode establishes only the checked connection observations. Coin readiness must be rechecked in later work.
+
+A failed run removes an earlier success report. Reports may not alias any supplied credential path or be symlinks. Success is written through a temporary file and replaced only after all checks and connection cleanup. Exit0 means the requested observation passed; exit1 means validation/transport/file failure; argparse usage errors exit2. Reports omit endpoint and credential paths/content but include observation time and public coin/network state.
+
+Development tests use synthetic replies and a real loopback-only mutual-TLS server, never a public endpoint:
+
+```text
+python3 -m unittest discover -s integration -p 'test_*.py'
+```
+
+Tests need no Chia installation or keys beyond the deliberately public fixtures. The source-inclusive compiler archive carries this directory for reproducibility; the integration tool is not an installed compiler command and remains experimental. Host selection and live-node observation are pending.

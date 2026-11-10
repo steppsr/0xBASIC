@@ -1,0 +1,79 @@
+{
+  "commit": "ff71448437a137c7092775923d5ecbbe104433e7",
+  "files": {
+    "chia/util/initial-config.yaml": {
+      "sha256": "1a2fd8eb0943fed24a064d67dc769b2e82b835c906308ecb951adb00a95e9d0a",
+      "same_as_installed_2_7_4": false
+    },
+    "chia/consensus/default_constants.py": {
+      "sha256": "76c087c518e6765d1e38322f02b7f9c56d5feba004433eac724be2c188c17bd0",
+      "same_as_installed_2_7_4": true
+    },
+    "chia/consensus/condition_tools.py": {
+      "sha256": "286eb6cd4a5f298fbfabf4f6bf426383462ee5e57217cd88c1f767807c070f5e",
+      "same_as_installed_2_7_4": true
+    },
+    "chia/rpc/rpc_server.py": {
+      "sha256": "5f213ddce33b86bf2cb41908224571818d19108e2fbe59f813f47a49b3b4c22b",
+      "same_as_installed_2_7_4": true
+    },
+    "chia/rpc/rpc_client.py": {
+      "sha256": "356a0dffe1ab3d620a3d15b70b627562f3445e9e8ac3cd9dcea0044cc81c4519",
+      "same_as_installed_2_7_4": true
+    },
+    "chia/full_node/full_node_rpc_api.py": {
+      "sha256": "289202bad7a9c0e03b330d4734a20067bcffc3e4ab45d65c6d90c63c32ea714c",
+      "same_as_installed_2_7_4": true
+    },
+    "chia/full_node/mempool_manager.py": {
+      "sha256": "61c501fa89183e065844a80a1bfba4a0dd677163c4882dea88e691cfb5425fa1",
+      "same_as_installed_2_7_4": true
+    },
+    "chia/server/server.py": {
+      "sha256": "8a1092d613f54a49b005247239d0f4cec42f707b468bd6b91c00a38f00eaafff",
+      "same_as_installed_2_7_4": true
+    },
+    "pyproject.toml": {
+      "sha256": "3f0ecaa253c608f8bc7a80a349f0a2c0ccfef54eb5bb2042336be857b7c90dd9",
+      "same_as_installed_2_7_4": false
+    }
+  },
+  "reviewed_on": "2026-11-09",
+  "selected_network": "testnet11",
+  "selected_node_version": "2.7.5",
+  "installed_reference_version": "2.7.4",
+  "installed_reference_commit": "98aba3d176b24b5814e84a33f9d1c11af67a9cdc",
+  "comparison": "Installed Python source comparisons normalize CRLF/LF. pyproject.toml has no installed-file comparison. No running node inspected.",
+  "offline_flags": {
+    "scope": "offline flag calculation using pinned chia_rs 0.48.0; not observed network state",
+    "genesis_challenge": "37a90eb5185a9c4439a91ddc98bbadce7b4feba060d50116a067de66bf236615",
+    "agg_sig_me_additional_data": "37a90eb5185a9c4439a91ddc98bbadce7b4feba060d50116a067de66bf236615",
+    "flags": [
+      {
+        "height": 0,
+        "consensus_flags": 0,
+        "mempool_flags": 34210327
+      },
+      {
+        "height": 3754999,
+        "consensus_flags": 0,
+        "mempool_flags": 34210327
+      },
+      {
+        "height": 3755000,
+        "consensus_flags": 512,
+        "mempool_flags": 34210327
+      },
+      {
+        "height": 3923999,
+        "consensus_flags": 512,
+        "mempool_flags": 34210327
+      },
+      {
+        "height": 3924000,
+        "consensus_flags": 50332225,
+        "mempool_flags": 50987607
+      }
+    ]
+  }
+}

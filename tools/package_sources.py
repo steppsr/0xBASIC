@@ -33,7 +33,7 @@ def assemble(staging):
     for name in ("architecture.md", "development.md", "language-v0.1.md", "language-v0.2.md", "language-v0.3.md"):
         (source / "docs").mkdir(exist_ok=True)
         shutil.copyfile(ROOT / "docs" / name, source / "docs" / name)
-    for name in (".github", "simulator", "crates", "examples", "docs/spec", "tools", "distribution"):
+    for name in (".github", "simulator", "integration", "crates", "examples", "docs/spec", "tools", "distribution"):
         for path in sorted((ROOT / name).rglob("*")):
             if path.is_file() and "__pycache__" not in path.parts and path.suffix != ".pyc":
                 destination = source / path.relative_to(ROOT)

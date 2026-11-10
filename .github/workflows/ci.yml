@@ -20,6 +20,8 @@ jobs:
       - run: cargo clippy --workspace --all-targets --locked -- -D warnings
       - run: cargo test --workspace --locked
       - run: cargo build --workspace --locked
+      - name: Test read-only testnet integration with isolated TLS fixtures
+        run: python -m unittest discover -s integration -p "test_*.py"
       - run: python tools/verify_m0.py
       - run: python tools/verify_m1.py
       - run: python tools/verify_m2b.py
