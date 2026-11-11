@@ -204,7 +204,7 @@ def worker(run, binary=None, rpc_rehearsal=False):
     if rpc_rehearsal:
         report["validation"] = "isolated-full-node-rpc-fee-rehearsal"
         report["rpc_harness_hashes"] = {str(p.relative_to(ROOT)).replace("\\", "/"): hashlib.sha256(p.read_bytes()).hexdigest()
-            for p in [BASE / "full_node_rpc.py", BASE / "rpc_sources.json", ROOT / "integration/testnet_probe.py",
+            for p in [BASE / "full_node_rpc.py", BASE / "rpc_reorg.py", BASE / "rpc_sources.json", ROOT / "integration/testnet_probe.py",
                       ROOT / "integration/confirmation_transport.py", ROOT / "integration/confirmation.py"]}
     (run / "result.json").write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
@@ -253,7 +253,7 @@ def main():
     (run / "result.json").replace(destination)
     message = "full-node legacy, loop, change and fee cases, fourteen rejections and seven confirmed control bundles verified" if args.payment else "full-node blocks and reward records verified"
     if args.rpc:
-        message = "isolated mutual-TLS RPC, four rejections and three confirmed fee controls verified"
+        message = "isolated mutual-TLS RPC, four rejections, three fee controls and actual depth/reorg rollback verified"
     print(f"PASS: {message}; resources closed. Report: {destination}")
 
 

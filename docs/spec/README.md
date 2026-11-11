@@ -71,3 +71,5 @@ Testnet integration is selected for future implementation: [plan](testnet-integr
 [TN-4b1 authenticated confirmation reads](testnet-confirmation-transport.md) connects those checks to explicit mutual-TLS transport and tests the full read sequence through a loopback fixture server.
 
 [TN-4b2 full-node fee RPC rehearsal](testnet-full-node-rpc.md) validates actual isolated funding, rejection, duplicate submission, mempool and confirmed-spend RPC evidence.
+
+[TN-4b3 real RPC depth and reorg checks](testnet-rpc-reorg.md) verifies actual chain rollback and distinguishes historical confirmations from current restored inputs and absent outputs.

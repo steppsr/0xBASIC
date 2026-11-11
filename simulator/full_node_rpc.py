@@ -49,9 +49,24 @@ def audit(result):
                 for child in confirmation["output_records"] if hex32(child["coin"]["parent_coin_info"]) == identity]
             require(r["coin_solution"] == expected and r["children"] == expected_children
                     and r["height"] == height and r["block_hash"] == confirmation["inclusion_block"]["header_hash"]
-                    and r["confirmations"] == result["final_peak"]["height"] - height + 1 and r["confirmations"] >= 1,
+                    and r["confirmations"] == result["confirmation_peak"]["height"] - height + 1 and r["confirmations"] >= 1,
                     "RPC evidence differs from exact block/store evidence")
-    require(result["all_submitted_bundles_absent_from_final_mempool"] and result["public_network_contacted"] is False, "Incomplete final RPC state")
+    require(result["all_submitted_bundles_absent_before_reorg"] and result["public_network_contacted"] is False, "Incomplete final RPC state")
+    from rpc_reorg import audit as audit_reorg
+    audit_reorg(result["reorg"])
+    reorg = result["reorg"]
+    first = result["fee_payment"]["confirmations"][0]["inclusion_block"]
+    require(all(reorg["before"]["peak"][key] == result["confirmation_peak"][key] for key in ("height", "header_hash"))
+            and reorg["before"]["anchor"] == {"height": first["height"], "header_hash": first["header_hash"]}, "Reorg targets wrong checkpoint")
+    expected_inputs = [r for c in result["fee_payment"]["confirmations"] for r in c["input_records"]]
+    for old, restored in zip(expected_inputs, reorg["after"]["restored_inputs"]):
+        require(restored["coin"] == old["coin"] and restored["confirmed_block_index"] == old["confirmed_block_index"], "Wrong restored input")
+    expected_missing = set()
+    for c in result["fee_payment"]["confirmations"]:
+        for r in c["output_records"]:
+            coin = r["coin"]
+            expected_missing.add(coin_id(coin["parent_coin_info"], coin["puzzle_hash"], coin["amount"]))
+    require(set(reorg["after"]["missing_outputs"]) == expected_missing, "Wrong removed output IDs")
 
 
 async def rehearse(node, api, binary, run, bt):
@@ -155,11 +170,15 @@ async def rehearse(node, api, binary, run, bt):
                     "confirmations": before["height"] - height + 1, "exact_spend_and_children": True})
         after = await asyncio.to_thread(state, transport.call)
         require(before == after, "Peak changed during RPC confirmation checks")
-        result["final_peak"] = after
+        result["confirmation_peak"] = after
         for receipt in result["submissions"]:
             reply = await call("get_mempool_item_by_tx_id", {"tx_id": receipt["bundle_id"]})
             require(reply["success"] is False and reply.get("structuredError", {}).get("code") == "TX_NOT_IN_MEMPOOL", "Unexpected final RPC mempool state")
-        result["all_submitted_bundles_absent_from_final_mempool"] = True
+        result["all_submitted_bundles_absent_before_reorg"] = True
+        # Above fee/peak/mempool evidence is the pre-reorg checkpoint. Preserve it
+        # as historical evidence; subsequent chain state is reported separately.
+        from rpc_reorg import exercise
+        result["reorg"] = await exercise(call, node, api, result["fee_payment"])
         require(not node.server.all_connections and node.server.webserver is None
                 and rpc.daemon_connection_task is None and rpc.websocket is None, "Unexpected peer/daemon connection")
         result["no_peer_or_daemon_connections"] = True
