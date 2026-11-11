@@ -63,6 +63,15 @@ jobs:
         run: .work/m4/venv/${{ matrix.bin }}/${{ matrix.python }} simulator/fee_payment.py --binary target/debug/${{ matrix.executable }}
       - name: Verify full-node compiled payment
         run: .work/m4/venv/${{ matrix.bin }}/${{ matrix.python }} simulator/full_node_smoke.py --payment --binary target/debug/${{ matrix.executable }}
+      - name: Verify isolated full-node fee RPC
+        run: .work/m4/venv/${{ matrix.bin }}/${{ matrix.python }} simulator/full_node_smoke.py --rpc --binary target/debug/${{ matrix.executable }}
+      - name: Upload full-node RPC evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: full-node-rpc-${{ matrix.platform }}
+          path: .work/m5/full-node-rpc-${{ matrix.platform }}.json
+          include-hidden-files: true
+          if-no-files-found: error
       - name: Upload full-node payment evidence
         uses: actions/upload-artifact@v4
         with:

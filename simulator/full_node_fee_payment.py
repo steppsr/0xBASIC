@@ -39,7 +39,7 @@ def audit(result):
                                    "active_mempool_empty", "all_confirmed_outputs_unspent")), "Incomplete final fee state")
 
 
-async def fee_payment(node, api, binary, directory):
+async def fee_payment(node, api, binary, directory, submitter=None):
     from chia.consensus.condition_tools import conditions_dict_for_solution, pkm_pairs_for_conditions_dict
     from chia.simulator.simulator_protocol import FarmNewBlockProtocol
     from chia.types.blockchain_format.program import Program
@@ -69,7 +69,7 @@ async def fee_payment(node, api, binary, directory):
                 and Program.from_bytes(blob).get_tree_hash().hex() == manifest[part]["tree_hash"], "Artifact identity mismatch")
     puzzle = Program.from_bytes((out / "puzzle.clvm").read_bytes())
     records = {"manifest": manifest, "bindings": bindings, "funding": [], "rejections": [], "confirmations": [],
-               "signature_domain": node.constants.AGG_SIG_ME_ADDITIONAL_DATA.hex(), "offline_sync_readiness_bypassed": True}
+               "signature_domain": node.constants.AGG_SIG_ME_ADDITIONAL_DATA.hex(), "offline_sync_readiness_bypassed": submitter is None}
 
     async def get(coin):
         record = await node.coin_store.get_coin_record(coin.name())
@@ -80,6 +80,8 @@ async def fee_payment(node, api, binary, directory):
         return await node.coin_store.get_coin_records_by_parent_ids(True, [coin.name()])
 
     async def submit(bundle):
+        if submitter is not None:
+            return await submitter(bundle)
         # Skip only offline wall-clock/peer readiness, as in the existing full-node gate.
         return await node.add_transaction(bundle, bundle.name(), test=True)
 

@@ -265,3 +265,7 @@ The [loop payment checkpoint](../docs/spec/loop-payment-validation.md) adds a si
 ## Fee-aware payments: FP-4
 
 [FP-4](../docs/spec/fee-payment-full-node.md) extends `full_node_smoke.py --payment` with missing/stale-fee signature and wrong-amount rejections, an additive aggregate fee rejection, and partial/exact/aggregate confirmations. Exact full-block fees must agree with mempool and coin accounting. Windows passed all 28 reporting tests and the combined 14 rejections/seven confirmed control bundles, with resources closed. Native LANDO passed, confirmed on 2026-11-08; the checkpoint records the exact commands.
+
+## Isolated fee RPC rehearsal
+
+The separate full_node_smoke.py --rpc --binary PATH mode starts real loopback mutual-TLS RPC on the pinned local simulator network. It covers four rejected spends and three confirmed fee controls, including identical resubmission and exact on-chain RPC reads. See [TN-4b2](../docs/spec/testnet-full-node-rpc.md) for scope, reports and native commands. Production testnet clients remain strict; this is not a public-testnet run.

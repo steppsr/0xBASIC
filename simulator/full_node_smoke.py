@@ -48,7 +48,7 @@ def loopback_port(_name):
         return probe.getsockname()[1]
 
 
-async def run_node(run, binary=None):
+async def run_node(run, binary=None, rpc_rehearsal=False):
     from chia.simulator.block_tools import BlockTools, test_constants
     from chia.simulator.keyring import TempKeyring
     from chia.simulator.start_simulator import create_full_node_simulator_service
@@ -82,6 +82,18 @@ async def run_node(run, binary=None):
             print("Creating/loading three isolated k19 plots", flush=True)
             await bt.setup_plots(num_og_plots=3, num_pool_plots=0,
                                  num_non_keychain_plots=0, num_v2_plots=0, plot_size=19)
+            if rpc_rehearsal:
+                # Honest local identity; upstream recognizes simulator networks as
+                # peerless. Keep the actual test consensus constants unchanged.
+                network = "0xbasic-simulator"
+                config = bt.config
+                constants_before = bt.constants
+                config["selected_network"] = network
+                config["full_node"]["selected_network"] = network
+                config["network_overrides"]["config"][network] = {"address_prefix": "txch"}
+                config["network_overrides"]["constants"][network] = {"GENESIS_CHALLENGE": bt.constants.GENESIS_CHALLENGE.hex()}
+                bt.change_config(config)
+                require(bt.constants == constants_before, "RPC network selection changed consensus constants")
             service = await create_full_node_simulator_service(node_root, bt.config, bt, connect_to_daemon=False)
             node = service._node
             # Construct the real server/API wiring but do not start transport services.
@@ -121,7 +133,12 @@ async def run_node(run, binary=None):
                                "reward_records": [r.to_json_dict() for r in sorted(records, key=lambda r: r.coin.name())],
                                "constants": bt.constants.to_json_dict(), "plot_count": len(bt.plot_manager.plots),
                                "plot_size": 19, "v2_plot_count": 0, "network_services_started": False}
-                    if binary is not None:
+                    if rpc_rehearsal:
+                        from full_node_rpc import rehearse
+                        outcome["rpc"] = await rehearse(node, api, binary, run, bt)
+                        outcome["network_services_started"] = True
+                        outcome["peak_height"] = int(node.blockchain.get_peak().height)
+                    if binary is not None and not rpc_rehearsal:
                         from full_node_payment import payment
                         outcome["payment"] = await payment(node, api, binary, run)
                         from loop_payment import full_node
@@ -151,7 +168,7 @@ async def run_node(run, binary=None):
     return outcome
 
 
-def worker(run, binary=None):
+def worker(run, binary=None, rpc_rehearsal=False):
     profile, lock, versions = preflight()
     require(platform.python_version() == "3.13.7", "Full-node profile requires Python 3.13.7")
     evidence = source_check()
@@ -170,7 +187,7 @@ def worker(run, binary=None):
     sys.addaudithook(guard_network)
     if binary is not None:
         require(binary.is_file(), "Build CLI first or pass --binary")
-    outcome = asyncio.run(run_node(run, binary))
+    outcome = asyncio.run(run_node(run, binary, rpc_rehearsal))
     report = {"schema_version": 1, "validation": "full-node-confirmed-test-payment" if binary else "full-node-environment-block-smoke-only",
               "python": platform.python_version(), "platform": sys.platform,
               "packages": versions, "chia_commit": profile["chia_commit"],
@@ -184,25 +201,33 @@ def worker(run, binary=None):
             [BASE / "full_node_payment.py", BASE / "payment.py", BASE / "loop_payment.py", BASE / "full_node_payment_change.py",
              BASE / "full_node_fee_payment.py", ROOT / "examples/payment-fee.bas",
              ROOT / "examples/height-locked-payment.bas", ROOT / "examples/loop-payment.bas", ROOT / "examples/payment-change.bas"]}
+    if rpc_rehearsal:
+        report["validation"] = "isolated-full-node-rpc-fee-rehearsal"
+        report["rpc_harness_hashes"] = {str(p.relative_to(ROOT)).replace("\\", "/"): hashlib.sha256(p.read_bytes()).hexdigest()
+            for p in [BASE / "full_node_rpc.py", BASE / "rpc_sources.json", ROOT / "integration/testnet_probe.py",
+                      ROOT / "integration/confirmation_transport.py", ROOT / "integration/confirmation.py"]}
     (run / "result.json").write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--payment", action="store_true", help="Confirm legacy, loop, change and fee payments with adversarial rejections")
+    parser.add_argument("--rpc", action="store_true", help="Rehearse fee payments through isolated full-node mutual-TLS RPC")
     parser.add_argument("--binary", type=Path, help="CLI executable for --payment")
     parser.add_argument("--worker", type=Path, help=argparse.SUPPRESS)
     args = parser.parse_args()
-    if args.binary and not args.payment:
-        parser.error("--binary requires --payment")
+    if args.rpc and args.payment:
+        parser.error("Choose --payment or --rpc")
+    if args.binary and not (args.payment or args.rpc):
+        parser.error("--binary requires --payment or --rpc")
     target = Path(os.environ.get("CARGO_TARGET_DIR") or ROOT / "target")
-    binary = (args.binary or target / "debug" / ("0xbasic.exe" if os.name == "nt" else "0xbasic")).resolve() if args.payment else None
+    binary = (args.binary or target / "debug" / ("0xbasic.exe" if os.name == "nt" else "0xbasic")).resolve() if args.payment or args.rpc else None
     if args.worker:
-        worker(args.worker, binary)
+        worker(args.worker, binary, args.rpc)
         return
     WORK.mkdir(parents=True, exist_ok=True)
     platform_name = "windows" if sys.platform == "win32" else "linux"
-    stem = "full-node-payment" if args.payment else "full-node-smoke"
+    stem = "full-node-rpc" if args.rpc else "full-node-payment" if args.payment else "full-node-smoke"
     destination = WORK / f"{stem}-{platform_name}.json"
     destination.unlink(missing_ok=True)
     run = contained(WORK / ("run-" + uuid.uuid4().hex))
@@ -211,7 +236,7 @@ def main():
     print(f"Full-node smoke (10 minute timeout); log: {log}", flush=True)
     command = [sys.executable, str(Path(__file__).resolve()), "--worker", str(run)]
     if binary is not None:
-        command.extend(["--payment", "--binary", str(binary)])
+        command.extend(["--rpc" if args.rpc else "--payment", "--binary", str(binary)])
     with log.open("w", encoding="utf-8") as output:
         subprocess.run(command,
                        cwd=ROOT, stdout=output, stderr=subprocess.STDOUT, check=True, timeout=600)
@@ -222,8 +247,13 @@ def main():
         audit(report["outcome"]["payment_change"])
         from full_node_fee_payment import audit as audit_fees
         audit_fees(report["outcome"]["fee_payment"])
+    if args.rpc:
+        from full_node_rpc import audit
+        audit(report["outcome"]["rpc"])
     (run / "result.json").replace(destination)
     message = "full-node legacy, loop, change and fee cases, fourteen rejections and seven confirmed control bundles verified" if args.payment else "full-node blocks and reward records verified"
+    if args.rpc:
+        message = "isolated mutual-TLS RPC, four rejections and three confirmed fee controls verified"
     print(f"PASS: {message}; resources closed. Report: {destination}")
 
 

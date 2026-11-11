@@ -69,3 +69,5 @@ Testnet integration is selected for future implementation: [plan](testnet-integr
 [TN-4a confirmation observations](testnet-confirmation.md) specifies exact spend/child checks, explicit depth, conflicting spends and reorg observations. This fixture-tested read-only function precedes full-node RPC rehearsal.
 
 [TN-4b1 authenticated confirmation reads](testnet-confirmation-transport.md) connects those checks to explicit mutual-TLS transport and tests the full read sequence through a loopback fixture server.
+
+[TN-4b2 full-node fee RPC rehearsal](testnet-full-node-rpc.md) validates actual isolated funding, rejection, duplicate submission, mempool and confirmed-spend RPC evidence.

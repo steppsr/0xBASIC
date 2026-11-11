@@ -28,11 +28,11 @@ class FullNodeGateTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             work = Path(directory)
             name = "windows" if smoke.sys.platform == "win32" else "linux"
-            for mode in ("smoke", "payment"):
+            for mode in ("smoke", "payment", "rpc"):
                 with self.subTest(mode=mode):
                     report = work / f"full-node-{mode}-{name}.json"
                     report.write_text(json.dumps({"old_success": True}))
-                    argv = ["full_node_smoke.py"] + (["--payment", "--binary", "test-cli"] if mode == "payment" else [])
+                    argv = ["full_node_smoke.py"] + (["--" + mode, "--binary", "test-cli"] if mode != "smoke" else [])
                     with patch.object(smoke, "WORK", work), patch.object(smoke, "contained", side_effect=Path), \
                             patch.object(smoke.sys, "argv", argv), \
                             patch.object(smoke.subprocess, "run", side_effect=subprocess.CalledProcessError(1, "worker")) as run:
@@ -41,7 +41,8 @@ class FullNodeGateTests(unittest.TestCase):
                     self.assertFalse(report.exists())
                     command = run.call_args.args[0]
                     self.assertEqual("--payment" in command, mode == "payment")
-                    if mode == "payment":
+                    self.assertEqual("--rpc" in command, mode == "rpc")
+                    if mode != "smoke":
                         self.assertEqual(command[-1], str(Path("test-cli").resolve()))
 
     def test_source_mismatch_fails_preflight(self):
@@ -49,6 +50,22 @@ class FullNodeGateTests(unittest.TestCase):
             distribution.return_value.locate_file.return_value = Path(__file__)
             with self.assertRaisesRegex(RuntimeError, "source mismatch"):
                 smoke.source_check()
+
+    def test_rpc_worker_without_evidence_cannot_publish(self):
+        with tempfile.TemporaryDirectory() as directory:
+            work = Path(directory)
+            name = "windows" if smoke.sys.platform == "win32" else "linux"
+            destination = work / f"full-node-rpc-{name}.json"
+            destination.write_text('{"old_success": true}')
+            def incomplete(command, **kwargs):
+                run = Path(command[command.index("--worker") + 1])
+                (run / "result.json").write_text(json.dumps({"outcome": {"resources_closed": True, "rpc": {}}}))
+            with patch.object(smoke, "WORK", work), patch.object(smoke, "contained", side_effect=Path), \
+                    patch.object(smoke.sys, "argv", ["full_node_smoke.py", "--rpc", "--binary", "test-cli"]), \
+                    patch.object(smoke.subprocess, "run", side_effect=incomplete):
+                with self.assertRaises(KeyError):
+                    smoke.main()
+            self.assertFalse(destination.exists())
 
     def test_payment_worker_without_change_evidence_cannot_publish(self):
         with tempfile.TemporaryDirectory() as directory:

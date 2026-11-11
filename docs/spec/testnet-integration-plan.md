@@ -72,4 +72,6 @@ TN-3 is split into [TN-3a detached-signature verification](testnet-signing.md), 
 
 TN-4 is split into [TN-4a confirmation observation rules](testnet-confirmation.md), implemented with Windows validation passed and native LANDO passed (confirmed 2026-11-10), and TN-4b authenticated RPC wiring and isolated end-to-end full-node rehearsal. TN-4a uses synthetic RPC responses and does not complete the full-node exit gate. Isolated rehearsal can use public fixture keys while TN-3b live custody choices remain open.
 
-TN-4b begins with [TN-4b1 authenticated confirmation reads](testnet-confirmation-transport.md), Windows and native LANDO passed (confirmed 2026-11-10). This real TLS/fixture gate precedes TN-4b2 actual full-node RPC rehearsal, which remains outstanding.
+TN-4b begins with [TN-4b1 authenticated confirmation reads](testnet-confirmation-transport.md), Windows and native LANDO passed (confirmed 2026-11-10). This real TLS/fixture gate precedes the TN-4b2 actual full-node RPC rehearsal described below.
+
+[TN-4b2 isolated full-node fee RPC rehearsal](testnet-full-node-rpc.md) is now implemented and passed Windows, with native LANDO passed (confirmed 2026-11-10). It validates actual RPC submissions and confirmed fee records on the explicitly named pinned simulator network. Remaining TN-4 work includes bounded observation/reorg scenarios and an explicit isolated-identity policy for integrating the strict production preparation/confirmation pipeline; the full TN-4 exit gate is not yet complete.

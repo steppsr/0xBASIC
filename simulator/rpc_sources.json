@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "source_hashes": {
+    "chia/rpc/rpc_server.py": "5f213ddce33b86bf2cb41908224571818d19108e2fbe59f813f47a49b3b4c22b",
+    "chia/full_node/full_node_rpc_api.py": "289202bad7a9c0e03b330d4734a20067bcffc3e4ab45d65c6d90c63c32ea714c",
+    "chia/util/json_util.py": "83877f430dad5fc89ab6fd978473daf11c2a44744a087bf32e74a479f08068b2",
+    "chia/util/errors.py": "ab6d5b9c7c176246a673119c4939af814c5090c1b01eb575977e1b597dd5eecc",
+    "chia/rpc/util.py": "1fd165dbc73dc8572dc98833d395932dd82382156f874f07548186081624087c",
+    "chia/rpc/rpc_errors.py": "b4206cff72926aebecd352762e762dc67bbee709dd91231ed252e7c0dc8fd682",
+    "chia/util/network.py": "444f051a1cddefc6f289213ae47323c5b22a6f158b65a0f7b7b684cb49f8a23e"
+  },
+  "chia_version": "2.7.4"
+}
