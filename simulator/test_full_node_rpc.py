@@ -19,6 +19,7 @@ def evidence():
               "submissions": [{"accepted": i < 9, "duplicate_success": True, "mempool_bundle_matched": True} for i in range(13)]}
     index = 0
     for c in fee["confirmations"]:
+        c["bundle_id"] = str(index)
         c["bundle"] = {"coin_spends": []}
         c["inclusion_block"].update(height=10, header_hash="ab" * 32)
         c["output_records"] = []
@@ -47,6 +48,8 @@ def evidence():
         for c in fee["confirmations"] for r in c["input_records"]]
     reorg["after"]["missing_outputs"] = [coin_id(r["coin"]["parent_coin_info"], r["coin"]["puzzle_hash"], r["coin"]["amount"])
         for c in fee["confirmations"] for r in c["output_records"]]
+    from test_rpc_reconfirm import evidence as reconfirm_evidence
+    result["reconfirmation"] = reconfirm_evidence([c["bundle_id"] for c in fee["confirmations"]], reorg["after"]["peak"]["height"])
     return result
 
 

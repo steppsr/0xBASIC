@@ -67,6 +67,8 @@ def audit(result):
             coin = r["coin"]
             expected_missing.add(coin_id(coin["parent_coin_info"], coin["puzzle_hash"], coin["amount"]))
     require(set(reorg["after"]["missing_outputs"]) == expected_missing, "Wrong removed output IDs")
+    from rpc_reconfirm import audit as audit_reconfirm
+    audit_reconfirm(result["reconfirmation"], result["fee_payment"], reorg)
 
 
 async def rehearse(node, api, binary, run, bt):
@@ -179,6 +181,8 @@ async def rehearse(node, api, binary, run, bt):
         # as historical evidence; subsequent chain state is reported separately.
         from rpc_reorg import exercise
         result["reorg"] = await exercise(call, node, api, result["fee_payment"])
+        from rpc_reconfirm import exercise as reconfirm
+        result["reconfirmation"] = await reconfirm(call, node, api, result["fee_payment"], result["reorg"])
         require(not node.server.all_connections and node.server.webserver is None
                 and rpc.daemon_connection_task is None and rpc.websocket is None, "Unexpected peer/daemon connection")
         result["no_peer_or_daemon_connections"] = True

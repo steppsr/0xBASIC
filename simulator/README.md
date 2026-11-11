@@ -271,3 +271,5 @@ The [loop payment checkpoint](../docs/spec/loop-payment-validation.md) adds a si
 The separate full_node_smoke.py --rpc --binary PATH mode starts real loopback mutual-TLS RPC on the pinned local simulator network. It covers four rejected spends and three confirmed fee controls, including identical resubmission and exact on-chain RPC reads. See [TN-4b2](../docs/spec/testnet-full-node-rpc.md) for scope, reports and native commands. Production testnet clients remain strict; this is not a public-testnet run.
 
 The same mode now also verifies a real depth transition and chain reorganization: five spent inputs are restored and eight control outputs disappear, with funding preserved. [TN-4b3](../docs/spec/testnet-rpc-reorg.md) explains the historical/current evidence distinction and updated native gate.
+
+[TN-4b4](../docs/spec/testnet-rpc-reconfirmation.md) adds bounded pending observation and explicit unchanged-bundle reconfirmation after rollback. The report retains the timeout and later depth-two result separately; the current simulator suite has 43 tests.

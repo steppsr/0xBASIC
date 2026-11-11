@@ -73,3 +73,5 @@ Testnet integration is selected for future implementation: [plan](testnet-integr
 [TN-4b2 full-node fee RPC rehearsal](testnet-full-node-rpc.md) validates actual isolated funding, rejection, duplicate submission, mempool and confirmed-spend RPC evidence.
 
 [TN-4b3 real RPC depth and reorg checks](testnet-rpc-reorg.md) verifies actual chain rollback and distinguishes historical confirmations from current restored inputs and absent outputs.
+
+[TN-4b4 bounded observation and reconfirmation](testnet-rpc-reconfirmation.md) tests pending timeout and recovery of the exact original bundles to a new confirmed inclusion.
