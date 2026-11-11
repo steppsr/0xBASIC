@@ -22,7 +22,7 @@ def audit(result, fee, reorg):
             and result["block_fee"] == "51" and result["mempool_empty_after"] and result["funding_change_preserved"], "Incomplete reconfirmation accounting")
 
 
-async def exercise(call, node, api, fee, reorg):
+async def exercise(call, node, api, fee, reorg, record=None):
     from chia_rs import SpendBundle, Coin
     from chia.types.coin_spend import CoinSpend
     from chia.types.blockchain_format.program import Program
@@ -79,6 +79,9 @@ async def exercise(call, node, api, fee, reorg):
                 "block_hash": block["header_hash"].removeprefix("0x"), "peak": before, "exact_spends": 5, "exact_outputs": 8}
 
     pending = await poll(observation, timeout=30, interval=0.02, max_attempts=2)
+    require(pending["status"] == "timed-out" and pending["last_observation"]["status"] == "unspent", "Unexpected pending observation")
+    if record is not None:
+        record("pending-timeout", pending)
     funding_hash = Program.to(1).get_tree_hash()
     block = await api.farm_new_transaction_block(FarmNewBlockProtocol(funding_hash))
     require(block.transactions_info is not None and block.transactions_info.fees == 51, "Reconfirmed block fee differs")
@@ -87,6 +90,9 @@ async def exercise(call, node, api, fee, reorg):
     require({r.coin for r in added if not r.coinbase} == set(outputs) and len([r for r in added if not r.coinbase]) == 8
             and {r.coin for r in removed} == {s.coin for s in inputs} and len(removed) == 5, "Reconfirmation block coins differ")
     confirming = await observation()
+    require(confirming["status"] == "confirming", "Missing depth-one observation")
+    if record is not None:
+        record("reconfirming", confirming)
     await api.farm_new_transaction_block(FarmNewBlockProtocol(funding_hash))
     confirmed = await poll(observation, timeout=30, interval=0.02, max_attempts=2)
     for bundle in bundles:
@@ -104,4 +110,6 @@ async def exercise(call, node, api, fee, reorg):
               "unchanged_bundles": True, "required_depth": 2, "pending": pending, "confirming": confirming,
               "confirmed": confirmed, "block_fee": "51", "mempool_empty_after": True, "funding_change_preserved": True}
     audit(result, fee, reorg)
+    if record is not None:
+        record("reconfirmed", confirmed)
     return result

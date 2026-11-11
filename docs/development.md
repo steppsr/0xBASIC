@@ -83,3 +83,5 @@ After the completed fee-payment release, [testnet integration](spec/testnet-inte
 [TN-4b3 real RPC reorg checks](spec/testnet-rpc-reorg.md) extends the rehearsal with a depth transition and a longer alternate chain, restoring five inputs and removing eight control outputs while preserving funding. Windows passed 34 reporting tests and the extended RPC run; native LANDO passed, confirmed on 2026-11-11. Pre-reorg confirmation evidence is explicitly historical.
 
 [TN-4b4 bounded observation and reconfirmation](spec/testnet-rpc-reconfirmation.md) preserves a pending timeout, then verifies the unchanged original bundles at depth two after deliberate isolated resubmission. Windows passed 43 tests and the extended RPC run; native LANDO passed, confirmed on 2026-11-11. No new signatures, fees or public commands are introduced.
+
+[TN-4b5 saved observation history](spec/testnet-observation-history.md) records nine validated lifecycle checkpoints and preserves readable prefixes after interruption, with mandatory fresh-chain validation and no automatic resume. Windows passed 49 tests and the full RPC run; native LANDO passed, confirmed on 2026-11-11.

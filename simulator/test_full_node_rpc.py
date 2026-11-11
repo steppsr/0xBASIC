@@ -50,6 +50,18 @@ def evidence():
         for c in fee["confirmations"] for r in c["output_records"]]
     from test_rpc_reconfirm import evidence as reconfirm_evidence
     result["reconfirmation"] = reconfirm_evidence([c["bundle_id"] for c in fee["confirmations"]], reorg["after"]["peak"]["height"])
+    result["initial_peak"] = {"height": 1}
+    from observation_journal import STAGES, digest, encoded, decode_history
+    context = {"node_version": result["node_version"], "network": result["network"]}
+    observations = [result["initial_peak"], {"bundle_ids": [c["bundle_id"] for c in fee["confirmations"]]},
+                    reorg["before"], reorg["deeper"], reorg["after"], result["reconfirmation"]["pending"],
+                    result["reconfirmation"]["confirming"], result["reconfirmation"]["confirmed"], {"rpc_closed": True}]
+    records, previous = [], digest(context)
+    for index, (stage, observation) in enumerate(zip(STAGES, observations)):
+        body = {"sequence": index + 1, "stage": stage, "observation": copy.deepcopy(observation), "previous": previous}
+        previous = digest(body)
+        records.append({**body, "sha256": previous})
+    result["journal"] = decode_history(encoded({"schema_version": 1, "context": context, "records": records}) + b"\n")
     return result
 
 
@@ -68,7 +80,10 @@ class RpcEvidenceTests(unittest.TestCase):
             lambda r: r["confirmed_rpc_spends"][0]["children"].pop(),
             lambda r: r["fee_payment"].update(offline_sync_readiness_bypassed=True),
             lambda r: r["reorg"]["after"]["restored_inputs"][0]["coin"].update(amount=999),
-            lambda r: r["reorg"]["after"]["missing_outputs"].__setitem__(0, "ef" * 32)]
+            lambda r: r["reorg"]["after"]["missing_outputs"].__setitem__(0, "ef" * 32),
+            lambda r: r["journal"]["records"].pop(),
+            lambda r: r["journal"]["records"][0]["observation"].update(height=999),
+            lambda r: r["journal"].update(automatic_resume_allowed=True)]
         for index, change in enumerate(changes):
             r = evidence()
             change(r)

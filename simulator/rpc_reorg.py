@@ -19,7 +19,7 @@ def audit(result):
     require(result["funding_preserved"] and result["surrounding_peak_unchanged"], "Inconsistent rollback observation")
 
 
-async def exercise(call, node, api, fee):
+async def exercise(call, node, api, fee, record=None):
     from chia.simulator.simulator_protocol import FarmNewBlockProtocol, ReorgProtocol
     from chia.types.blockchain_format.program import Program
     from chia_rs import Coin
@@ -50,11 +50,15 @@ async def exercise(call, node, api, fee):
     require(depth > 0, "Invalid initial depth")
     required = depth + 1
     before = {"status": "confirming", "confirmations": depth, "peak": start, "anchor": anchor}
+    if record is not None:
+        record("depth-pending", before)
     funding_hash = Program.to(1).get_tree_hash()
     await api.farm_new_transaction_block(FarmNewBlockProtocol(funding_hash))
     advanced = await peak()
     require(await canonical() == anchor["header_hash"] and advanced["height"] == start["height"] + 1, "Unexpected depth extension")
     deeper = {"status": "confirmed", "confirmations": advanced["height"] - height + 1, "peak": advanced, "anchor": anchor}
+    if record is not None:
+        record("depth-confirmed", deeper)
 
     # Replace every fee-control block, preserving all earlier funding/rejection blocks.
     await api.reorg_from_index_to_new_index(ReorgProtocol(uint32(height - 1), uint32(advanced["height"] + 3),
@@ -93,4 +97,6 @@ async def exercise(call, node, api, fee):
                         "peak": current, "restored_inputs": restored, "missing_outputs": missing},
               "transactions_submitted": 0, "funding_preserved": True, "surrounding_peak_unchanged": True}
     audit(result)
+    if record is not None:
+        record("reorged", result["after"])
     return result

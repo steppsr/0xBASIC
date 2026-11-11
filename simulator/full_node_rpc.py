@@ -69,6 +69,22 @@ def audit(result):
     require(set(reorg["after"]["missing_outputs"]) == expected_missing, "Wrong removed output IDs")
     from rpc_reconfirm import audit as audit_reconfirm
     audit_reconfirm(result["reconfirmation"], result["fee_payment"], reorg)
+    audit_journal(result)
+
+
+def audit_journal(result):
+    from observation_journal import STAGES, decode_history, encoded
+    journal = result["journal"]
+    raw = {key: journal[key] for key in ("schema_version", "context", "records")}
+    require(decode_history(encoded(raw) + b"\n") == journal, "Embedded journal altered")
+    require([r["stage"] for r in journal["records"]] == list(STAGES), "Incomplete journal")
+    require(journal["context"]["node_version"] == result["node_version"]
+            and journal["context"]["network"] == result["network"], "Wrong journal identity")
+    expected = [result["initial_peak"], {"bundle_ids": [c["bundle_id"] for c in result["fee_payment"]["confirmations"]]},
+                result["reorg"]["before"], result["reorg"]["deeper"], result["reorg"]["after"],
+                result["reconfirmation"]["pending"], result["reconfirmation"]["confirming"], result["reconfirmation"]["confirmed"],
+                {"rpc_closed": True}]
+    require([r["observation"] for r in journal["records"]] == expected, "Journal differs from validated lifecycle")
 
 
 async def rehearse(node, api, binary, run, bt):
@@ -117,6 +133,12 @@ async def rehearse(node, api, binary, run, bt):
         else:
             raise RuntimeError("Public-testnet probe accepted isolated simulator")
         result["initial_peak"] = await asyncio.to_thread(state, transport.call)
+        from observation_journal import Journal, read_history
+        journal_path = run / "observations.json"
+        journal = Journal(journal_path, {"node_version": result["node_version"], "network": result["network"],
+                                        "binary_sha256": hashlib.sha256(binary.read_bytes()).hexdigest(),
+                                        "rpc_source_hashes": sources["source_hashes"]})
+        journal.record("ready", result["initial_peak"])
 
         async def submit(bundle):
             reply = await call("push_tx", {"spend_bundle": bundle.to_json_dict()})
@@ -144,6 +166,7 @@ async def rehearse(node, api, binary, run, bt):
         for _ in range(2):
             await api.farm_new_transaction_block(FarmNewBlockProtocol(Program.to(1).get_tree_hash()))
         result["fee_payment"] = await fee_payment(node, api, binary, directory, submitter=submit)
+        journal.record("fees-confirmed", {"bundle_ids": [c["bundle_id"] for c in result["fee_payment"]["confirmations"]]})
         # Compare RPC records against independently asserted block/store evidence.
         before = await asyncio.to_thread(state, transport.call)
         for confirmed in result["fee_payment"]["confirmations"]:
@@ -180,9 +203,9 @@ async def rehearse(node, api, binary, run, bt):
         # Above fee/peak/mempool evidence is the pre-reorg checkpoint. Preserve it
         # as historical evidence; subsequent chain state is reported separately.
         from rpc_reorg import exercise
-        result["reorg"] = await exercise(call, node, api, result["fee_payment"])
+        result["reorg"] = await exercise(call, node, api, result["fee_payment"], record=journal.record)
         from rpc_reconfirm import exercise as reconfirm
-        result["reconfirmation"] = await reconfirm(call, node, api, result["fee_payment"], result["reorg"])
+        result["reconfirmation"] = await reconfirm(call, node, api, result["fee_payment"], result["reorg"], record=journal.record)
         require(not node.server.all_connections and node.server.webserver is None
                 and rpc.daemon_connection_task is None and rpc.websocket is None, "Unexpected peer/daemon connection")
         result["no_peer_or_daemon_connections"] = True
@@ -190,5 +213,7 @@ async def rehearse(node, api, binary, run, bt):
         rpc.close()
         await rpc.await_closed()
         result["rpc_closed"] = True
+    journal.record("rpc-closed", {"rpc_closed": True})
+    result["journal"] = read_history(journal_path)
     audit(result)
     return result
