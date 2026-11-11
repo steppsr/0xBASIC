@@ -158,7 +158,7 @@ def main():
                 "positives": positives, "negatives": negatives, "resources_closed": True,
                 "validation": "synthetic-offline-detached-signature", "live_node_contacted": False,
                 "input_sha256": {str(p.relative_to(ROOT)).replace('\\', '/'): digest(p.read_bytes()) for p in
-                    [Path(__file__), ROOT / "integration/verify_signed_fee.py", ROOT / "integration/prepare_fee.py", ROOT / "integration/testnet_probe.py",
+                    [Path(__file__), ROOT / "integration/verify_signed_fee.py", ROOT / "integration/prepare_fee.py", ROOT / "integration/network_identity.py", ROOT / "integration/testnet_probe.py",
                      ROOT / "integration/verify_preparation.py", ROOT / "simulator/smoke.py"]},
                 "binary_sha256": digest(binary.read_bytes())}
     destination.write_text(json.dumps(evidence, indent=2, sort_keys=True) + "\n", encoding="utf-8")

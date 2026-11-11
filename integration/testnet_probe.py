@@ -11,6 +11,7 @@ import ssl
 import sys
 import tempfile
 from urllib.parse import urlsplit
+from network_identity import PUBLIC_TESTNET, validate as validate_identity
 
 GENESIS = "37a90eb5185a9c4439a91ddc98bbadce7b4feba060d50116a067de66bf236615"
 ROUTES = {"get_version", "get_network_info", "get_blockchain_state", "get_coin_record_by_name"}
@@ -123,6 +124,12 @@ def state(call):
 
 
 def observe(call, requested_coin=None, puzzle=None, amount=None):
+    """Public probe: its identity cannot be selected by inputs or RPC responses."""
+    return _observe_for_identity(call, PUBLIC_TESTNET, requested_coin, puzzle, amount)
+
+
+def _observe_for_identity(call, identity, requested_coin=None, puzzle=None, amount=None):
+    validate_identity(identity)
     if requested_coin is not None:
         requested_coin = hex32(requested_coin)
     require(requested_coin is not None or (puzzle is None and amount is None), "Coin expectations require coin ID")
@@ -131,10 +138,10 @@ def observe(call, requested_coin=None, puzzle=None, amount=None):
     if amount is not None:
         uint(amount)
     version = fetch(call, "get_version").get("version")
-    require(version == "2.7.5", "Unreviewed node version")
+    require(version == identity.version, "Unreviewed node version")
     network = fetch(call, "get_network_info")
-    require(network.get("network_name") == "testnet11" and network.get("network_prefix") == "txch"
-            and hex32(network.get("genesis_challenge")) == GENESIS, "Wrong network identity")
+    require(network.get("network_name") == identity.name and network.get("network_prefix") == identity.prefix
+            and hex32(network.get("genesis_challenge")) == identity.genesis, "Wrong network identity")
     before = state(call)
     coin = None
     if requested_coin is not None:
@@ -154,8 +161,8 @@ def observe(call, requested_coin=None, puzzle=None, amount=None):
                 "coinbase": r["coinbase"], "timestamp": timestamp}
     after = state(call)
     require(before == after, "Peak changed during observation; retry explicitly")
-    return {"schema_version": 1, "validation": "rpc-observation-only", "node_version": version,
-            "network": {"name": "testnet11", "prefix": "txch", "genesis_challenge": GENESIS},
+    return {"schema_version": 1, "validation": "rpc-observation-only" if identity is PUBLIC_TESTNET else "isolated-rpc-observation-only", "node_version": version,
+            "network": identity.network(),
             "compiler_profile": "chia-clvm-0.19-strict-v2", "observed_at": datetime.now(timezone.utc).isoformat(),
             "before": before, "after": after, "coin": coin, "atomic_snapshot": False,
             "spend_validated": False, "transactions_submitted": 0}

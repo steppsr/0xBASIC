@@ -50,6 +50,17 @@ def evidence():
         for c in fee["confirmations"] for r in c["output_records"]]
     from test_rpc_reconfirm import evidence as reconfirm_evidence
     result["reconfirmation"] = reconfirm_evidence([c["bundle_id"] for c in fee["confirmations"]], reorg["after"]["peak"]["height"])
+    from network_identity import ISOLATED_REHEARSAL
+    c = fee["confirmations"][0]["bundle"]["coin_spends"][0]["coin"]
+    identity = coin_id(c["parent_coin_info"], c["puzzle_hash"], c["amount"])
+    def shared(expected, depth):
+        anchor = None if expected["status"] == "reorged" else expected.get("anchor") or {"height": expected["height"], "header_hash": expected["block_hash"]}
+        return {"validation": "isolated-rpc-confirmation-observation-only", "network": ISOLATED_REHEARSAL.network(),
+                "node_version": ISOLATED_REHEARSAL.version, "input_id": identity, "status": expected["status"],
+                "confirmations": expected["confirmations"], "required_depth": depth, "chain_proof": False,
+                "transactions_submitted": 0, "confirmation_anchor": None if anchor is None else {"input_id": identity, **anchor}}
+    reorg["shared_observations"] = {k: shared(reorg[k], reorg["required_depth"]) for k in ("before", "deeper", "after")}
+    result["reconfirmation"]["shared_confirmed"] = shared(result["reconfirmation"]["confirmed"]["last_observation"], 2)
     result["initial_peak"] = {"height": 1}
     from observation_journal import STAGES, digest, encoded, decode_history
     context = {"node_version": result["node_version"], "network": result["network"]}
@@ -83,7 +94,9 @@ class RpcEvidenceTests(unittest.TestCase):
             lambda r: r["reorg"]["after"]["missing_outputs"].__setitem__(0, "ef" * 32),
             lambda r: r["journal"]["records"].pop(),
             lambda r: r["journal"]["records"][0]["observation"].update(height=999),
-            lambda r: r["journal"].update(automatic_resume_allowed=True)]
+            lambda r: r["journal"].update(automatic_resume_allowed=True),
+            lambda r: r["reorg"]["shared_observations"]["after"].update(status="confirmed"),
+            lambda r: r["reconfirmation"]["shared_confirmed"].update(input_id="ff" * 32)]
         for index, change in enumerate(changes):
             r = evidence()
             change(r)

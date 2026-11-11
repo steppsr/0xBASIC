@@ -22,7 +22,7 @@ def audit(result, fee, reorg):
             and result["block_fee"] == "51" and result["mempool_empty_after"] and result["funding_change_preserved"], "Incomplete reconfirmation accounting")
 
 
-async def exercise(call, node, api, fee, reorg, record=None):
+async def exercise(call, node, api, fee, reorg, record=None, confirm=None):
     from chia_rs import SpendBundle, Coin
     from chia.types.coin_spend import CoinSpend
     from chia.types.blockchain_format.program import Program
@@ -110,6 +110,9 @@ async def exercise(call, node, api, fee, reorg, record=None):
               "unchanged_bundles": True, "required_depth": 2, "pending": pending, "confirming": confirming,
               "confirmed": confirmed, "block_fee": "51", "mempool_empty_after": True, "funding_change_preserved": True}
     audit(result, fee, reorg)
+    if confirm is not None:
+        result["shared_confirmed"] = await confirm(2)
+        require(result["shared_confirmed"]["status"] == "confirmed", "Shared observer missed reconfirmation")
     if record is not None:
         record("reconfirmed", confirmed)
     return result

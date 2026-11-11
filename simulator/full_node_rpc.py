@@ -69,7 +69,31 @@ def audit(result):
     require(set(reorg["after"]["missing_outputs"]) == expected_missing, "Wrong removed output IDs")
     from rpc_reconfirm import audit as audit_reconfirm
     audit_reconfirm(result["reconfirmation"], result["fee_payment"], reorg)
+    audit_shared_confirmation(result)
     audit_journal(result)
+
+
+def audit_shared_confirmation(result):
+    from network_identity import ISOLATED_REHEARSAL
+    first = result["fee_payment"]["confirmations"][0]
+    c = first["bundle"]["coin_spends"][0]["coin"]
+    identity = coin_id(c["parent_coin_info"], c["puzzle_hash"], c["amount"])
+    shared = result["reorg"]["shared_observations"]
+    cases = [(shared["before"], result["reorg"]["before"], result["reorg"]["required_depth"]),
+             (shared["deeper"], result["reorg"]["deeper"], result["reorg"]["required_depth"]),
+             (shared["after"], result["reorg"]["after"], result["reorg"]["required_depth"]),
+             (result["reconfirmation"]["shared_confirmed"], result["reconfirmation"]["confirmed"]["last_observation"], 2)]
+    for actual, expected, depth in cases:
+        require(actual["validation"] == "isolated-rpc-confirmation-observation-only"
+                and actual["network"] == ISOLATED_REHEARSAL.network() and actual["node_version"] == ISOLATED_REHEARSAL.version
+                and actual["input_id"] == identity and actual["status"] == expected["status"]
+                and actual["confirmations"] == expected["confirmations"] and actual["required_depth"] == depth
+                and actual["chain_proof"] is False and actual["transactions_submitted"] == 0, "Shared observer differs from independent evidence")
+        if expected["status"] == "reorged":
+            require(actual["confirmation_anchor"] is None, "Reorg retained current anchor")
+        else:
+            anchor = expected.get("anchor") or {"height": expected["height"], "header_hash": expected["block_hash"]}
+            require(actual["confirmation_anchor"] == {"input_id": identity, **anchor}, "Shared observer anchor differs")
 
 
 def audit_journal(result):
@@ -200,12 +224,17 @@ async def rehearse(node, api, binary, run, bt):
             reply = await call("get_mempool_item_by_tx_id", {"tx_id": receipt["bundle_id"]})
             require(reply["success"] is False and reply.get("structuredError", {}).get("code") == "TX_NOT_IN_MEMPOOL", "Unexpected final RPC mempool state")
         result["all_submitted_bundles_absent_before_reorg"] = True
+        from isolated_observation import confirm_isolated
+        first = result["fee_payment"]["confirmations"][0]
+        async def shared_confirm(depth, anchor=None):
+            return await asyncio.to_thread(confirm_isolated, transport.call, first["bundle"]["coin_spends"][0],
+                                           [r["coin"] for r in first["output_records"]], depth, anchor)
         # Above fee/peak/mempool evidence is the pre-reorg checkpoint. Preserve it
         # as historical evidence; subsequent chain state is reported separately.
         from rpc_reorg import exercise
-        result["reorg"] = await exercise(call, node, api, result["fee_payment"], record=journal.record)
+        result["reorg"] = await exercise(call, node, api, result["fee_payment"], record=journal.record, confirm=shared_confirm)
         from rpc_reconfirm import exercise as reconfirm
-        result["reconfirmation"] = await reconfirm(call, node, api, result["fee_payment"], result["reorg"], record=journal.record)
+        result["reconfirmation"] = await reconfirm(call, node, api, result["fee_payment"], result["reorg"], record=journal.record, confirm=shared_confirm)
         require(not node.server.all_connections and node.server.webserver is None
                 and rpc.daemon_connection_task is None and rpc.websocket is None, "Unexpected peer/daemon connection")
         result["no_peer_or_daemon_connections"] = True

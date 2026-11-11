@@ -5,7 +5,9 @@ the independent preparation/signature verifier, not an unvalidated report file.
 """
 import re
 
-from testnet_probe import coin_id, fetch, hex32, observe, require, state, uint
+from testnet_probe import coin_id, fetch, hex32, require, state, uint
+from testnet_probe import _observe_for_identity
+from network_identity import PUBLIC_TESTNET, validate as validate_identity
 
 
 def coin(value):
@@ -51,6 +53,11 @@ def block(call, height):
 
 
 def observe_confirmation(call, expected_spend, expected_children, depth, previous_anchor=None):
+    """Observe only the fixed reviewed public testnet identity."""
+    return _confirm_for_identity(call, PUBLIC_TESTNET, expected_spend, expected_children, depth, previous_anchor)
+
+
+def _confirm_for_identity(call, identity, expected_spend, expected_children, depth, previous_anchor=None):
     """Observe exact spend and children, with inclusive confirmation depth.
 
     The callable must implement authenticated, bounded RPC reads. A changed peak
@@ -58,6 +65,7 @@ def observe_confirmation(call, expected_spend, expected_children, depth, previou
     snapshot or independent chain proof. No bundle/signature identity is inferred
     from a block: only exact input/puzzle/solution and expected child records.
     """
+    validate_identity(identity)
     require(type(depth) is int and 1 <= depth <= 10000, "Confirmation depth must be 1..10000")
     expected = spend(expected_spend)
     input_id = name(expected["coin"])
@@ -71,9 +79,9 @@ def observe_confirmation(call, expected_spend, expected_children, depth, previou
                 and hex32(previous_anchor["input_id"]) == input_id, "Wrong prior confirmation anchor")
         previous_anchor = {"input_id": input_id, "height": uint(previous_anchor["height"], 32),
                            "header_hash": hex32(previous_anchor["header_hash"])}
-    initial = observe(call)
+    initial = _observe_for_identity(call, identity)
     before = initial["after"]
-    result = {"schema_version": 1, "validation": "rpc-confirmation-observation-only",
+    result = {"schema_version": 1, "validation": "rpc-confirmation-observation-only" if identity is PUBLIC_TESTNET else "isolated-rpc-confirmation-observation-only",
               "network": initial["network"], "node_version": initial["node_version"], "observed_at": initial["observed_at"],
               "before": before, "required_depth": depth, "input_id": input_id,
               "atomic_snapshot": False, "chain_proof": False, "transactions_submitted": 0,

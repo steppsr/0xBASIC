@@ -204,7 +204,7 @@ def worker(run, binary=None, rpc_rehearsal=False):
     if rpc_rehearsal:
         report["validation"] = "isolated-full-node-rpc-fee-rehearsal"
         report["rpc_harness_hashes"] = {str(p.relative_to(ROOT)).replace("\\", "/"): hashlib.sha256(p.read_bytes()).hexdigest()
-            for p in [BASE / "full_node_rpc.py", BASE / "rpc_reorg.py", BASE / "rpc_reconfirm.py", BASE / "rpc_poll.py", BASE / "observation_journal.py", BASE / "rpc_sources.json", ROOT / "integration/testnet_probe.py",
+            for p in [BASE / "full_node_rpc.py", BASE / "rpc_reorg.py", BASE / "rpc_reconfirm.py", BASE / "rpc_poll.py", BASE / "observation_journal.py", BASE / "isolated_observation.py", BASE / "rpc_sources.json", ROOT / "integration/network_identity.py", ROOT / "integration/testnet_probe.py",
                       ROOT / "integration/confirmation_transport.py", ROOT / "integration/confirmation.py"]}
     (run / "result.json").write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 

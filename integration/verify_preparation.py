@@ -144,7 +144,7 @@ def main():
               "positive_count": len(positives), "negative_count": len(failures), "resources_closed": True,
               "validation": "synthetic-offline-preparation", "live_node_contacted": False,
               "input_sha256": {str(p.relative_to(ROOT)).replace('\\', '/'): digest(p.read_bytes()) for p in
-                               [Path(__file__), ROOT / "integration/prepare_fee.py", ROOT / "integration/testnet_probe.py", ROOT / "examples/payment-fee.bas"]},
+                               [Path(__file__), ROOT / "integration/prepare_fee.py", ROOT / "integration/network_identity.py", ROOT / "integration/testnet_probe.py", ROOT / "examples/payment-fee.bas"]},
               "binary_sha256": digest(binary.read_bytes())}
     assert len(positives) == 10 and len(failures) == 21
     destination.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8")

@@ -77,3 +77,5 @@ Testnet integration is selected for future implementation: [plan](testnet-integr
 [TN-4b4 bounded observation and reconfirmation](testnet-rpc-reconfirmation.md) tests pending timeout and recovery of the exact original bundles to a new confirmed inclusion.
 
 [TN-4b5 saved observation history](testnet-observation-history.md) preserves atomic lifecycle checkpoints after interruption without treating historical observations as fresh validation.
+
+[TN-4b6 fixed observation identities](testnet-observation-identity.md) connects shared confirmation logic to the real isolated node while keeping public-testnet defaults strict.

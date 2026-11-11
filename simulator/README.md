@@ -275,3 +275,5 @@ The same mode now also verifies a real depth transition and chain reorganization
 [TN-4b4](../docs/spec/testnet-rpc-reconfirmation.md) adds bounded pending observation and explicit unchanged-bundle reconfirmation after rollback. The report retains the timeout and later depth-two result separately; the current simulator suite has 43 tests.
 
 [TN-4b5](../docs/spec/testnet-observation-history.md) adds an atomic observation journal inside each isolated RPC run. Complete reports embed its nine checkpoints; interrupted prefixes remain historical-only and cannot authorize automatic recovery. The simulator suite now has 49 tests.
+
+[TN-4b6](../docs/spec/testnet-observation-identity.md) exercises the shared confirmation observer at pending/confirmed/reorged/reconfirmed stages using the fixed isolated adapter. Public-testnet identity and offline preparation behavior remain strict.

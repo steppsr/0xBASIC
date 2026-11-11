@@ -19,7 +19,7 @@ def audit(result):
     require(result["funding_preserved"] and result["surrounding_peak_unchanged"], "Inconsistent rollback observation")
 
 
-async def exercise(call, node, api, fee, record=None):
+async def exercise(call, node, api, fee, record=None, confirm=None):
     from chia.simulator.simulator_protocol import FarmNewBlockProtocol, ReorgProtocol
     from chia.types.blockchain_format.program import Program
     from chia_rs import Coin
@@ -50,6 +50,10 @@ async def exercise(call, node, api, fee, record=None):
     require(depth > 0, "Invalid initial depth")
     required = depth + 1
     before = {"status": "confirming", "confirmations": depth, "peak": start, "anchor": anchor}
+    shared = {}
+    if confirm is not None:
+        shared["before"] = await confirm(required)
+        require(shared["before"]["status"] == "confirming", "Shared observer missed pending depth")
     if record is not None:
         record("depth-pending", before)
     funding_hash = Program.to(1).get_tree_hash()
@@ -57,6 +61,9 @@ async def exercise(call, node, api, fee, record=None):
     advanced = await peak()
     require(await canonical() == anchor["header_hash"] and advanced["height"] == start["height"] + 1, "Unexpected depth extension")
     deeper = {"status": "confirmed", "confirmations": advanced["height"] - height + 1, "peak": advanced, "anchor": anchor}
+    if confirm is not None:
+        shared["deeper"] = await confirm(required, shared["before"]["confirmation_anchor"])
+        require(shared["deeper"]["status"] == "confirmed", "Shared observer missed confirmation")
     if record is not None:
         record("depth-confirmed", deeper)
 
@@ -92,11 +99,15 @@ async def exercise(call, node, api, fee, record=None):
             require(r["coin"] == coin.to_json_dict() and r["spent"] is False
                     and r["confirmed_block_index"] == funding["block"]["height"], "Funding not preserved")
     require(await peak() == current, "Peak changed during rollback observation")
+    if confirm is not None:
+        shared["after"] = await confirm(required, shared["deeper"]["confirmation_anchor"])
+        require(shared["after"]["status"] == "reorged", "Shared observer missed reorg")
     result = {"validation": "isolated-rpc-reorg-observation", "required_depth": required, "before": before, "deeper": deeper,
               "after": {"status": "reorged", "confirmations": 0, "old_anchor": anchor, "replacement_hash": replacement,
                         "peak": current, "restored_inputs": restored, "missing_outputs": missing},
               "transactions_submitted": 0, "funding_preserved": True, "surrounding_peak_unchanged": True}
     audit(result)
+    result["shared_observations"] = shared
     if record is not None:
         record("reorged", result["after"])
     return result

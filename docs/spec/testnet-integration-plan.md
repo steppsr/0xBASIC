@@ -81,3 +81,5 @@ TN-4b begins with [TN-4b1 authenticated confirmation reads](testnet-confirmation
 [TN-4b4 bounded observation and reconfirmation](testnet-rpc-reconfirmation.md) passed Windows with native LANDO passed (confirmed 2026-11-11). It verifies attempt-bounded pending timeout and exact original-bundle recovery to depth two after reorg. Durable incremental observation storage and production-pipeline/isolated-identity integration remain outstanding; TN-4 is not yet complete.
 
 [TN-4b5 saved lifecycle observations](testnet-observation-history.md) passed Windows with native LANDO passed (confirmed 2026-11-11). It saves validated phase checkpoints atomically and treats all recovered history as requiring fresh chain validation, never automatic resubmission. Production-pipeline/isolated-identity integration remains the next TN-4 gap.
+
+[TN-4b6 fixed observation identities](testnet-observation-identity.md) passed Windows with native LANDO passed (confirmed 2026-11-11). The real rehearsal now exercises shared confirmation checks under an explicit isolated identity while public defaults remain strict. The offline preparation/signature bridge is still outstanding.
