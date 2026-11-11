@@ -6,7 +6,8 @@ import unittest
 from network_identity import PUBLIC_TESTNET, ISOLATED_REHEARSAL, validate
 from testnet_probe import GENESIS, ProbeError, observe, _observe_for_identity
 from confirmation import observe_confirmation, _confirm_for_identity, name
-from prepare_fee import observation
+from prepare_fee import observation, _observation_for_identity, _prepare_for_identity
+from verify_signed_fee import _verify_for_identity
 from test_confirmation import Fixture
 
 
@@ -67,12 +68,22 @@ class IdentityTests(unittest.TestCase):
         f = isolated()
         f.records[name(f.input)] = f.record(f.input, 90, 0)
         r = _observe_for_identity(f.call, ISOLATED_REHEARSAL, name(f.input))
+        c, height = _observation_for_identity(r, ISOLATED_REHEARSAL)
+        self.assertEqual(c["name"], name(f.input))
+        self.assertGreater(height, 0)
         with self.assertRaises(ProbeError):
             observation(r)
         renamed = copy.deepcopy(r)
         renamed["validation"] = "rpc-observation-only"
         with self.assertRaises(ProbeError):
             observation(renamed)
+
+    def test_offline_cores_reject_unreviewed_policy_before_io(self):
+        for identity in (replace(ISOLATED_REHEARSAL), ISOLATED_REHEARSAL.network(), None):
+            with self.assertRaises(ValueError):
+                _prepare_for_identity(None, None, None, None, 20, identity)
+            with self.assertRaises(ValueError):
+                _verify_for_identity(None, None, None, None, None, None, 20, identity)
 
 
 if __name__ == "__main__":

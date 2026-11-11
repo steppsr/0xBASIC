@@ -8,7 +8,8 @@ import sys
 import subprocess
 import tempfile
 
-from prepare_fee import FILES, SOURCE, digest, prepare, read_json
+from prepare_fee import FILES, SOURCE, digest, prepare, read_json, _prepare_for_identity
+from network_identity import PUBLIC_TESTNET, validate as validate_identity
 from testnet_probe import ProbeError, require
 
 
@@ -28,9 +29,15 @@ def response_fields(response, preparation_hash, key, message):
 
 
 def verify_signed(binary, manifest, observation, solution, preparation, response, max_fee, max_age=300):
+    return _verify_for_identity(binary, manifest, observation, solution, preparation, response, max_fee, PUBLIC_TESTNET, max_age)
+
+
+def _verify_for_identity(binary, manifest, observation, solution, preparation, response, max_fee, identity, max_age=300):
+    validate_identity(identity)
     original_bytes, response_bytes = Path(preparation).read_bytes(), Path(response).read_bytes()
     original, reply = read_json(original_bytes), read_json(response_bytes)
-    regenerated = prepare(binary, manifest, observation, solution, max_fee, max_age)
+    regenerated = (prepare(binary, manifest, observation, solution, max_fee, max_age) if identity is PUBLIC_TESTNET else
+                   _prepare_for_identity(binary, manifest, observation, solution, max_fee, identity, max_age))
     require(set(original) == set(regenerated), "Incomplete or extended preparation")
     try:
         created = datetime.fromisoformat(original["prepared_at"])
@@ -60,7 +67,7 @@ def verify_signed(binary, manifest, observation, solution, preparation, response
                                    Program.from_bytes(bytes.fromhex(spend["solution"])))], signature)
     encoded = bundle.to_json_dict()
     require(SpendBundle.from_json_dict(encoded) == bundle, "Spend bundle JSON round trip differs")
-    return {"schema_version": 1, "validation": "offline-signature-verified-fee-bundle", "network": regenerated["network"],
+    return {"schema_version": 1, "validation": "offline-signature-verified-fee-bundle" if identity is PUBLIC_TESTNET else "isolated-offline-signature-verified-fee-bundle", "network": regenerated["network"],
             "preparation_sha256": digest(original_bytes), "signature_response_sha256": digest(response_bytes),
             "verified_at": datetime.now(timezone.utc).isoformat(), "preparation": regenerated,
             "spend_bundle": encoded, "bundle_id": bundle.name().hex(), "bundle_sha256": digest(bytes(bundle)),

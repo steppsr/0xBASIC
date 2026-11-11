@@ -277,3 +277,5 @@ The same mode now also verifies a real depth transition and chain reorganization
 [TN-4b5](../docs/spec/testnet-observation-history.md) adds an atomic observation journal inside each isolated RPC run. Complete reports embed its nine checkpoints; interrupted prefixes remain historical-only and cannot authorize automatic recovery. The simulator suite now has 49 tests.
 
 [TN-4b6](../docs/spec/testnet-observation-identity.md) exercises the shared confirmation observer at pending/confirmed/reorged/reconfirmed stages using the fixed isolated adapter. Public-testnet identity and offline preparation behavior remain strict.
+
+[TN-4b7](../docs/spec/testnet-offline-pipeline.md) verifies partial/exact-payment bundles through the shared offline pipeline in a separate child before RPC submission. The parent checks actual constants, signing messages, bundles and children against its independent oracle. Each control includes seven negative cases; the simulator unit suite has 50 tests. Native commands include the original payment regression.

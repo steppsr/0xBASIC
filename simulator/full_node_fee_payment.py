@@ -39,7 +39,7 @@ def audit(result):
                                    "active_mempool_empty", "all_confirmed_outputs_unspent")), "Incomplete final fee state")
 
 
-async def fee_payment(node, api, binary, directory, submitter=None):
+async def fee_payment(node, api, binary, directory, submitter=None, verify_control=None):
     from chia.consensus.condition_tools import conditions_dict_for_solution, pkm_pairs_for_conditions_dict
     from chia.simulator.simulator_protocol import FarmNewBlockProtocol
     from chia.types.blockchain_format.program import Program
@@ -224,6 +224,10 @@ async def fee_payment(node, api, binary, directory, submitter=None):
     spent, created = [], []
     async def confirm(name, specs, companion_output=None):
         bundle, inputs, outputs, details, accounting = build_bundle(specs, companion_output)
+        if verify_control is not None and len(inputs) == 1:
+            checked = await verify_control(name, bundle, out / "manifest.json", details[0], outputs)
+            require(checked == bundle, "Offline pipeline altered the signed control")
+            bundle = checked
         await unchanged([c for c in tracked if c not in spent])
         ctx = context()
         status, error = await submit(bundle)

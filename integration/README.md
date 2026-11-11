@@ -40,4 +40,6 @@ Tests need no Chia installation or keys beyond the deliberately public fixtures.
 
 `confirmation_transport.py` adds an explicit mutual-TLS transport for the two additional confirmation reads, retaining the original probe's narrower allowlist. [TN-4b1](../docs/spec/testnet-confirmation-transport.md) exercises the complete read sequence against a real loopback TLS fixture server; the suite now has 48 tests. Actual full-node RPC rehearsal remains the next gate.
 
-[TN-4b6](../docs/spec/testnet-observation-identity.md) introduces fixed public and isolated identities for shared internal observation helpers. Public entry points remain bound to testnet11; only simulator adapters select the reviewed local identity. Isolated reports carry distinct labels and are rejected by public preparation. The integration suite now has 53 tests.
+[TN-4b6](../docs/spec/testnet-observation-identity.md) introduces fixed public and isolated identities for shared internal observation helpers. Public entry points remain bound to testnet11; only simulator adapters select the reviewed local identity. Isolated reports carry distinct labels and are rejected by public preparation. The integration suite now has 54 tests.
+
+[TN-4b7](../docs/spec/testnet-offline-pipeline.md) shares offline preparation/signature verification with the fixed isolated adapter, using pinned actual simulator constants. Public functions and CLIs retain their testnet11 policy.

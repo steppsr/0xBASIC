@@ -11,6 +11,7 @@ import sys
 import tempfile
 
 from testnet_probe import GENESIS, ProbeError, coin_id, hex32, require, uint
+from network_identity import PUBLIC_TESTNET, validate as validate_identity
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "examples/payment-fee.bas"
@@ -48,14 +49,20 @@ def amount(value):
 
 
 def observation(value, max_age=300, now=None):
+    return _observation_for_identity(value, PUBLIC_TESTNET, max_age, now)
+
+
+def _observation_for_identity(value, identity, max_age=300, now=None):
+    validate_identity(identity)
     require(type(max_age) is int and 0 < max_age <= 3600, "Observation age must be 1..3600 seconds")
-    require(type(value.get("schema_version")) is int and value["schema_version"] == 1 and value.get("validation") == "rpc-observation-only"
-            and value.get("node_version") == "2.7.5" and value.get("compiler_profile") == PROFILE,
+    label = "rpc-observation-only" if identity is PUBLIC_TESTNET else "isolated-rpc-observation-only"
+    require(type(value.get("schema_version")) is int and value["schema_version"] == 1 and value.get("validation") == label
+            and value.get("node_version") == identity.version and value.get("compiler_profile") == PROFILE,
             "Observation identity mismatch")
     require(value.get("spend_validated") is False and value.get("atomic_snapshot") is False
             and type(value.get("transactions_submitted")) is int and value["transactions_submitted"] == 0,
             "Observation scope mismatch")
-    require(value.get("network") == {"name": "testnet11", "prefix": "txch", "genesis_challenge": GENESIS}, "Observation network mismatch")
+    require(value.get("network") == identity.network(), "Observation network mismatch")
     try:
         observed = datetime.fromisoformat(value["observed_at"])
         require(observed.tzinfo is not None, "Observation timestamp needs timezone")
@@ -88,6 +95,11 @@ def cli(binary, *args):
 
 
 def prepare(binary, manifest_path, observation_path, solution_path, max_fee, max_age=300):
+    return _prepare_for_identity(binary, manifest_path, observation_path, solution_path, max_fee, PUBLIC_TESTNET, max_age)
+
+
+def _prepare_for_identity(binary, manifest_path, observation_path, solution_path, max_fee, identity, max_age=300):
+    validate_identity(identity)
     # Pin the existing independent runtime. No node, wallet or keychain is instantiated.
     sys.path.insert(0, str(ROOT / "simulator"))
     from smoke import preflight
@@ -106,7 +118,7 @@ def prepare(binary, manifest_path, observation_path, solution_path, max_fee, max
     blobs = {name: (Path(manifest_path).parent / name).read_bytes() for name in FILES}
     obs_bytes, solution_bytes = Path(observation_path).read_bytes(), Path(solution_path).read_bytes()
     obs, sol, manifest = read_json(obs_bytes), read_json(solution_bytes), read_json(blobs["manifest.json"])
-    c, height = observation(obs, max_age)
+    c, height = _observation_for_identity(obs, identity, max_age)
     require(set(sol) == {"paymentAmount", "feeAmount"}, "Expected paymentAmount and feeAmount only")
     payment, fee, total = amount(sol["paymentAmount"]), amount(sol["feeAmount"]), amount(c["amount"])
     require(payment > 0 and payment + fee <= total and fee <= uint(max_fee), "Payment or fee exceeds bounds/budget")
@@ -146,8 +158,17 @@ def prepare(binary, manifest_path, observation_path, solution_path, max_fee, max
     if change:
         expected.append([51, change_hash, change])
     solution = Program.to([payment, fee])
-    constants = replace_str_to_bytes(DEFAULT_CONSTANTS, GENESIS_CHALLENGE=GENESIS, AGG_SIG_ME_ADDITIONAL_DATA=GENESIS,
-                                    HARD_FORK_HEIGHT=0, SOFT_FORK8_HEIGHT=3755000, SOFT_FORK9_HEIGHT=3924000, TESTNET=True)
+    if identity is PUBLIC_TESTNET:
+        constants = replace_str_to_bytes(DEFAULT_CONSTANTS, GENESIS_CHALLENGE=GENESIS, AGG_SIG_ME_ADDITIONAL_DATA=GENESIS,
+                                        HARD_FORK_HEIGHT=0, SOFT_FORK8_HEIGHT=3755000, SOFT_FORK9_HEIGHT=3924000, TESTNET=True)
+    else:
+        # Exact pinned full-node test constants; never infer constants/domain from RPC metadata.
+        from full_node_smoke import source_check
+        source_check()
+        from chia.simulator.block_tools import test_constants
+        constants = test_constants
+        require(constants.GENESIS_CHALLENGE.hex() == identity.genesis, "Isolated constants/identity mismatch")
+    domain = bytes(constants.AGG_SIG_ME_ADDITIONAL_DATA)
     flags = int(get_flags_for_height_and_constants(height, constants)) | int(MEMPOOL_MODE)
     require(not flags & int(DONT_VALIDATE_SIGNATURE), "Signature bypass flag is forbidden")
     vm_cost, actual = puzzle.run_with_cost(MAX_COST, solution, flags=flags)
@@ -158,26 +179,28 @@ def prepare(binary, manifest_path, observation_path, solution_path, max_fee, max
     require(local["tree"] == tree(actual) and local["validation"] == "clvm-execution-only", "CLI/independent output mismatch")
     coin = Coin(bytes32.from_hexstr(c["parent_coin_info"]), bytes32.from_hexstr(c["puzzle_hash"]), uint64(total))
     require(coin.name().hex() == c["name"], "Independent coin ID differs")
-    final_message = message + bytes(coin.name()) + bytes.fromhex(GENESIS)
-    require(pkm_pairs_for_conditions_dict(conditions_dict_for_solution(puzzle, solution, MAX_COST), coin, bytes.fromhex(GENESIS))
+    final_message = message + bytes(coin.name()) + domain
+    require(pkm_pairs_for_conditions_dict(conditions_dict_for_solution(puzzle, solution, MAX_COST), coin, domain)
             == [(G1Element.from_bytes(owner), final_message)], "Independent signing pair mismatch")
     outputs = []
     for ph, value in [(recipient, payment), *([(change_hash, change)] if change else [])]:
         child = Coin(coin.name(), bytes32(ph), uint64(value))
         outputs.append({"name": child.name().hex(), "parent_coin_info": coin.name().hex(), "puzzle_hash": ph.hex(), "amount": str(value)})
-    return {"schema_version": 1, "validation": "offline-unsigned-fee-preparation", "network": obs["network"],
-            "node_baseline": "2.7.5", "compiler_profile": PROFILE, "bindings": bindings, "solution_values": sol,
+    return {"schema_version": 1, "validation": "offline-unsigned-fee-preparation" if identity is PUBLIC_TESTNET else "isolated-offline-unsigned-fee-preparation", "network": obs["network"],
+            "node_baseline": identity.version, "compiler_profile": PROFILE, "bindings": bindings, "solution_values": sol,
             "prepared_at": datetime.now(timezone.utc).isoformat(), "observed_peak": obs["after"],
             "observation_time": obs["observed_at"], "observation_is_trusted_chain_proof": False,
             "recheck_before_signing_and_submission": True, "source_sha256_lf": SOURCE_SHA256,
             "input_sha256": {**{name: digest(blob) for name, blob in blobs.items()},
                               "observation": digest(obs_bytes), "solution": digest(solution_bytes), "binary": digest(binary.read_bytes())},
             "runtime": {"chia": profile["chia_blockchain"], "chia_rs": versions["chia-rs"], "lock_sha256": digest(lock.read_bytes()),
-                        "flags": flags, "local_vm_cost": str(local["cost"]), "network_flags_vm_cost": str(vm_cost)},
+                        "flags": flags, "local_vm_cost": str(local["cost"]), "network_flags_vm_cost": str(vm_cost),
+                        **({"consensus_constants_sha256": digest(json.dumps(constants.to_json_dict(), sort_keys=True, separators=(",", ":")).encode())}
+                           if identity is not PUBLIC_TESTNET else {})},
             "unsigned_coin_spend": {"coin": {"parent_coin_info": c["parent_coin_info"], "puzzle_hash": c["puzzle_hash"], "amount": str(total)},
                                     "coin_id": coin.name().hex(), "puzzle_reveal": bytes(puzzle).hex(), "solution": bytes(solution).hex()},
             "conditions_hex": bytes(actual).hex(), "signing_request": {"scheme": "AGG_SIG_ME", "public_key": owner.hex(),
-                "application_message": message.hex(), "additional_data": GENESIS, "message": final_message.hex()},
+                "application_message": message.hex(), "additional_data": domain.hex(), "message": final_message.hex()},
             "expected_outputs": outputs, "accounting": {"input": str(total), "payment": str(payment), "change": str(change),
                 "fee": str(fee), "reserved_fee": str(fee), "maximum_fee": str(max_fee)},
             "signature_verified": False, "mempool_validated": False, "transactions_submitted": 0}

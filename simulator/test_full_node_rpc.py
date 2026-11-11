@@ -73,10 +73,39 @@ def evidence():
         previous = digest(body)
         records.append({**body, "sha256": previous})
     result["journal"] = decode_history(encoded({"schema_version": 1, "context": context, "records": records}) + b"\n")
+    from offline_bridge import NEGATIVES
+    result["offline_pipeline"] = []
+    for confirmation in fee["confirmations"][:2]:
+        confirmation["contract_spends"][0]["final_signing_message"] = "ab"
+        prepared = {"validation": "isolated-offline-unsigned-fee-preparation", "network": ISOLATED_REHEARSAL.network(),
+                    "node_baseline": ISOLATED_REHEARSAL.version, "transactions_submitted": 0,
+                    "runtime": {"consensus_constants_sha256": "ab" * 32}, "signing_request": {"message": "ab"},
+                    "expected_outputs": [copy.deepcopy(r["coin"]) for r in confirmation["output_records"]]}
+        verified = {"validation": "isolated-offline-signature-verified-fee-bundle", "network": ISOLATED_REHEARSAL.network(),
+                    "preparation": prepared, "signature_verified": True, "mempool_validated": False, "transactions_submitted": 0,
+                    "spend_bundle": copy.deepcopy(confirmation["bundle"]), "bundle_id": confirmation["bundle_id"]}
+        result["offline_pipeline"].append({"scenario": confirmation["scenario"], "node_constants_sha256": "ab" * 32,
+            "node_environment_unchanged": True, "bridge": {"verified": verified, "negative_cases": list(NEGATIVES),
+            "original_bundle_equal": True, "private_keys_loaded": False, "sockets_allowed": False}})
     return result
 
 
 class RpcEvidenceTests(unittest.TestCase):
+    def test_offline_pipeline_mutations_fail(self):
+        changes = [lambda r: r["offline_pipeline"].pop(),
+            lambda r: r["offline_pipeline"][0].update(node_environment_unchanged=False),
+            lambda r: r["offline_pipeline"][0]["bridge"]["negative_cases"].pop(),
+            lambda r: r["offline_pipeline"][0]["bridge"].update(private_keys_loaded=True),
+            lambda r: r["offline_pipeline"][0]["bridge"]["verified"].update(bundle_id="wrong"),
+            lambda r: r["offline_pipeline"][0]["bridge"]["verified"].update(transactions_submitted=1),
+            lambda r: r["offline_pipeline"][0]["bridge"]["verified"]["preparation"]["runtime"].update(consensus_constants_sha256="00" * 32),
+            lambda r: r["offline_pipeline"][0]["bridge"]["verified"]["preparation"]["expected_outputs"].pop()]
+        for change in changes:
+            r = evidence()
+            change(r)
+            with self.assertRaises(RuntimeError):
+                audit(r)
+
     def test_consistent_evidence(self):
         audit(evidence())
 

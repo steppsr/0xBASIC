@@ -5,6 +5,8 @@ import importlib.metadata as metadata
 import json
 from pathlib import Path
 import sys
+import os
+import subprocess
 
 from smoke import ROOT, BASE, require
 
@@ -71,6 +73,36 @@ def audit(result):
     audit_reconfirm(result["reconfirmation"], result["fee_payment"], reorg)
     audit_shared_confirmation(result)
     audit_journal(result)
+    audit_offline_pipeline(result)
+
+
+def audit_offline_pipeline(result):
+    from network_identity import ISOLATED_REHEARSAL
+    from offline_bridge import NEGATIVES
+    entries = result["offline_pipeline"]
+    require([r["scenario"] for r in entries] == ["partial", "exact"], "Missing shared offline controls")
+    for entry, confirmation in zip(entries, result["fee_payment"]["confirmations"]):
+        bridge = entry["bridge"]
+        verified = bridge["verified"]
+        prepared = verified["preparation"]
+        require(bridge["negative_cases"] == NEGATIVES and bridge["original_bundle_equal"] is True
+                and bridge["private_keys_loaded"] is False and bridge["sockets_allowed"] is False
+                and entry["node_environment_unchanged"] is True, "Incomplete offline isolation controls")
+        require(verified["validation"] == "isolated-offline-signature-verified-fee-bundle"
+                and prepared["validation"] == "isolated-offline-unsigned-fee-preparation"
+                and verified["network"] == prepared["network"] == ISOLATED_REHEARSAL.network()
+                and prepared["node_baseline"] == ISOLATED_REHEARSAL.version, "Wrong offline identity")
+        require(verified["signature_verified"] is True and verified["mempool_validated"] is False
+                and verified["transactions_submitted"] == 0 and prepared["transactions_submitted"] == 0,
+                "Offline evidence claims node validation")
+        require(verified["spend_bundle"] == confirmation["bundle"] and verified["bundle_id"] == confirmation["bundle_id"],
+                "Submitted bundle differs from shared verifier")
+        require(hex32(entry["node_constants_sha256"]) == prepared["runtime"]["consensus_constants_sha256"]
+                and prepared["signing_request"]["message"] == confirmation["contract_spends"][0]["final_signing_message"],
+                "Shared consensus/signing evidence differs")
+        children = {(hex32(c["parent_coin_info"]), hex32(c["puzzle_hash"]), int(c["amount"])) for c in prepared["expected_outputs"]}
+        expected = {(hex32(r["coin"]["parent_coin_info"]), hex32(r["coin"]["puzzle_hash"]), r["coin"]["amount"]) for r in confirmation["output_records"]}
+        require(children == expected and len(prepared["expected_outputs"]) == len(expected), "Shared children differ from confirmed outputs")
 
 
 def audit_shared_confirmation(result):
@@ -184,12 +216,42 @@ async def rehearse(node, api, binary, run, bt):
 
         directory = run / "rpc-fees"
         directory.mkdir()
+        result["offline_pipeline"] = []
+        async def verify_control(label, original, manifest, details, outputs):
+            from isolated_observation import observe_isolated
+            coin = original.coin_spends[0].coin
+            obs = await asyncio.to_thread(observe_isolated, transport.call, coin.name().hex(), coin.puzzle_hash.hex(), int(coin.amount))
+            work = directory / ("pipeline-" + label)
+            work.mkdir()
+            (work / "observation.json").write_text(json.dumps(obs), encoding="utf-8")
+            (work / "solution.json").write_text(json.dumps({"paymentAmount": details["payment_amount"], "feeAmount": details["fee_amount"]}), encoding="utf-8")
+            (work / "original-bundle.json").write_text(json.dumps(original.to_json_dict()), encoding="utf-8")
+            roots = {key: os.environ.get(key) for key in ("CHIA_ROOT", "CHIA_KEYS_ROOT", "CHIA_SIMULATOR_ROOT")}
+            await asyncio.to_thread(subprocess.run, [sys.executable, str(BASE / "offline_bridge.py"), "--binary", str(binary),
+                "--manifest", str(manifest), "--work", str(work)], check=True, timeout=120)
+            require(roots == {key: os.environ.get(key) for key in roots}, "Offline worker changed node environment")
+            bridge = json.loads((work / "bridge-result.json").read_text())
+            verified = bridge["verified"]
+            constants_hash = hashlib.sha256(json.dumps(node.constants.to_json_dict(), sort_keys=True, separators=(",", ":")).encode()).hexdigest()
+            require(verified["preparation"]["runtime"]["consensus_constants_sha256"] == constants_hash
+                    and verified["preparation"]["signing_request"]["additional_data"] == node.constants.AGG_SIG_ME_ADDITIONAL_DATA.hex(), "Offline consensus context differs from actual node")
+            from chia_rs import Coin
+            from chia_rs.sized_bytes import bytes32
+            from chia_rs.sized_ints import uint64
+            expected = {Coin(bytes32.from_hexstr(c["parent_coin_info"]), bytes32.from_hexstr(c["puzzle_hash"]), uint64(int(c["amount"])))
+                        for c in verified["preparation"]["expected_outputs"]}
+            require(expected == set(outputs) and verified["preparation"]["signing_request"]["message"] == details["final_signing_message"], "Shared pipeline differs from independent fee oracle")
+            checked = SpendBundle.from_json_dict(verified["spend_bundle"])
+            require(checked == original, "Shared pipeline returned a different bundle")
+            result["offline_pipeline"].append({"scenario": label, "node_constants_sha256": constants_hash, "bridge": bridge,
+                                                "node_environment_unchanged": True})
+            return checked
         from chia.types.blockchain_format.program import Program
         from chia.simulator.simulator_protocol import FarmNewBlockProtocol
         # Seed the dedicated anyone-can-spend funding puzzle with local rewards.
         for _ in range(2):
             await api.farm_new_transaction_block(FarmNewBlockProtocol(Program.to(1).get_tree_hash()))
-        result["fee_payment"] = await fee_payment(node, api, binary, directory, submitter=submit)
+        result["fee_payment"] = await fee_payment(node, api, binary, directory, submitter=submit, verify_control=verify_control)
         journal.record("fees-confirmed", {"bundle_ids": [c["bundle_id"] for c in result["fee_payment"]["confirmations"]]})
         # Compare RPC records against independently asserted block/store evidence.
         before = await asyncio.to_thread(state, transport.call)

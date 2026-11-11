@@ -79,3 +79,5 @@ Testnet integration is selected for future implementation: [plan](testnet-integr
 [TN-4b5 saved observation history](testnet-observation-history.md) preserves atomic lifecycle checkpoints after interruption without treating historical observations as fresh validation.
 
 [TN-4b6 fixed observation identities](testnet-observation-identity.md) connects shared confirmation logic to the real isolated node while keeping public-testnet defaults strict.
+
+[TN-4b7 shared offline pipeline](testnet-offline-pipeline.md) connects preparation and detached-signature verification to actual isolated RPC submissions, with fixed consensus constants and independent fee-oracle comparisons.
