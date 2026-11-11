@@ -1,5 +1,7 @@
 # Development status and roadmap
 
+The [TN-4 exit review and next boundaries](spec/testnet-rehearsal-review.md) records isolated testnet rehearsal coverage and remaining signer, host and public submission-tool decisions. The review itself needs no native Linux rerun.
+
 ## Current checkpoint
 
 The development compiler is `0.3.0-alpha.1`, language `0.3`, ABI 1, target profile v2. [FP-1](spec/reserve-fee-activation.md) adds RESERVE_FEE; Windows and native LANDO passed, confirmed on 2026-11-07. The [fee-payment prerelease](spec/fee-release-review.md) is published; its exact source revision and tested runtime scope are recorded in the release review. FOR/NEXT is enabled through public library and CLI paths with scoped counters, header snapshots, carried state, nested returns and ordered emissions. Windows validation and the expanded native Linux gate are recorded in the [activation checkpoint](spec/for-next-public.md). The [counted-loop prerelease](spec/loop-release-review.md) was explicitly approved and published on 2026-11-06. The historical release evidence below applies to its original revision.

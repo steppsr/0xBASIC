@@ -81,3 +81,5 @@ Testnet integration is selected for future implementation: [plan](testnet-integr
 [TN-4b6 fixed observation identities](testnet-observation-identity.md) connects shared confirmation logic to the real isolated node while keeping public-testnet defaults strict.
 
 [TN-4b7 shared offline pipeline](testnet-offline-pipeline.md) connects preparation and detached-signature verification to actual isolated RPC submissions, with fixed consensus constants and independent fee-oracle comparisons.
+
+[TN-4 exit review](testnet-rehearsal-review.md) maps isolated evidence to the plan and identifies signer, host and operator-tooling work before the public trial.
