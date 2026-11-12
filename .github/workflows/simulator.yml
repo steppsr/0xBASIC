@@ -51,6 +51,8 @@ jobs:
         run: .work/m4/venv/${{ matrix.bin }}/${{ matrix.python }} integration/verify_preparation.py --binary target/debug/${{ matrix.executable }}
       - name: Verify offline detached fee signatures
         run: .work/m4/venv/${{ matrix.bin }}/${{ matrix.python }} integration/verify_signing.py --binary target/debug/${{ matrix.executable }}
+      - name: Verify test-owner key creation with public fixtures
+        run: .work/m4/venv/${{ matrix.bin }}/${{ matrix.python }} integration/verify_owner_keys.py
       - name: Test simulator reporting failure paths
         run: .work/m4/venv/${{ matrix.bin }}/${{ matrix.python }} -m unittest discover -s simulator -p 'test_*.py'
       - name: Verify all scenarios and identical fresh reruns
@@ -104,5 +106,12 @@ jobs:
         with:
           name: testnet-signing-${{ matrix.platform }}
           path: .work/testnet/signing-${{ matrix.platform }}.json
+          include-hidden-files: true
+          if-no-files-found: error
+      - name: Upload test-owner key validation evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: testnet-owner-keys-${{ matrix.platform }}
+          path: .work/testnet/owner-keys-${{ matrix.platform }}.json
           include-hidden-files: true
           if-no-files-found: error

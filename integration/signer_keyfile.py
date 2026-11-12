@@ -1,5 +1,5 @@
-"""TN-3b1: Linux-only protected test-owner material reader; no signing or key creation."""
-from contextlib import ExitStack
+"""Linux-only protected test-owner storage; no cryptographic signing."""
+from contextlib import ExitStack, contextmanager
 import os
 from pathlib import Path
 import re
@@ -44,18 +44,19 @@ def _decode(raw):
     return material
 
 
-def read_test_owner(path):
-    """Read 32 encoded bytes only from the account's fixed native-home vault.
+def _platform():
+    require(sys.platform == "linux" and os.open in os.supports_dir_fd)
+    uid = os.getuid()
+    require(uid != 0)
+    return uid
 
-    All directories are opened by descriptor without following symlinks. The
-    caller must validate the scalar with the pinned crypto runtime before use.
-    No mutable environment variable selects the home directory or vault.
-    """
+
+@contextmanager
+def _open_vault(path):
+    """Keep the checked directory descriptors alive for the entire operation."""
     descriptors = ExitStack()
     try:
-        require(sys.platform == "linux" and os.open in os.supports_dir_fd)
-        uid = os.getuid()
-        require(uid != 0)
+        uid = _platform()
         home = _home(uid)
         require(home.is_absolute() and home != Path("/") and ".." not in home.parts)
         vault = home / ".local/share/0xbasic-signer"
@@ -77,7 +78,17 @@ def read_test_owner(path):
         for index, part in enumerate(vault.parts[1:]):
             parent = keep(os.open(part, flags, dir_fd=parent))
             _directory(os.fstat(parent), uid, vault=index == len(vault.parts) - 2)
-        fd = keep(os.open(target.name, os.O_RDONLY | os.O_NOFOLLOW | os.O_CLOEXEC | os.O_NONBLOCK, dir_fd=parent))
+        yield uid, parent, target.name, keep
+    except (OSError, ValueError, TypeError, KeyError, AttributeError):
+        raise KeyFileError("Protected test-owner file validation failed") from None
+    finally:
+        descriptors.close()
+
+
+def read_test_owner(path):
+    """Read encoded material; the cryptographic caller must validate its scalar."""
+    with _open_vault(path) as (uid, parent, name, keep):
+        fd = keep(os.open(name, os.O_RDONLY | os.O_NOFOLLOW | os.O_CLOEXEC | os.O_NONBLOCK, dir_fd=parent))
         before = os.fstat(fd)
         _file(before, uid)
         raw = bytearray()
@@ -91,7 +102,26 @@ def read_test_owner(path):
         require((before.st_dev, before.st_ino, before.st_size, before.st_mtime_ns, before.st_ctime_ns)
                 == (after.st_dev, after.st_ino, after.st_size, after.st_mtime_ns, after.st_ctime_ns))
         return _decode(bytes(raw))
-    except (OSError, ValueError, TypeError, KeyError, AttributeError):
-        raise KeyFileError("Protected test-owner file validation failed") from None
-    finally:
-        descriptors.close()
+
+
+def _create_test_owner(path, material):
+    """Exclusive creation after caller's crypto validation. Never replace/delete.
+
+    A write or synchronization failure may leave a protected incomplete file.
+    It must be inspected explicitly; retrying the same name refuses overwrite.
+    """
+    require(type(material) is bytes and len(material) == 32)
+    raw = HEADER + material.hex().encode("ascii") + b"\n"
+    _decode(raw)
+    with _open_vault(path) as (uid, parent, name, keep):
+        fd = keep(os.open(name, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW | os.O_CLOEXEC,
+                          0o600, dir_fd=parent))
+        os.fchmod(fd, 0o600)
+        offset = 0
+        while offset < len(raw):
+            written = os.write(fd, raw[offset:])
+            require(written > 0)
+            offset += written
+        _file(os.fstat(fd), uid)
+        os.fsync(fd)
+        os.fsync(parent)

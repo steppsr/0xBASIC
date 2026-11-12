@@ -85,3 +85,5 @@ Testnet integration is selected for future implementation: [plan](testnet-integr
 [TN-4 exit review](testnet-rehearsal-review.md) maps isolated evidence to the plan and identifies signer, host and operator-tooling work before the public trial.
 
 [TN-3b1 protected test-owner files](testnet-signer-keyfile.md) implements the Linux file-reading boundary for the selected offline signer direction, with a focused native LANDO gate.
+
+[TN-3b2 owner-key creation](testnet-owner-creation.md) adds exclusive creation, pinned scalar validation and owner binding, with failure-preserving storage and public-fixture tests.

@@ -1,5 +1,7 @@
 # TN-3b1: protected test-owner file boundary
 
+Follow-up: [TN-3b2](testnet-owner-creation.md) adds exclusive creation and pinned scalar/owner validation. The reading boundary described here remains in force; creation has a separate native gate.
+
 Status: LANDO with a separate testnet environment and a protected-file offline signer selected on 2026-11-12. Windows policy/refusal tests passed; native LANDO filesystem validation passed, confirmed on 2026-11-12. This slice implements only the file-reading boundary, not key generation, cryptographic signing, installation or live transactions.
 
 The [TN-4 exit review](testnet-rehearsal-review.md) identified owner-key custody as the next implementation decision. A dedicated test-only owner is separate from the wallet that later funds its contract. Public deterministic fixture keys remain test data and must never become public-network custody keys.

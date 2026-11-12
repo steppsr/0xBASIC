@@ -1,6 +1,6 @@
 # Experimental testnet integration
 
-[TN-3b1 protected test-owner files](../docs/spec/testnet-signer-keyfile.md) adds a Linux-only internal file reader for the selected offline signer design. It is not yet connected to a signing CLI. The integration suite has 70 tests, with 12 actual-filesystem cases skipped on Windows and required on Linux.
+[TN-3b1 protected test-owner files](../docs/spec/testnet-signer-keyfile.md) adds a Linux-only internal file reader for the selected offline signer design. [TN-3b2 owner-key creation](../docs/spec/testnet-owner-creation.md) adds exclusive creation and scalar/owner validation; neither is connected to spend signing. The integration suite has 80 tests, with 19 actual-filesystem cases skipped on Windows and required on Linux. The separate pinned-runtime owner-key matrix uses only public disposable fixtures.
 
 TN-1 adds `testnet_probe.py`, a separate standard-library Python read-only client. It does not change the compiler or connect automatically. See the [design](../docs/spec/testnet-design.md) and [TN-1 checkpoint](../docs/spec/testnet-readonly.md).
 
