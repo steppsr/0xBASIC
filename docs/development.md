@@ -1,5 +1,7 @@
 # Development status and roadmap
 
+[TN-3b1 protected test-owner files](spec/testnet-signer-keyfile.md) is the next executable gate: fixed native-home vault, descriptor-based Linux permission checks, portable refusal/policy tests and 12 native filesystem tests. No real keys are created or loaded by the test commands. Native LANDO passed, confirmed on 2026-11-12.
+
 The [TN-4 exit review and next boundaries](spec/testnet-rehearsal-review.md) records isolated testnet rehearsal coverage and remaining signer, host and public submission-tool decisions. The review itself needs no native Linux rerun.
 
 ## Current checkpoint

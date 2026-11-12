@@ -1,5 +1,7 @@
 # Testnet integration: selected milestone
 
+Next executable slice: [TN-3b1 protected test-owner file boundary](testnet-signer-keyfile.md). The user selected the LANDO/separate-testnet and protected-file offline signer direction on 2026-11-12. Windows policy/refusal tests passed; native filesystem validation passed, confirmed on 2026-11-12. No node installation or real key creation has occurred.
+
 Current position (2026-11-11): TN-4b7 passed Windows and native LANDO. The [TN-4 exit review](testnet-rehearsal-review.md) consolidates isolated coverage and remaining live-use work. Earlier slice descriptions below record what remained at each historical checkpoint; the consolidated review supersedes those outstanding-work lists.
 
 Status: selected by the user on 2026-11-09 after the fee-payment milestone and approved 0.3 prerelease. [TN-0 design](testnet-design.md) selects testnet11/Chia2.7.5 and records the source audit; [TN-1 read-only integration](testnet-readonly.md) passed Windows and native LANDO, confirmed on 2026-11-09. This document defines work to review; it does not change compiler commands or authorize public transactions. The current compiler remains 0.3.0-alpha.1, language 0.3, ABI 1, profile chia-clvm-0.19-strict-v2.

@@ -1,5 +1,7 @@
 # Experimental testnet integration
 
+[TN-3b1 protected test-owner files](../docs/spec/testnet-signer-keyfile.md) adds a Linux-only internal file reader for the selected offline signer design. It is not yet connected to a signing CLI. The integration suite has 70 tests, with 12 actual-filesystem cases skipped on Windows and required on Linux.
+
 TN-1 adds `testnet_probe.py`, a separate standard-library Python read-only client. It does not change the compiler or connect automatically. See the [design](../docs/spec/testnet-design.md) and [TN-1 checkpoint](../docs/spec/testnet-readonly.md).
 
 The only allowed POST routes are get_version, get_network_info, get_blockchain_state and get_coin_record_by_name. Network testnet11, prefix txch, reviewed genesis and exact node version2.7.5 are required. The endpoint must use HTTPS with a literal loopback IP and explicit port; localhost/DNS names and non-loopback addresses are rejected. Remote access requires a separately established SSH tunnel. The tool does not discover nodes, use environment proxies, follow redirects, load default credentials, start services or send transactions.

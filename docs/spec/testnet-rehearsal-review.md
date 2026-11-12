@@ -1,5 +1,7 @@
 # TN-4 exit review and next implementation boundaries
 
+Follow-up (2026-11-12): the user agreed to the proposed LANDO/separate-testnet and protected-file offline signer direction. [TN-3b1](testnet-signer-keyfile.md) implements the first file-boundary slice; no installation, real key creation or public transaction has occurred. All three CI workflows for this review revision `dd3258c626ecf5d672ecfeaf90bde6696a3efdd9` passed after rerunning two Windows artifact-upload failures; test steps had passed on their initial attempts.
+
 Review date: 2026-11-11. TN-4b7 Windows and native LANDO gates passed. Implementation revision: `e03519bd41b9413f0771d628b734c80014156e1e`. Exact-revision CI is recorded below. This review concerns the dedicated isolated rehearsal, not public-network deployment.
 
 ## Exit evidence
