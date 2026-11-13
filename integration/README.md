@@ -1,5 +1,7 @@
 # Experimental testnet integration
 
+[TN-4d2a isolated submission transport](../docs/spec/testnet-submission-transport.md) adds an internal single-use `push_tx` transport, exercised only against disposable TLS fixtures. Original read-only allowlists are unchanged. Current suite: 130 tests (19 Linux-only); native LANDO passed, confirmed on 2026-11-13. Fresh verification/approval and bounded dispatch must be wired before a public submission command exists.
+
 [TN-4d1 submission attempt records](../docs/spec/testnet-submission-attempt.md) adds an internal intent-before-dispatch persistence boundary, exercised only by disposable callbacks. It has no CLI or RPC adapter. Current integration suite: 123 tests (19 Linux-only); native LANDO passed, confirmed on 2026-11-12.
 
 [TN-4c4 saved monitor history](../docs/spec/testnet-monitor-history.md) adds optional `monitor_fee.py --history NEW_FILE`. Accepted observations and the final outcome are saved atomically as historical evidence. Existing files are refused; history never authorizes automatic resume. Current suite: 113 tests (19 Linux-only); operator matrix: confirmation 9 positive/11 negative and monitor 5 positive/4 negative.

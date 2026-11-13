@@ -1,6 +1,8 @@
 # Testnet integration: selected milestone
 
-Current executable gate: [TN-4d1 submission intent/outcome boundary](testnet-submission-attempt.md). Internal persistence and disposable callback tests precede any public submission command. Native LANDO passed, confirmed on 2026-11-12; the linked document includes the following adapter and rehearsal steps.
+Current executable gate: [TN-4d2a isolated submission transport](testnet-submission-transport.md). Windows passed 130 tests (19 Linux-only skips); native LANDO passed, confirmed on 2026-11-13. The adapter is split into this transport gate, verified/bounded dispatch, then full-node rehearsal before any public command.
+
+Previous gate: [TN-4d1 submission intent/outcome boundary](testnet-submission-attempt.md). Windows and native LANDO passed, confirmed on 2026-11-12; published as `893e53d`.
 
 Previous gate: [TN-4c4 saved monitor history](testnet-monitor-history.md). Windows and native LANDO passed, confirmed on 2026-11-12; published at `c29c5219cd81f124d7204acabe06db3d5d4699c6`.
 

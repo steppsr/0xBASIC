@@ -23,6 +23,8 @@ Abrupt process death may leave an intent-only snapshot or an unused temporary fi
 
 ## Following implementation steps
 
+Implementation split: [TN-4d2a](testnet-submission-transport.md) tests the isolated transport first; TN-4d2b will add verified dispatch and bounded worker lifecycle. The full adapter requirements below still apply before a public command is enabled.
+
 TN-4d2 will define and test the authenticated submission adapter with local TLS fixtures. Before dispatch it must independently revalidate original artifacts, fresh preparation, detached signature and exact approved bundle ID; check live node identity, synced state and the exact unspent coin; and freeze the verified bundle bytes. Historical monitor verification must never authorize submission. The operator's explicit approval binds one exact bundle, not an arbitrary saved verification flag. Output/input/credential path aliases must be refused before creating records.
 
 That adapter must use an explicit loopback mutual-TLS endpoint and a separate mutating route allowlist, with no proxy, redirect, endpoint discovery or automatic HTTP retry. Raw node replies need strict normalization into the labels above; malformed replies and transport failures are ambiguous. Adapter mapping and bounded request/worker cleanup require their own executable tests before a public command is enabled. A successful reply remains distinct from the existing read-only confirmation monitor.

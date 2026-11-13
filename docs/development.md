@@ -1,6 +1,8 @@
 # Development status and roadmap
 
-[TN-4d1 submission attempt records](spec/testnet-submission-attempt.md) adds internal persistence before a single dispatch callback, with ambiguous interruption outcomes and no automatic retry. Windows passed 123 tests (19 Linux-only skips); native LANDO passed, confirmed on 2026-11-12. The linked gate uses only the standard library and disposable fixtures.
+[TN-4d2a isolated submission transport](spec/testnet-submission-transport.md) adds a separate single-use push transport and strict reply handling. Windows passed 130 tests (19 Linux-only skips); native LANDO passed, confirmed on 2026-11-13. It has no public CLI; verified dispatch and bounded workers remain next.
+
+[TN-4d1 submission attempt records](spec/testnet-submission-attempt.md) adds internal persistence before a single dispatch callback, with ambiguous interruption outcomes and no automatic retry. Windows passed 123 tests (19 Linux-only skips); native LANDO passed, confirmed on 2026-11-12; published as `893e53d`.
 
 [TN-4c4 saved monitor history](spec/testnet-monitor-history.md) adds optional completed observation checkpoints and final outcomes. Windows unit suite: 113 tests (19 native skips); native LANDO passed, confirmed on 2026-11-12. Published at `c29c521`; the linked gate contains exact commands and persistence limits.
 
