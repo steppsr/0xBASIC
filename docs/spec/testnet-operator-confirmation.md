@@ -1,5 +1,7 @@
 # TN-4c1: read-only operator confirmation command
 
+Follow-up: [TN-4c2 historical confirmation](testnet-historical-confirmation.md) adds an explicit read-only historical mode. The original default mode and freshness limits below remain unchanged; the new mode has its own validation gate.
+
 Status: Windows integration suite passed 92 tests with 19 Linux-only skips; the actual CLI matrix passed six positive/five negative cases over mutual TLS with resources closed. Native LANDO passed, confirmed on 2026-11-12. TN-3b3 passed native Linux and is published at `096967f5aaac0388b1c2adf6e05be153932f11c7`.
 
 TN-3b3 exact-revision CI passed: [compiler](https://github.com/steppsr/0xBASIC/actions/runs/43357405557), [simulator](https://github.com/steppsr/0xBASIC/actions/runs/43357405538), [packages](https://github.com/steppsr/0xBASIC/actions/runs/43357405533).

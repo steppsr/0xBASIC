@@ -10,7 +10,8 @@ import sys
 import tempfile
 import threading
 
-from prepare_fee import ROOT, cli, digest, prepare
+from prepare_fee import ROOT, cli, digest, prepare, _prepare_for_identity
+from network_identity import PUBLIC_TESTNET
 from test_confirmation import Fixture
 from confirmation import name
 from testnet_probe import GENESIS, coin_id
@@ -77,11 +78,16 @@ def main():
                    "before": peak, "after": dict(peak), "coin": {"name": coin_id(parent, ph, 1000), "parent_coin_info": parent,
                    "puzzle_hash": ph, "amount": "1000", "confirmed_block_index": 90, "spent_block_index": 0, "spent": False,
                    "coinbase": False, "timestamp": 1}, "atomic_snapshot": False, "spend_validated": False, "transactions_submitted": 0}
-            def reset(payment=600, fee=10):
-                obs["observed_at"] = datetime.now(timezone.utc).isoformat()
+            def reset(payment=600, fee=10, historical=False, original_age=60):
+                created = datetime.now(timezone.utc) - timedelta(days=2)
+                obs["observed_at"] = ((created - timedelta(seconds=original_age)) if historical else datetime.now(timezone.utc)).isoformat()
                 op.write_text(json.dumps(obs), encoding="utf-8")
                 sp.write_text(json.dumps({"paymentAmount": str(payment), "feeAmount": str(fee)}), encoding="utf-8")
-                prepared = prepare(binary, manifest, op, sp, 20)
+                if historical:
+                    prepared = _prepare_for_identity(binary, manifest, op, sp, 20, PUBLIC_TESTNET, 3600, observation_now=created)
+                    prepared["prepared_at"] = created.isoformat()
+                else:
+                    prepared = prepare(binary, manifest, op, sp, 20)
                 pp.write_text(json.dumps(prepared, sort_keys=True, indent=2), encoding="utf-8")
                 request = prepared["signing_request"]
                 response = {"schema_version": 1, "scheme": "AugSchemeMPL", "preparation_sha256": digest(pp.read_bytes()),
@@ -138,6 +144,43 @@ def main():
                 if case in ("invalid-signature", "stale-preparation-observation", "invalid-depth"):
                     assert not seen, case
                 negatives.append(case)
+            for state in ("confirmed", "unspent", "reorged"):
+                f = reset(historical=True)
+                saved_inputs = {p: p.read_bytes() for p in (op, sp, pp, rp)}
+                extra = ["--historical"]
+                if state == "unspent":
+                    f.records[name(f.input)] = f.record(f.input, 90, 0)
+                elif state == "reorged":
+                    extra += ["--previous-height", "100", "--previous-header-hash", "cc" * 32]
+                result = run(extra=extra)
+                assert result.returncode == (0 if state == "confirmed" else 3), result.stderr
+                saved = json.loads(report.read_text())
+                assert saved["verification_mode"] == "historical" and not saved["fresh_for_submission"]
+                assert saved["observation"]["status"] == state
+                assert all(p.read_bytes() == raw for p, raw in saved_inputs.items())
+                positives.append("historical-" + state)
+            for case in ("default-refuses-history", "historically-stale", "future-preparation", "reversed-time", "historical-wrong-signature"):
+                reset(historical=True, original_age=600 if case == "historically-stale" else 60)
+                report.write_text("stale success")
+                if case in ("future-preparation", "reversed-time"):
+                    prepared = json.loads(pp.read_text())
+                    prepared["prepared_at"] = (datetime.now(timezone.utc) + timedelta(hours=1)).isoformat() if case == "future-preparation" else (datetime.fromisoformat(prepared["observation_time"]) - timedelta(seconds=1)).isoformat()
+                    pp.write_text(json.dumps(prepared))
+                    reply = json.loads(rp.read_text()); reply["preparation_sha256"] = digest(pp.read_bytes()); rp.write_text(json.dumps(reply))
+                elif case == "historical-wrong-signature":
+                    reply = json.loads(rp.read_text()); reply["signature"] = "00" * 96; rp.write_text(json.dumps(reply))
+                result = run(extra=[] if case == "default-refuses-history" else ["--historical"])
+                assert result.returncode == 1 and not report.exists() and not seen, case
+                negatives.append(case)
+            reset(historical=True)
+            from sign_fee import review
+            from testnet_probe import ProbeError
+            try:
+                review(binary, manifest, op, sp, pp, 20)
+            except ProbeError:
+                negatives.append("signing-review-refuses-history")
+            else:
+                raise RuntimeError("Signing review accepted expired observation")
     finally:
         if thread is not None:
             server.shutdown()
@@ -145,7 +188,7 @@ def main():
         if thread is not None:
             thread.join(timeout=5)
             assert not thread.is_alive()
-    assert len(positives) == 6 and len(negatives) == 5
+    assert len(positives) == 9 and len(negatives) == 11
     evidence = {"schema_version": 1, "validation": "public-fixture-operator-confirmation", "positive_cases": positives,
                 "negative_cases": negatives, "live_node_contacted": False, "resources_closed": True,
                 "binary_sha256": digest(binary.read_bytes()), "source_sha256": {str(p.relative_to(ROOT)).replace("\\", "/"): digest(p.read_bytes())
@@ -153,7 +196,7 @@ def main():
                             ROOT / "integration/confirmation_transport.py", ROOT / "integration/testnet_probe.py",
                             ROOT / "integration/verify_signed_fee.py", ROOT / "integration/prepare_fee.py", ROOT / "integration/test_confirmation.py")}}
     destination.write_text(json.dumps(evidence, sort_keys=True, indent=2) + "\n", encoding="utf-8")
-    print(f"PASS: 6 positive / 5 negative operator confirmation cases over mutual TLS; resources closed. Report: {destination}")
+    print(f"PASS: 9 positive / 11 negative operator confirmation cases over mutual TLS; resources closed. Report: {destination}")
 
 
 if __name__ == "__main__":

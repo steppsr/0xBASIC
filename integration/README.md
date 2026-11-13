@@ -1,5 +1,7 @@
 # Experimental testnet integration
 
+[TN-4c2 historical confirmation](../docs/spec/testnet-historical-confirmation.md) adds `confirm_fee.py --historical` for old signed expectations. It preserves current RPC checks and fresh signing defaults. The suite now has 95 tests (19 Linux-only), and the operator CLI matrix has 9 positive/11 negative cases.
+
 [TN-4c1 operator confirmation](../docs/spec/testnet-operator-confirmation.md) adds `confirm_fee.py`, a single read-only observation after revalidating original signed inputs. Exit 0 means observed confirmed; exit 3 records a valid non-confirmed state; neither submits anything. Original-observation freshness still applies. The integration suite has 92 tests (19 Linux-only); the separate CLI matrix runs over local mutual TLS.
 
 [TN-3b3 approved offline signing](../docs/spec/testnet-approved-signing.md) adds `sign_fee.py`: full `--review-only` output followed by a separate Linux signing invocation with an explicit preparation digest. It never submits. The integration suite now has 86 tests (19 Linux-only); the pinned signer matrix uses public fixtures and reports whether native key loading was exercised.

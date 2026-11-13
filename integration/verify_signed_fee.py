@@ -32,6 +32,18 @@ def verify_signed(binary, manifest, observation, solution, preparation, response
     return _verify_for_identity(binary, manifest, observation, solution, preparation, response, max_fee, PUBLIC_TESTNET, max_age)
 
 
+def verify_historical_signed(binary, manifest, observation, solution, preparation, response, max_fee, max_age=300):
+    """Reconstruct historical expectations only; never authorize signing/submission."""
+    raw, regenerated = _revalidate_for_identity(binary, manifest, observation, solution, preparation,
+                                               max_fee, max_age, PUBLIC_TESTNET, historical=True)
+    response_bytes = Path(response).read_bytes()
+    result = _verified_bundle(raw, response_bytes, read_json(response_bytes), regenerated, PUBLIC_TESTNET)
+    result.update(validation="historical-offline-signature-verified-fee-bundle", fresh_for_signing=False,
+                  fresh_for_submission=False, historical_timestamps_are_proof=False,
+                  observation_age_checked_at=regenerated["prepared_at"])
+    return result
+
+
 def _verify_for_identity(binary, manifest, observation, solution, preparation, response, max_fee, identity, max_age=300):
     validate_identity(identity)
     original_bytes, regenerated = _revalidate_for_identity(binary, manifest, observation, solution, preparation, max_fee, max_age, identity)
@@ -44,19 +56,29 @@ def revalidate_preparation(binary, manifest, observation, solution, preparation,
     return _revalidate_for_identity(binary, manifest, observation, solution, preparation, max_fee, max_age, PUBLIC_TESTNET)
 
 
-def _revalidate_for_identity(binary, manifest, observation, solution, preparation, max_fee, max_age, identity):
-    validate_identity(identity)
-    original_bytes = Path(preparation).read_bytes()
-    original = read_json(original_bytes)
-    regenerated = (prepare(binary, manifest, observation, solution, max_fee, max_age) if identity is PUBLIC_TESTNET else
-                   _prepare_for_identity(binary, manifest, observation, solution, max_fee, identity, max_age))
-    require(set(original) == set(regenerated), "Incomplete or extended preparation")
+def _preparation_time(original):
     try:
         created = datetime.fromisoformat(original["prepared_at"])
         observed = datetime.fromisoformat(original["observation_time"])
-        require(created.tzinfo is not None and observed <= created <= datetime.now(timezone.utc), "Invalid preparation timestamp")
-    except (ValueError, TypeError):
+        require(created.tzinfo is not None and observed.tzinfo is not None
+                and observed <= created <= datetime.now(timezone.utc), "Invalid preparation timestamp")
+        return created
+    except (KeyError, ValueError, TypeError):
         raise ProbeError("Invalid preparation timestamp") from None
+
+
+def _revalidate_for_identity(binary, manifest, observation, solution, preparation, max_fee, max_age, identity, *, historical=False):
+    validate_identity(identity)
+    original_bytes = Path(preparation).read_bytes()
+    original = read_json(original_bytes)
+    created = _preparation_time(original)
+    if historical:
+        require(identity is PUBLIC_TESTNET, "Historical verification uses public identity only")
+        regenerated = _prepare_for_identity(binary, manifest, observation, solution, max_fee, identity, max_age, observation_now=created)
+    else:
+        regenerated = (prepare(binary, manifest, observation, solution, max_fee, max_age) if identity is PUBLIC_TESTNET else
+                       _prepare_for_identity(binary, manifest, observation, solution, max_fee, identity, max_age))
+    require(set(original) == set(regenerated), "Incomplete or extended preparation")
     # Only the recomputation timestamp changes. Type-exact canonical JSON avoids True == 1.
     regenerated["prepared_at"] = original["prepared_at"]
     require(canonical(original) == canonical(regenerated), "Preparation differs from independently revalidated inputs")

@@ -7,6 +7,7 @@ import os
 from pathlib import Path
 import sys
 import tempfile
+from datetime import datetime, timedelta, timezone
 import unittest
 from unittest.mock import patch
 
@@ -15,6 +16,7 @@ from confirmation import name
 from test_confirmation import Fixture
 import test_confirmation_transport as tls
 from testnet_probe import ProbeError
+from verify_signed_fee import _preparation_time
 
 
 def verified(f):
@@ -24,6 +26,37 @@ def verified(f):
 
 
 class OperatorConfirmationTests(unittest.TestCase):
+    def test_explicit_historical_mode_is_separate_from_default(self):
+        f = Fixture()
+        with patch.object(confirm_fee, "verify_signed", return_value=verified(f)) as fresh, \
+                patch.object(confirm_fee, "verify_historical_signed", return_value=verified(f)) as historical:
+            r = confirm_fee.confirm(f.call, None, None, None, None, None, None, 20, 3, historical=True)
+            fresh.assert_not_called()
+            historical.assert_called_once()
+            self.assertEqual(r["verification_mode"], "historical")
+            self.assertFalse(r["fresh_for_submission"])
+            historical.reset_mock()
+            r = confirm_fee.confirm(f.call, None, None, None, None, None, None, 20, 3)
+            fresh.assert_called_once()
+            historical.assert_not_called()
+            self.assertEqual(r["verification_mode"], "fresh")
+
+    def test_invalid_historical_selector_never_verifies(self):
+        with patch.object(confirm_fee, "verify_signed") as fresh, patch.object(confirm_fee, "verify_historical_signed") as historical:
+            with self.assertRaises(ProbeError):
+                confirm_fee.confirm(None, None, None, None, None, None, None, 20, 3, historical="true")
+            fresh.assert_not_called()
+            historical.assert_not_called()
+
+    def test_recorded_time_order_and_future_rejected(self):
+        now = datetime.now(timezone.utc)
+        created, observed = now - timedelta(days=2), now - timedelta(days=2, seconds=60)
+        self.assertEqual(_preparation_time({"prepared_at": created.isoformat(), "observation_time": observed.isoformat()}), created)
+        for a, b in [(now + timedelta(hours=1), observed), (created, now), (created.replace(tzinfo=None), observed),
+                     (created, observed.replace(tzinfo=None))]:
+            with self.assertRaises(ProbeError):
+                _preparation_time({"prepared_at": a.isoformat(), "observation_time": b.isoformat()})
+
     def test_verified_expectations_and_all_statuses(self):
         for status, depth in (("confirmed", 3), ("confirming", 4), ("unspent", 3), ("conflicting-spend", 3), ("reorged", 3)):
             f = Fixture()

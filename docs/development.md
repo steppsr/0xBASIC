@@ -1,5 +1,7 @@
 # Development status and roadmap
 
+[TN-4c2 historical confirmation](spec/testnet-historical-confirmation.md) adds explicit read-only observation of old signed preparations without weakening fresh preparation/signing checks. Windows unit and offline matrices passed; native LANDO passed, confirmed on 2026-11-12. The linked gate includes the shared-helper regressions.
+
 [TN-4c1 operator confirmation](spec/testnet-operator-confirmation.md) adds a read-only CLI around independent signature verification and authenticated confirmation observation. Windows integration suite: 92 tests (19 native skips). Native LANDO pending; the linked gate uses public fixtures and a local TLS server only.
 
 [TN-3b3 approved offline signing](spec/testnet-approved-signing.md) adds separate full review and explicit preparation-digest approval, protected owner loading and independent response verification. Windows: 86 integration tests (19 native skips), signer 4 positive/10 negative, detached regression 7 positive/26 negative. Native LANDO pending; exact commands are in the linked gate.

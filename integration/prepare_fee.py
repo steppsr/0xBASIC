@@ -98,7 +98,7 @@ def prepare(binary, manifest_path, observation_path, solution_path, max_fee, max
     return _prepare_for_identity(binary, manifest_path, observation_path, solution_path, max_fee, PUBLIC_TESTNET, max_age)
 
 
-def _prepare_for_identity(binary, manifest_path, observation_path, solution_path, max_fee, identity, max_age=300):
+def _prepare_for_identity(binary, manifest_path, observation_path, solution_path, max_fee, identity, max_age=300, *, observation_now=None):
     validate_identity(identity)
     # Pin the existing independent runtime. No node, wallet or keychain is instantiated.
     sys.path.insert(0, str(ROOT / "simulator"))
@@ -118,7 +118,7 @@ def _prepare_for_identity(binary, manifest_path, observation_path, solution_path
     blobs = {name: (Path(manifest_path).parent / name).read_bytes() for name in FILES}
     obs_bytes, solution_bytes = Path(observation_path).read_bytes(), Path(solution_path).read_bytes()
     obs, sol, manifest = read_json(obs_bytes), read_json(solution_bytes), read_json(blobs["manifest.json"])
-    c, height = _observation_for_identity(obs, identity, max_age)
+    c, height = _observation_for_identity(obs, identity, max_age, observation_now)
     require(set(sol) == {"paymentAmount", "feeAmount"}, "Expected paymentAmount and feeAmount only")
     payment, fee, total = amount(sol["paymentAmount"]), amount(sol["feeAmount"]), amount(c["amount"])
     require(payment > 0 and payment + fee <= total and fee <= uint(max_fee), "Payment or fee exceeds bounds/budget")

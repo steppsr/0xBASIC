@@ -1,6 +1,8 @@
 # Testnet integration: selected milestone
 
-Current executable gate: [TN-4c1 read-only operator confirmation](testnet-operator-confirmation.md). TN-3b3 passed native Linux. The new wrapper validates original signed inputs before RPC and reports exact confirmation state; historical monitoring and explicit submission tooling remain outstanding.
+Current executable gate: [TN-4c2 historical confirmation](testnet-historical-confirmation.md). TN-4c1 passed native Linux and is published. Explicit historical observation retains full signature/artifact validation and does not authorize signing or submission from stale observations.
+
+Previous gate: [TN-4c1 read-only operator confirmation](testnet-operator-confirmation.md). TN-3b3 passed native Linux. The new wrapper validates original signed inputs before RPC and reports exact confirmation state; historical monitoring and explicit submission tooling remain outstanding.
 
 Previous gate: [TN-3b3 preparation-bound signing](testnet-approved-signing.md). Windows approval/signature tests passed; native LANDO passed, confirmed on 2026-11-12. TN-3b2 passed native Linux. Host/baseline setup and public submission/observation tooling remain separate work.
 

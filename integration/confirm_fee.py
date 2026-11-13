@@ -12,24 +12,27 @@ from confirmation import observe_confirmation, name, spend
 from confirmation_transport import ConfirmationTransport
 from prepare_fee import FILES, SOURCE
 from testnet_probe import ProbeError, require, uint, hex32
-from verify_signed_fee import verify_signed
+from verify_signed_fee import verify_signed, verify_historical_signed
 
 
 def confirm(call, binary, manifest, observation, solution, preparation, response, max_fee, depth,
-            max_age=300, previous_height=None, previous_hash=None):
+            max_age=300, previous_height=None, previous_hash=None, *, historical=False):
+    require(type(historical) is bool, "Invalid verification mode")
     require(type(depth) is int and 1 <= depth <= 10000, "Confirmation depth must be 1..10000")
     require((previous_height is None) == (previous_hash is None), "Prior height and hash must be supplied together")
     if previous_height is not None:
         previous_height, previous_hash = uint(previous_height, 32), hex32(previous_hash)
     # Never accept a saved report's signature_verified flag as authority.
-    verified = verify_signed(binary, manifest, observation, solution, preparation, response, max_fee, max_age)
+    verifier = verify_historical_signed if historical else verify_signed
+    verified = verifier(binary, manifest, observation, solution, preparation, response, max_fee, max_age)
     require(len(verified["spend_bundle"]["coin_spends"]) == 1, "Expected one independently verified spend")
     expected = spend(verified["spend_bundle"]["coin_spends"][0])
     children = [{"parent_coin_info": c["parent_coin_info"], "puzzle_hash": c["puzzle_hash"], "amount": int(c["amount"])}
                 for c in verified["preparation"]["expected_outputs"]]
     anchor = None if previous_height is None else {"input_id": name(expected["coin"]), "height": previous_height, "header_hash": previous_hash}
     observed = observe_confirmation(call, expected, children, depth, anchor)
-    return {"schema_version": 1, "validation": "verified-spend-rpc-observation-only",
+    return {"schema_version": 1, "validation": "historical-verified-spend-rpc-observation-only" if historical else "verified-spend-rpc-observation-only",
+            "verification_mode": "historical" if historical else "fresh", "fresh_for_submission": False,
             "expected_bundle_id": verified["bundle_id"], "preparation_sha256": verified["preparation_sha256"],
             "signature_response_sha256": verified["signature_response_sha256"], "signature_verified_offline": True,
             "observation": observed, "chain_proof": False, "transactions_submitted": 0}
@@ -57,6 +60,7 @@ def main():
     parser.add_argument("--timeout", type=float, default=10)
     parser.add_argument("--previous-height", type=int)
     parser.add_argument("--previous-header-hash")
+    parser.add_argument("--historical", action="store_true", help="Revalidate old signed expectations for read-only observation, never spending")
     args = parser.parse_args()
     temporary = None
     try:
@@ -67,7 +71,7 @@ def main():
         client = ConfirmationTransport(args.endpoint, args.ca_cert, args.client_cert, args.client_key, args.timeout)
         result = confirm(client.call, args.binary, args.manifest, args.observation, args.solution, args.preparation,
                          args.signature_response, args.max_fee, args.depth, args.max_observation_age,
-                         args.previous_height, args.previous_header_hash)
+                         args.previous_height, args.previous_header_hash, historical=args.historical)
         report.parent.mkdir(parents=True, exist_ok=True)
         with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8", dir=report.parent, delete=False) as handle:
             temporary = Path(handle.name)
