@@ -1,5 +1,7 @@
 # Development status and roadmap
 
+[TN-4d3a fixed isolated dispatch](spec/testnet-dispatch-identity.md) separates public and simulator workers/attempt records. Windows unit suite: 141 tests (19 Linux-only skips); native LANDO passed, confirmed on 2026-11-13. Full-node dispatch integration follows this adapter gate. TN-4d2b is published as `ef08322` with all CI passing.
+
 [TN-4d2b verified bounded dispatch](spec/testnet-verified-dispatch.md) combines fresh signed-input verification, exact bundle approval, intent persistence and a worker that checks fresh node/coin state. Windows unit suite passed 136 tests (19 Linux-only skips); native LANDO passed, confirmed on 2026-11-13. No public submission CLI yet.
 
 [TN-4d2a isolated submission transport](spec/testnet-submission-transport.md) adds a separate single-use push transport and strict reply handling. Windows and native LANDO passed, confirmed on 2026-11-13; published as `f7525c0`.

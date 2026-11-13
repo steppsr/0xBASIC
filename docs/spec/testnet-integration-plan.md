@@ -1,6 +1,8 @@
 # Testnet integration: selected milestone
 
-Current executable gate: [TN-4d2b verified bounded dispatch](testnet-verified-dispatch.md). Fresh independent verification, exact bundle approval and intent persistence precede a bounded worker with live-state checks. Native LANDO pending; full-node rehearsal remains next before any public command.
+Current executable gate: [TN-4d3a fixed isolated dispatch adapter](testnet-dispatch-identity.md). Native LANDO passed, confirmed on 2026-11-13. Separate public/simulator workers and attempt records precede actual full-node dispatch integration in TN-4d3b.
+
+Previous gate: [TN-4d2b verified bounded dispatch](testnet-verified-dispatch.md). Windows and native LANDO passed, confirmed on 2026-11-13; published as `ef08322` with all three exact-revision CI workflows passing.
 
 Previous gate: [TN-4d2a isolated submission transport](testnet-submission-transport.md). Windows and native LANDO passed, confirmed on 2026-11-13; published as `f7525c0`.
 

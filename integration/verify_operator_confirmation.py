@@ -13,7 +13,7 @@ import time
 from types import SimpleNamespace
 
 from prepare_fee import ROOT, cli, digest, prepare, _prepare_for_identity
-from network_identity import PUBLIC_TESTNET
+from network_identity import PUBLIC_TESTNET, ISOLATED_REHEARSAL
 from test_confirmation import Fixture
 from confirmation import name
 from testnet_probe import GENESIS, coin_id
@@ -62,6 +62,7 @@ def main():
     thread = None
     positives, negatives, monitor_positives, monitor_negatives = [], [], [], []
     dispatch_cases = []
+    isolated_dispatch_cases = []
     try:
         context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
         context.load_cert_chain(certs / "server.crt", certs / "server.key")
@@ -84,7 +85,11 @@ def main():
                    "before": peak, "after": dict(peak), "coin": {"name": coin_id(parent, ph, 1000), "parent_coin_info": parent,
                    "puzzle_hash": ph, "amount": "1000", "confirmed_block_index": 90, "spent_block_index": 0, "spent": False,
                    "coinbase": False, "timestamp": 1}, "atomic_snapshot": False, "spend_validated": False, "transactions_submitted": 0}
-            def reset(payment=600, fee=10, historical=False, original_age=60):
+            def reset(payment=600, fee=10, historical=False, original_age=60, isolated=False):
+                identity = ISOLATED_REHEARSAL if isolated else PUBLIC_TESTNET
+                obs["network"] = identity.network()
+                obs["node_version"] = identity.version
+                obs["validation"] = "isolated-rpc-observation-only" if isolated else "rpc-observation-only"
                 created = datetime.now(timezone.utc) - timedelta(days=2)
                 obs["observed_at"] = ((created - timedelta(seconds=original_age)) if historical else datetime.now(timezone.utc)).isoformat()
                 op.write_text(json.dumps(obs), encoding="utf-8")
@@ -93,7 +98,7 @@ def main():
                     prepared = _prepare_for_identity(binary, manifest, op, sp, 20, PUBLIC_TESTNET, 3600, observation_now=created)
                     prepared["prepared_at"] = created.isoformat()
                 else:
-                    prepared = prepare(binary, manifest, op, sp, 20)
+                    prepared = _prepare_for_identity(binary, manifest, op, sp, 20, identity)
                 pp.write_text(json.dumps(prepared, sort_keys=True, indent=2), encoding="utf-8")
                 request = prepared["signing_request"]
                 response = {"schema_version": 1, "scheme": "AugSchemeMPL", "preparation_sha256": digest(pp.read_bytes()),
@@ -318,6 +323,48 @@ def main():
                     else:
                         assert not attempt.exists() and not seen
                 dispatch_cases.append(case)
+            from isolated_dispatch import dispatch_isolated, read_isolated_attempt
+            from isolated_preparation import verify_isolated
+            for case in ("isolated-success", "public-rejects-isolated", "isolated-rejects-public-node"):
+                f = reset(isolated=True)
+                f.records[name(f.input)] = f.record(f.input, 90, 0)
+                f.override["get_version"] = {"success": True, "version": ISOLATED_REHEARSAL.version}
+                f.override["get_network_info"] = {"success": True, "network_name": ISOLATED_REHEARSAL.name,
+                    "network_prefix": ISOLATED_REHEARSAL.prefix, "genesis_challenge": ISOLATED_REHEARSAL.genesis}
+                checked = verify_isolated(binary, manifest, op, sp, pp, rp, 20)
+                original_call = f.call
+                def isolated_call(route, request):
+                    if route == "push_tx":
+                        assert request == {"spend_bundle": checked["spend_bundle"]}
+                        return {"success": True, "status": "SUCCESS"}
+                    return original_call(route, request)
+                f.call = isolated_call
+                a.attempt = base / (case + ".json")
+                a.approved_bundle_id = checked["bundle_id"]
+                if case == "isolated-success":
+                    saved = dispatch_isolated(a)
+                    assert saved["network"] == ISOLATED_REHEARSAL.network() and seen.count("push_tx") == 1
+                    try:
+                        read_attempt(a.attempt)
+                    except Exception:
+                        pass
+                    else:
+                        raise AssertionError("Public reader accepted isolated attempt")
+                else:
+                    if case == "isolated-rejects-public-node":
+                        f.override["get_version"] = {"success": True, "version": PUBLIC_TESTNET.version}
+                    try:
+                        (_dispatch if case == "public-rejects-isolated" else dispatch_isolated)(a)
+                    except Exception:
+                        pass
+                    else:
+                        raise AssertionError(case)
+                    assert "push_tx" not in seen
+                    if case == "public-rejects-isolated":
+                        assert not a.attempt.exists() and not seen
+                    else:
+                        assert read_isolated_attempt(a.attempt)["outcome"] == "unknown"
+                isolated_dispatch_cases.append(case)
     finally:
         if thread is not None:
             server.shutdown()
@@ -329,15 +376,17 @@ def main():
     assert len(monitor_positives) == 5 and len(monitor_negatives) == 4
     evidence = {"schema_version": 1, "validation": "public-fixture-operator-confirmation", "positive_cases": positives,
                 "negative_cases": negatives, "monitor_positive_cases": monitor_positives, "monitor_negative_cases": monitor_negatives,
-                "dispatch_cases": dispatch_cases, "live_node_contacted": False, "resources_closed": True,
+                "dispatch_cases": dispatch_cases, "isolated_dispatch_cases": isolated_dispatch_cases,
+                "live_node_contacted": False, "resources_closed": True,
                 "binary_sha256": digest(binary.read_bytes()), "source_sha256": {str(p.relative_to(ROOT)).replace("\\", "/"): digest(p.read_bytes())
                   for p in (Path(__file__), ROOT / "integration/confirm_fee.py", ROOT / "integration/monitor_fee.py", ROOT / "integration/monitor_history.py", ROOT / "integration/confirmation.py",
                             ROOT / "integration/confirmation_transport.py", ROOT / "integration/testnet_probe.py",
                             ROOT / "integration/verify_signed_fee.py", ROOT / "integration/prepare_fee.py", ROOT / "integration/test_confirmation.py",
-                            ROOT / "integration/submission_dispatch.py", ROOT / "integration/submission_transport.py", ROOT / "integration/submission_attempt.py")}}
+                            ROOT / "integration/submission_dispatch.py", ROOT / "integration/submission_transport.py", ROOT / "integration/submission_attempt.py",
+                            ROOT / "simulator/isolated_dispatch.py")}}
     destination.write_text(json.dumps(evidence, sort_keys=True, indent=2) + "\n", encoding="utf-8")
-    assert len(dispatch_cases) == 7
-    print(f"PASS: confirmation 9 positive / 11 negative, monitor 5 positive / 4 negative, dispatch 2 positive / 5 negative over mutual TLS; resources closed. Report: {destination}")
+    assert len(dispatch_cases) == 7 and len(isolated_dispatch_cases) == 3
+    print(f"PASS: confirmation 9 positive / 11 negative, monitor 5 positive / 4 negative, dispatch 2 positive / 5 negative, isolated dispatch 1 positive / 2 negative over mutual TLS; resources closed. Report: {destination}")
 
 
 if __name__ == "__main__":

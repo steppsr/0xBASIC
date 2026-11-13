@@ -1,5 +1,7 @@
 # TN-4d2b: verified dispatch and bounded worker
 
+Follow-up: [TN-4d3a](testnet-dispatch-identity.md) adds a fixed simulator adapter before full-node integration. Descriptions below record the original public-only gate.
+
 Status: Windows unit suite passed 136 tests (19 Linux-only skips), plus the pinned TLS matrix: confirmation 9 positive/11 negative, monitor 5 positive/4 negative, dispatch 2 positive/5 negative; resources closed. Native LANDO passed, confirmed on 2026-11-13. The previous [transport gate](testnet-submission-transport.md) passed native Linux and is published as `f7525c0fe7d56ac0ab0a398ce4437cff95161780`. All exact-revision CI passed: [compiler](https://github.com/steppsr/0xBASIC/actions/runs/43445893997), [simulator](https://github.com/steppsr/0xBASIC/actions/runs/43445894058), [packages](https://github.com/steppsr/0xBASIC/actions/runs/43445894061).
 
 ## Internal boundary
