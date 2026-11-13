@@ -94,6 +94,8 @@ Testnet integration is selected for future implementation: [plan](testnet-integr
 
 [TN-4c2 historical confirmation](testnet-historical-confirmation.md) revalidates old signed expectations explicitly for read-only observation while retaining fresh signing and submission boundaries.
 
+[TN-4d1 submission attempt records](testnet-submission-attempt.md) saves intent before a single callback and preserves ambiguous outcomes; no RPC adapter or public submission command yet.
+
 [TN-4c4 saved monitor history](testnet-monitor-history.md) adds optional exclusive history files, completed observation checkpoints and final outcomes, with no automatic resume.
 
 [TN-4c3 bounded monitoring](testnet-bounded-monitor.md) adds explicit time/attempt limits, worker termination and anchor carry-forward, with no automatic retry or resume.

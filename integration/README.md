@@ -1,5 +1,7 @@
 # Experimental testnet integration
 
+[TN-4d1 submission attempt records](../docs/spec/testnet-submission-attempt.md) adds an internal intent-before-dispatch persistence boundary, exercised only by disposable callbacks. It has no CLI or RPC adapter. Current integration suite: 123 tests (19 Linux-only); native LANDO passed, confirmed on 2026-11-12.
+
 [TN-4c4 saved monitor history](../docs/spec/testnet-monitor-history.md) adds optional `monitor_fee.py --history NEW_FILE`. Accepted observations and the final outcome are saved atomically as historical evidence. Existing files are refused; history never authorizes automatic resume. Current suite: 113 tests (19 Linux-only); operator matrix: confirmation 9 positive/11 negative and monitor 5 positive/4 negative.
 
 [TN-4c3 bounded monitoring](../docs/spec/testnet-bounded-monitor.md) adds `monitor_fee.py` with required duration, interval and attempt limits. Each read runs in a worker that is terminated/reaped on timeout. There is no submission, error retry or automatic resume. The suite has 105 tests (19 Linux-only); the existing operator matrix now also covers monitor progression/reorg/deadline cases.

@@ -1,6 +1,8 @@
 # Development status and roadmap
 
-[TN-4c4 saved monitor history](spec/testnet-monitor-history.md) adds optional completed observation checkpoints and final outcomes. Windows unit suite: 113 tests (19 native skips); native LANDO passed, confirmed on 2026-11-12. The linked gate contains exact commands and persistence limits.
+[TN-4d1 submission attempt records](spec/testnet-submission-attempt.md) adds internal persistence before a single dispatch callback, with ambiguous interruption outcomes and no automatic retry. Windows passed 123 tests (19 Linux-only skips); native LANDO passed, confirmed on 2026-11-12. The linked gate uses only the standard library and disposable fixtures.
+
+[TN-4c4 saved monitor history](spec/testnet-monitor-history.md) adds optional completed observation checkpoints and final outcomes. Windows unit suite: 113 tests (19 native skips); native LANDO passed, confirmed on 2026-11-12. Published at `c29c521`; the linked gate contains exact commands and persistence limits.
 
 [TN-4c3 bounded monitoring](spec/testnet-bounded-monitor.md) adds a read-only process-isolated observation loop with explicit limits and late-result rejection. Windows unit suite: 105 tests (19 native skips). Native LANDO passed, confirmed on 2026-11-12; published at `3d62ece` with all three exact-revision CI workflows passing.
 

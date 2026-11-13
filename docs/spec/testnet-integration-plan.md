@@ -1,6 +1,8 @@
 # Testnet integration: selected milestone
 
-Current executable gate: [TN-4c4 saved monitor history](testnet-monitor-history.md). Windows and native LANDO passed, confirmed on 2026-11-12. Completed observations survive interruption as historical evidence, with no automatic resume. Submission intent/outcome handling remains next.
+Current executable gate: [TN-4d1 submission intent/outcome boundary](testnet-submission-attempt.md). Internal persistence and disposable callback tests precede any public submission command. Native LANDO passed, confirmed on 2026-11-12; the linked document includes the following adapter and rehearsal steps.
+
+Previous gate: [TN-4c4 saved monitor history](testnet-monitor-history.md). Windows and native LANDO passed, confirmed on 2026-11-12; published at `c29c5219cd81f124d7204acabe06db3d5d4699c6`.
 
 Previous gate: [TN-4c3 bounded read-only monitoring](testnet-bounded-monitor.md). Native LANDO and all exact-revision CI passed; published at `3d62ece8e723545c0e033bdb0fa719630298ea1d`.
 
