@@ -1,6 +1,8 @@
 # Development status and roadmap
 
-[TN-4c3 bounded monitoring](spec/testnet-bounded-monitor.md) adds a read-only process-isolated observation loop with explicit limits and late-result rejection. Windows unit suite: 105 tests (19 native skips). Native LANDO pending; the linked gate uses only public fixture data and local TLS.
+[TN-4c4 saved monitor history](spec/testnet-monitor-history.md) adds optional completed observation checkpoints and final outcomes. Windows unit suite: 113 tests (19 native skips); native LANDO passed, confirmed on 2026-11-12. The linked gate contains exact commands and persistence limits.
+
+[TN-4c3 bounded monitoring](spec/testnet-bounded-monitor.md) adds a read-only process-isolated observation loop with explicit limits and late-result rejection. Windows unit suite: 105 tests (19 native skips). Native LANDO passed, confirmed on 2026-11-12; published at `3d62ece` with all three exact-revision CI workflows passing.
 
 [TN-4c2 historical confirmation](spec/testnet-historical-confirmation.md) adds explicit read-only observation of old signed preparations without weakening fresh preparation/signing checks. Windows unit and offline matrices passed; native LANDO passed, confirmed on 2026-11-12. The linked gate includes the shared-helper regressions.
 

@@ -209,12 +209,21 @@ def main():
                             f.block["header_hash"] = "cc" * 32
                     return original_call(route, request)
                 f.call = monitored_call
-                result = run(depth, monitoring=True, duration=duration)
+                history_path = base / ("history-" + case + ".json")
+                result = run(depth, extra=["--history", str(history_path)], monitoring=True, duration=duration)
                 expected = "confirmed" if case in ("confirmed", "progressing") else "reorged" if case == "reorged" else "timed-out"
                 assert result.returncode == (0 if expected == "confirmed" else 3), (case, result.stderr)
                 saved = json.loads(report.read_text())
                 assert saved["outcome"]["status"] == expected and saved["workers_closed"] is True and not saved["automatic_resume_allowed"]
                 assert saved["transactions_submitted"] == 0 and not saved["fresh_for_submission"]
+                from monitor_history import read_history
+                history = read_history(history_path)
+                assert saved["history"]["sha256"] == history["history_sha256"]
+                assert saved["history"]["record_count"] == len(history["records"])
+                assert history["records"][-1]["kind"] == "finished" and history["records"][-1]["value"] == saved["outcome"]
+                assert history["context"]["expected_bundle_id"] == saved["expected_bundle_id"] and not history["automatic_resume_allowed"]
+                if case == "worker-timeout":
+                    assert len(history["records"]) == 1
                 if case == "pending-timeout":
                     assert saved["outcome"]["reason"] == "attempt-limit" and calls[0] == 2
                 if case in ("progressing", "reorged"):
@@ -223,16 +232,38 @@ def main():
                     assert saved["outcome"]["reason"] in ("observation-timeout", "deadline") and saved["outcome"]["last_observation"] is None
                     time.sleep(2)  # Let the test server finish its deliberately delayed response before resetting fixtures.
                 monitor_positives.append(case)
-            for case in ("invalid-signature-before-worker", "rpc-failure-no-retry"):
+            for case in ("invalid-signature-before-worker", "rpc-failure-no-retry", "rpc-failure-preserves-prefix", "existing-history-refused"):
                 f = reset(historical=True)
                 report.write_text("old success")
+                history_path = base / ("history-" + case + ".json")
                 if case == "invalid-signature-before-worker":
                     reply = json.loads(rp.read_text()); reply["signature"] = "00" * 96; rp.write_text(json.dumps(reply))
-                else:
+                elif case == "rpc-failure-no-retry":
                     f.override["get_version"] = {"success": True, "version": "wrong"}
-                result = run(monitoring=True)
+                elif case == "existing-history-refused":
+                    history_path.write_bytes(b"preserve existing history")
+                else:
+                    f.records[name(f.input)] = f.record(f.input, 90, 0)
+                    original_call = f.call
+                    version_calls = [0]
+                    def interrupted_call(route, request):
+                        if route == "get_version":
+                            version_calls[0] += 1
+                            if version_calls[0] == 2:
+                                return {"success": True, "version": "wrong"}
+                        return original_call(route, request)
+                    f.call = interrupted_call
+                result = run(extra=["--history", str(history_path)], monitoring=True)
                 assert result.returncode == 1 and not report.exists(), case
-                assert seen.count("get_version") == (0 if case == "invalid-signature-before-worker" else 1)
+                assert seen.count("get_version") == (0 if case in ("invalid-signature-before-worker", "existing-history-refused") else 2 if case == "rpc-failure-preserves-prefix" else 1)
+                if case == "invalid-signature-before-worker":
+                    assert not history_path.exists()
+                elif case == "existing-history-refused":
+                    assert history_path.read_bytes() == b"preserve existing history"
+                else:
+                    history = read_history(history_path)
+                    assert len(history["records"]) == (1 if case == "rpc-failure-preserves-prefix" else 0)
+                    assert all(r["kind"] == "observation" for r in history["records"])
                 monitor_negatives.append(case)
     finally:
         if thread is not None:
@@ -242,16 +273,16 @@ def main():
             thread.join(timeout=5)
             assert not thread.is_alive()
     assert len(positives) == 9 and len(negatives) == 11
-    assert len(monitor_positives) == 5 and len(monitor_negatives) == 2
+    assert len(monitor_positives) == 5 and len(monitor_negatives) == 4
     evidence = {"schema_version": 1, "validation": "public-fixture-operator-confirmation", "positive_cases": positives,
                 "negative_cases": negatives, "monitor_positive_cases": monitor_positives, "monitor_negative_cases": monitor_negatives,
                 "live_node_contacted": False, "resources_closed": True,
                 "binary_sha256": digest(binary.read_bytes()), "source_sha256": {str(p.relative_to(ROOT)).replace("\\", "/"): digest(p.read_bytes())
-                  for p in (Path(__file__), ROOT / "integration/confirm_fee.py", ROOT / "integration/monitor_fee.py", ROOT / "integration/confirmation.py",
+                  for p in (Path(__file__), ROOT / "integration/confirm_fee.py", ROOT / "integration/monitor_fee.py", ROOT / "integration/monitor_history.py", ROOT / "integration/confirmation.py",
                             ROOT / "integration/confirmation_transport.py", ROOT / "integration/testnet_probe.py",
                             ROOT / "integration/verify_signed_fee.py", ROOT / "integration/prepare_fee.py", ROOT / "integration/test_confirmation.py")}}
     destination.write_text(json.dumps(evidence, sort_keys=True, indent=2) + "\n", encoding="utf-8")
-    print(f"PASS: confirmation 9 positive / 11 negative, monitor 5 positive / 2 negative over mutual TLS; resources closed. Report: {destination}")
+    print(f"PASS: confirmation 9 positive / 11 negative, monitor 5 positive / 4 negative over mutual TLS; resources closed. Report: {destination}")
 
 
 if __name__ == "__main__":

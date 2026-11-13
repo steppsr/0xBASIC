@@ -25,7 +25,7 @@ def bounds(duration, interval, attempts):
     require(type(attempts) is int and 1 <= attempts <= 1000, "Attempts must be 1..1000")
 
 
-def poll(read, input_id, anchor, *, duration, interval, max_attempts):
+def poll(read, input_id, anchor, *, duration, interval, max_attempts, checkpoint=None):
     bounds(duration, interval, max_attempts)
     start = time.monotonic()
     deadline = start + duration
@@ -57,6 +57,8 @@ def poll(read, input_id, anchor, *, duration, interval, max_attempts):
             candidate = {"input_id": input_id, "height": uint(candidate["height"], 32), "header_hash": hex32(candidate["header_hash"])}
             require(anchor is None or candidate == anchor, "Observation changed the remembered inclusion anchor")
             anchor = candidate
+        if checkpoint is not None:
+            checkpoint("observation", {"attempt": attempts, "observation": copy.deepcopy(last)})
         if observation["status"] in {"confirmed", "reorged", "conflicting-spend"}:
             return result(observation["status"], "terminal-observation")
         if attempts < max_attempts:
@@ -108,11 +110,27 @@ def monitor(args):
     anchor = None if args.previous_height is None else {"input_id": input_id, "height": args.previous_height, "header_hash": hex32(args.previous_header_hash)}
     packet = {"endpoint": args.endpoint, "ca": str(args.ca_cert), "cert": str(args.client_cert), "key": str(args.client_key),
               "socket_timeout": args.timeout, "spend": expected, "children": children, "depth": args.depth}
+    history = None
+    if args.history is not None:
+        from monitor_history import History
+        history = History(args.history, {"input_id": input_id, "expected_bundle_id": verified["bundle_id"],
+            "preparation_sha256": verified["preparation_sha256"], "signature_response_sha256": verified["signature_response_sha256"],
+            "network": verified["network"], "required_depth": args.depth, "initial_anchor": anchor,
+            "duration_seconds": args.duration, "interval_seconds": args.interval, "max_attempts": args.max_attempts})
     outcome = poll(lambda prior, remaining: worker_read({**packet, "anchor": prior}, remaining), input_id, anchor,
-                   duration=args.duration, interval=args.interval, max_attempts=args.max_attempts)
+                   duration=args.duration, interval=args.interval, max_attempts=args.max_attempts,
+                   checkpoint=None if history is None else history.record)
+    history_summary = None
+    if history is not None:
+        from monitor_history import read_history
+        history.record("finished", outcome)
+        saved = read_history(args.history)
+        require(saved["context"] == history.doc["context"] and saved["records"][-1]["value"] == outcome, "History differs from monitor outcome")
+        history_summary = {"sha256": saved["history_sha256"], "record_count": len(saved["records"]),
+                           "validation": saved["validation"], "automatic_resume_allowed": False}
     return {"schema_version": 1, "validation": "historical-verified-read-only-monitor", "expected_bundle_id": verified["bundle_id"],
             "preparation_sha256": verified["preparation_sha256"], "signature_response_sha256": verified["signature_response_sha256"],
-            "verification_mode": "historical", "outcome": outcome, "workers_closed": True,
+            "verification_mode": "historical", "outcome": outcome, "workers_closed": True, "history": history_summary,
             "fresh_for_submission": False, "chain_proof": False, "automatic_resume_allowed": False, "transactions_submitted": 0}
 
 
@@ -132,12 +150,15 @@ def main():
     parser.add_argument("--timeout", type=float, default=10)
     parser.add_argument("--previous-height", type=int)
     parser.add_argument("--previous-header-hash")
+    parser.add_argument("--history", type=Path, help="Fresh snapshot file for historical observations; never resumed")
     args = parser.parse_args()
     temporary = None
     try:
         protected = [args.binary, args.observation, args.solution, args.preparation, args.signature_response,
                      args.ca_cert, args.client_cert, args.client_key, SOURCE, *[args.manifest.parent / n for n in FILES]]
-        report = _report_path(args.report, protected)
+        if args.history is not None:
+            _report_path(args.history, [*protected, args.report])
+        report = _report_path(args.report, [*protected, *([] if args.history is None else [args.history])])
         report.unlink(missing_ok=True)
         result = monitor(args)
         status = result["outcome"]["status"]

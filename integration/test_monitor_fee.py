@@ -119,6 +119,11 @@ class MonitorTests(unittest.TestCase):
             with patch.object(sys, "argv", argv), patch.object(monitor, "monitor", side_effect=KeyboardInterrupt), contextlib.redirect_stderr(io.StringIO()):
                 self.assertEqual(monitor.main(), 1)
             self.assertFalse(report.exists())
+            report.write_text("keep history alias")
+            with patch.object(sys, "argv", [*argv, "--history", str(report)]), patch.object(monitor, "monitor") as run, contextlib.redirect_stderr(io.StringIO()):
+                self.assertEqual(monitor.main(), 1)
+                run.assert_not_called()
+            self.assertEqual(report.read_text(), "keep history alias")
 
 
 if __name__ == "__main__":

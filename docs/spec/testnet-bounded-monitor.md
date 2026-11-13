@@ -1,5 +1,7 @@
 # TN-4c3: bounded read-only operator monitoring
 
+Follow-up: [TN-4c4](testnet-monitor-history.md) adds optional saved history. The final-only behavior and test counts below describe the original TN-4c3 gate.
+
 Status: Windows integration suite passed 105 tests (19 Linux-only skips), confirmation CLI matrix 9 positive/11 negative and monitor CLI matrix 5 positive/2 negative over mutual TLS, with resources closed. Native LANDO passed, confirmed on 2026-11-12. TN-4c2 is published at `b68910682db177e12622d79bf7016c5053a16165`.
 
 TN-4c2 exact-revision CI passed: [compiler](https://github.com/steppsr/0xBASIC/actions/runs/43360230637), [simulator](https://github.com/steppsr/0xBASIC/actions/runs/43360231038), [packages](https://github.com/steppsr/0xBASIC/actions/runs/43360230793).

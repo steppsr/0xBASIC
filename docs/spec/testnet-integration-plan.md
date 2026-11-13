@@ -1,6 +1,8 @@
 # Testnet integration: selected milestone
 
-Current executable gate: [TN-4c3 bounded read-only monitoring](testnet-bounded-monitor.md). TN-4c2 passed native Linux and is published. The monitor preserves fixed signed expectations and prior anchors under explicit bounds; durable observation history and submission intent/outcome handling remain outstanding.
+Current executable gate: [TN-4c4 saved monitor history](testnet-monitor-history.md). Windows and native LANDO passed, confirmed on 2026-11-12. Completed observations survive interruption as historical evidence, with no automatic resume. Submission intent/outcome handling remains next.
+
+Previous gate: [TN-4c3 bounded read-only monitoring](testnet-bounded-monitor.md). Native LANDO and all exact-revision CI passed; published at `3d62ece8e723545c0e033bdb0fa719630298ea1d`.
 
 Previous gate: [TN-4c2 historical confirmation](testnet-historical-confirmation.md). TN-4c1 passed native Linux and is published. Explicit historical observation retains full signature/artifact validation and does not authorize signing or submission from stale observations.
 
