@@ -1,6 +1,8 @@
 # Testnet integration: selected milestone
 
-Current executable gate: [TN-4c2 historical confirmation](testnet-historical-confirmation.md). TN-4c1 passed native Linux and is published. Explicit historical observation retains full signature/artifact validation and does not authorize signing or submission from stale observations.
+Current executable gate: [TN-4c3 bounded read-only monitoring](testnet-bounded-monitor.md). TN-4c2 passed native Linux and is published. The monitor preserves fixed signed expectations and prior anchors under explicit bounds; durable observation history and submission intent/outcome handling remain outstanding.
+
+Previous gate: [TN-4c2 historical confirmation](testnet-historical-confirmation.md). TN-4c1 passed native Linux and is published. Explicit historical observation retains full signature/artifact validation and does not authorize signing or submission from stale observations.
 
 Previous gate: [TN-4c1 read-only operator confirmation](testnet-operator-confirmation.md). TN-3b3 passed native Linux. The new wrapper validates original signed inputs before RPC and reports exact confirmation state; historical monitoring and explicit submission tooling remain outstanding.
 

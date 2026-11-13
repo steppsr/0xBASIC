@@ -9,6 +9,7 @@ import subprocess
 import sys
 import tempfile
 import threading
+import time
 
 from prepare_fee import ROOT, cli, digest, prepare, _prepare_for_identity
 from network_identity import PUBLIC_TESTNET
@@ -46,16 +47,19 @@ def main():
             request = json.loads(self.rfile.read(int(self.headers["Content-Length"])))
             seen.append(route)
             body = json.dumps(current[0].call(route, request)).encode()
-            self.send_response(200)
-            self.send_header("Content-Type", "application/json")
-            self.send_header("Content-Length", str(len(body)))
-            self.end_headers()
-            self.wfile.write(body)
+            try:
+                self.send_response(200)
+                self.send_header("Content-Type", "application/json")
+                self.send_header("Content-Length", str(len(body)))
+                self.end_headers()
+                self.wfile.write(body)
+            except (OSError, ssl.SSLError):
+                pass  # Expected when a monitor terminates its delayed worker.
         def log_message(self, *args):
             pass
     server = ThreadingHTTPServer(("127.0.0.1", 0), Handler)
     thread = None
-    positives, negatives = [], []
+    positives, negatives, monitor_positives, monitor_negatives = [], [], [], []
     try:
         context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
         context.load_cert_chain(certs / "server.crt", certs / "server.key")
@@ -103,12 +107,14 @@ def main():
                 current[0] = f
                 seen.clear()
                 return f
-            def run(depth=3, extra=()):
-                command = [sys.executable, str(ROOT / "integration/confirm_fee.py"), "--binary", str(binary), "--manifest", str(manifest),
+            def run(depth=3, extra=(), monitoring=False, duration=15):
+                command = [sys.executable, str(ROOT / "integration" / ("monitor_fee.py" if monitoring else "confirm_fee.py")), "--binary", str(binary), "--manifest", str(manifest),
                            "--observation", str(op), "--solution", str(sp), "--preparation", str(pp), "--signature-response", str(rp),
                            "--max-fee", "20", "--depth", str(depth), "--report", str(report),
                            "--endpoint", f"https://127.0.0.1:{server.server_port}", "--ca-cert", str(certs / "ca.crt"),
                            "--client-cert", str(certs / "client.crt"), "--client-key", str(certs / "client.key"), *extra]
+                if monitoring:
+                    command += ["--duration", str(duration), "--interval", "0", "--max-attempts", "2"]
                 return subprocess.run(command, capture_output=True, timeout=60)
             for status in ("confirmed-partial", "confirmed-exact", "confirming", "unspent", "conflicting-spend", "reorged"):
                 f = reset(990 if status == "confirmed-exact" else 600)
@@ -181,6 +187,53 @@ def main():
                 negatives.append("signing-review-refuses-history")
             else:
                 raise RuntimeError("Signing review accepted expired observation")
+            for case in ("confirmed", "pending-timeout", "progressing", "reorged", "worker-timeout"):
+                f = reset(historical=True)
+                depth, duration = 3, 15
+                calls = [0]
+                original_call = f.call
+                if case == "pending-timeout":
+                    f.records[name(f.input)] = f.record(f.input, 90, 0)
+                if case in ("progressing", "reorged"):
+                    depth = 4
+                if case == "worker-timeout":
+                    duration = 1
+                def monitored_call(route, request):
+                    if route == "get_version":
+                        calls[0] += 1
+                        if case == "worker-timeout":
+                            time.sleep(2)
+                        if calls[0] == 2 and case == "progressing":
+                            f.peak["height"] = 103
+                        if calls[0] == 2 and case == "reorged":
+                            f.block["header_hash"] = "cc" * 32
+                    return original_call(route, request)
+                f.call = monitored_call
+                result = run(depth, monitoring=True, duration=duration)
+                expected = "confirmed" if case in ("confirmed", "progressing") else "reorged" if case == "reorged" else "timed-out"
+                assert result.returncode == (0 if expected == "confirmed" else 3), (case, result.stderr)
+                saved = json.loads(report.read_text())
+                assert saved["outcome"]["status"] == expected and saved["workers_closed"] is True and not saved["automatic_resume_allowed"]
+                assert saved["transactions_submitted"] == 0 and not saved["fresh_for_submission"]
+                if case == "pending-timeout":
+                    assert saved["outcome"]["reason"] == "attempt-limit" and calls[0] == 2
+                if case in ("progressing", "reorged"):
+                    assert saved["outcome"]["attempts"] == 2 and saved["outcome"]["last_anchor"]["header_hash"] == "bb" * 32
+                if case == "worker-timeout":
+                    assert saved["outcome"]["reason"] in ("observation-timeout", "deadline") and saved["outcome"]["last_observation"] is None
+                    time.sleep(2)  # Let the test server finish its deliberately delayed response before resetting fixtures.
+                monitor_positives.append(case)
+            for case in ("invalid-signature-before-worker", "rpc-failure-no-retry"):
+                f = reset(historical=True)
+                report.write_text("old success")
+                if case == "invalid-signature-before-worker":
+                    reply = json.loads(rp.read_text()); reply["signature"] = "00" * 96; rp.write_text(json.dumps(reply))
+                else:
+                    f.override["get_version"] = {"success": True, "version": "wrong"}
+                result = run(monitoring=True)
+                assert result.returncode == 1 and not report.exists(), case
+                assert seen.count("get_version") == (0 if case == "invalid-signature-before-worker" else 1)
+                monitor_negatives.append(case)
     finally:
         if thread is not None:
             server.shutdown()
@@ -189,14 +242,16 @@ def main():
             thread.join(timeout=5)
             assert not thread.is_alive()
     assert len(positives) == 9 and len(negatives) == 11
+    assert len(monitor_positives) == 5 and len(monitor_negatives) == 2
     evidence = {"schema_version": 1, "validation": "public-fixture-operator-confirmation", "positive_cases": positives,
-                "negative_cases": negatives, "live_node_contacted": False, "resources_closed": True,
+                "negative_cases": negatives, "monitor_positive_cases": monitor_positives, "monitor_negative_cases": monitor_negatives,
+                "live_node_contacted": False, "resources_closed": True,
                 "binary_sha256": digest(binary.read_bytes()), "source_sha256": {str(p.relative_to(ROOT)).replace("\\", "/"): digest(p.read_bytes())
-                  for p in (Path(__file__), ROOT / "integration/confirm_fee.py", ROOT / "integration/confirmation.py",
+                  for p in (Path(__file__), ROOT / "integration/confirm_fee.py", ROOT / "integration/monitor_fee.py", ROOT / "integration/confirmation.py",
                             ROOT / "integration/confirmation_transport.py", ROOT / "integration/testnet_probe.py",
                             ROOT / "integration/verify_signed_fee.py", ROOT / "integration/prepare_fee.py", ROOT / "integration/test_confirmation.py")}}
     destination.write_text(json.dumps(evidence, sort_keys=True, indent=2) + "\n", encoding="utf-8")
-    print(f"PASS: 9 positive / 11 negative operator confirmation cases over mutual TLS; resources closed. Report: {destination}")
+    print(f"PASS: confirmation 9 positive / 11 negative, monitor 5 positive / 2 negative over mutual TLS; resources closed. Report: {destination}")
 
 
 if __name__ == "__main__":

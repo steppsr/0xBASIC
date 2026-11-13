@@ -93,3 +93,5 @@ Testnet integration is selected for future implementation: [plan](testnet-integr
 [TN-4c1 operator confirmation](testnet-operator-confirmation.md) exposes independently verified, authenticated read-only confirmation through a command with explicit non-confirmed exit status and documented freshness limits.
 
 [TN-4c2 historical confirmation](testnet-historical-confirmation.md) revalidates old signed expectations explicitly for read-only observation while retaining fresh signing and submission boundaries.
+
+[TN-4c3 bounded monitoring](testnet-bounded-monitor.md) adds explicit time/attempt limits, worker termination and anchor carry-forward, with no automatic retry or resume.

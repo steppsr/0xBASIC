@@ -1,5 +1,7 @@
 # Experimental testnet integration
 
+[TN-4c3 bounded monitoring](../docs/spec/testnet-bounded-monitor.md) adds `monitor_fee.py` with required duration, interval and attempt limits. Each read runs in a worker that is terminated/reaped on timeout. There is no submission, error retry or automatic resume. The suite has 105 tests (19 Linux-only); the existing operator matrix now also covers monitor progression/reorg/deadline cases.
+
 [TN-4c2 historical confirmation](../docs/spec/testnet-historical-confirmation.md) adds `confirm_fee.py --historical` for old signed expectations. It preserves current RPC checks and fresh signing defaults. The suite now has 95 tests (19 Linux-only), and the operator CLI matrix has 9 positive/11 negative cases.
 
 [TN-4c1 operator confirmation](../docs/spec/testnet-operator-confirmation.md) adds `confirm_fee.py`, a single read-only observation after revalidating original signed inputs. Exit 0 means observed confirmed; exit 3 records a valid non-confirmed state; neither submits anything. Original-observation freshness still applies. The integration suite has 92 tests (19 Linux-only); the separate CLI matrix runs over local mutual TLS.
