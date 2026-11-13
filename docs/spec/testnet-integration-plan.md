@@ -1,8 +1,10 @@
 # Testnet integration: selected milestone
 
-Current executable gate: [TN-3b2 exclusive owner-key creation and validation](testnet-owner-creation.md). Windows tests passed; native LANDO passed, confirmed on 2026-11-12. It remains separate from signing approval and live host setup.
+Current executable gate: [TN-3b3 preparation-bound signing](testnet-approved-signing.md). Windows approval/signature tests passed; native LANDO passed, confirmed on 2026-11-12. TN-3b2 passed native Linux. Host/baseline setup and public submission/observation tooling remain separate work.
 
-Next executable slice: [TN-3b1 protected test-owner file boundary](testnet-signer-keyfile.md). The user selected the LANDO/separate-testnet and protected-file offline signer direction on 2026-11-12. Windows policy/refusal tests passed; native filesystem validation passed, confirmed on 2026-11-12. No node installation or real key creation has occurred.
+Previous gate: [TN-3b2 exclusive owner-key creation and validation](testnet-owner-creation.md). Windows tests passed; native LANDO passed, confirmed on 2026-11-12. It remains separate from signing approval and live host setup.
+
+Earlier gate: [TN-3b1 protected test-owner file boundary](testnet-signer-keyfile.md). The user selected the LANDO/separate-testnet and protected-file offline signer direction on 2026-11-12. Windows policy/refusal tests passed; native filesystem validation passed, confirmed on 2026-11-12. No node installation or real key creation has occurred.
 
 Current position (2026-11-11): TN-4b7 passed Windows and native LANDO. The [TN-4 exit review](testnet-rehearsal-review.md) consolidates isolated coverage and remaining live-use work. Earlier slice descriptions below record what remained at each historical checkpoint; the consolidated review supersedes those outstanding-work lists.
 

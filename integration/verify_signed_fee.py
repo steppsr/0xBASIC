@@ -34,8 +34,20 @@ def verify_signed(binary, manifest, observation, solution, preparation, response
 
 def _verify_for_identity(binary, manifest, observation, solution, preparation, response, max_fee, identity, max_age=300):
     validate_identity(identity)
-    original_bytes, response_bytes = Path(preparation).read_bytes(), Path(response).read_bytes()
-    original, reply = read_json(original_bytes), read_json(response_bytes)
+    original_bytes, regenerated = _revalidate_for_identity(binary, manifest, observation, solution, preparation, max_fee, max_age, identity)
+    response_bytes = Path(response).read_bytes()
+    reply = read_json(response_bytes)
+    return _verified_bundle(original_bytes, response_bytes, reply, regenerated, identity)
+
+
+def revalidate_preparation(binary, manifest, observation, solution, preparation, max_fee, max_age=300):
+    return _revalidate_for_identity(binary, manifest, observation, solution, preparation, max_fee, max_age, PUBLIC_TESTNET)
+
+
+def _revalidate_for_identity(binary, manifest, observation, solution, preparation, max_fee, max_age, identity):
+    validate_identity(identity)
+    original_bytes = Path(preparation).read_bytes()
+    original = read_json(original_bytes)
     regenerated = (prepare(binary, manifest, observation, solution, max_fee, max_age) if identity is PUBLIC_TESTNET else
                    _prepare_for_identity(binary, manifest, observation, solution, max_fee, identity, max_age))
     require(set(original) == set(regenerated), "Incomplete or extended preparation")
@@ -48,6 +60,10 @@ def _verify_for_identity(binary, manifest, observation, solution, preparation, r
     # Only the recomputation timestamp changes. Type-exact canonical JSON avoids True == 1.
     regenerated["prepared_at"] = original["prepared_at"]
     require(canonical(original) == canonical(regenerated), "Preparation differs from independently revalidated inputs")
+    return original_bytes, regenerated
+
+
+def _verified_bundle(original_bytes, response_bytes, reply, regenerated, identity):
     signing = regenerated["signing_request"]
     signature_bytes = response_fields(reply, digest(original_bytes), signing["public_key"], signing["message"])
     from chia.types.blockchain_format.program import Program

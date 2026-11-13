@@ -87,3 +87,5 @@ Testnet integration is selected for future implementation: [plan](testnet-integr
 [TN-3b1 protected test-owner files](testnet-signer-keyfile.md) implements the Linux file-reading boundary for the selected offline signer direction, with a focused native LANDO gate.
 
 [TN-3b2 owner-key creation](testnet-owner-creation.md) adds exclusive creation, pinned scalar validation and owner binding, with failure-preserving storage and public-fixture tests.
+
+[TN-3b3 approved offline signing](testnet-approved-signing.md) binds explicit approval to a revalidated preparation, loads its matching owner and independently verifies the detached response before publication.

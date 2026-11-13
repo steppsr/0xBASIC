@@ -1,5 +1,7 @@
 # Development status and roadmap
 
+[TN-3b3 approved offline signing](spec/testnet-approved-signing.md) adds separate full review and explicit preparation-digest approval, protected owner loading and independent response verification. Windows: 86 integration tests (19 native skips), signer 4 positive/10 negative, detached regression 7 positive/26 negative. Native LANDO pending; exact commands are in the linked gate.
+
 [TN-3b2 owner-key creation](spec/testnet-owner-creation.md) passed Windows: 80 integration tests (19 native-only skips), pinned scalar/owner matrix with six rejections. Native LANDO passed, confirmed on 2026-11-12; the linked gate uses only disposable public fixtures. TN-3b1 passed native Linux and is published.
 
 [TN-3b1 protected test-owner files](spec/testnet-signer-keyfile.md) is the next executable gate: fixed native-home vault, descriptor-based Linux permission checks, portable refusal/policy tests and 12 native filesystem tests. No real keys are created or loaded by the test commands. Native LANDO passed, confirmed on 2026-11-12.
