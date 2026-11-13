@@ -1,5 +1,7 @@
 # Experimental testnet integration
 
+[TN-4c1 operator confirmation](../docs/spec/testnet-operator-confirmation.md) adds `confirm_fee.py`, a single read-only observation after revalidating original signed inputs. Exit 0 means observed confirmed; exit 3 records a valid non-confirmed state; neither submits anything. Original-observation freshness still applies. The integration suite has 92 tests (19 Linux-only); the separate CLI matrix runs over local mutual TLS.
+
 [TN-3b3 approved offline signing](../docs/spec/testnet-approved-signing.md) adds `sign_fee.py`: full `--review-only` output followed by a separate Linux signing invocation with an explicit preparation digest. It never submits. The integration suite now has 86 tests (19 Linux-only); the pinned signer matrix uses public fixtures and reports whether native key loading was exercised.
 
 [TN-3b1 protected test-owner files](../docs/spec/testnet-signer-keyfile.md) adds the Linux-only file reader. [TN-3b2 owner-key creation](../docs/spec/testnet-owner-creation.md) adds exclusive creation and scalar/owner validation; TN-3b3 now uses the checked loader. The separate pinned-runtime owner-key matrix continues using only public disposable fixtures.

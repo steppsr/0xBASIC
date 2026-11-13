@@ -89,3 +89,5 @@ Testnet integration is selected for future implementation: [plan](testnet-integr
 [TN-3b2 owner-key creation](testnet-owner-creation.md) adds exclusive creation, pinned scalar validation and owner binding, with failure-preserving storage and public-fixture tests.
 
 [TN-3b3 approved offline signing](testnet-approved-signing.md) binds explicit approval to a revalidated preparation, loads its matching owner and independently verifies the detached response before publication.
+
+[TN-4c1 operator confirmation](testnet-operator-confirmation.md) exposes independently verified, authenticated read-only confirmation through a command with explicit non-confirmed exit status and documented freshness limits.

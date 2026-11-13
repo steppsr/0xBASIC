@@ -55,6 +55,8 @@ jobs:
         run: .work/m4/venv/${{ matrix.bin }}/${{ matrix.python }} integration/verify_owner_keys.py
       - name: Verify approved offline fee signing with public fixtures
         run: .work/m4/venv/${{ matrix.bin }}/${{ matrix.python }} integration/verify_signer.py --binary target/debug/${{ matrix.executable }}
+      - name: Verify operator confirmation through local mutual TLS
+        run: .work/m4/venv/${{ matrix.bin }}/${{ matrix.python }} integration/verify_operator_confirmation.py --binary target/debug/${{ matrix.executable }}
       - name: Test simulator reporting failure paths
         run: .work/m4/venv/${{ matrix.bin }}/${{ matrix.python }} -m unittest discover -s simulator -p 'test_*.py'
       - name: Verify all scenarios and identical fresh reruns
@@ -122,5 +124,12 @@ jobs:
         with:
           name: testnet-signer-${{ matrix.platform }}
           path: .work/testnet/signer-${{ matrix.platform }}.json
+          include-hidden-files: true
+          if-no-files-found: error
+      - name: Upload operator confirmation evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: testnet-operator-confirmation-${{ matrix.platform }}
+          path: .work/testnet/operator-confirmation-${{ matrix.platform }}.json
           include-hidden-files: true
           if-no-files-found: error

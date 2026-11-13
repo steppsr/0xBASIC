@@ -1,6 +1,8 @@
 # Testnet integration: selected milestone
 
-Current executable gate: [TN-3b3 preparation-bound signing](testnet-approved-signing.md). Windows approval/signature tests passed; native LANDO passed, confirmed on 2026-11-12. TN-3b2 passed native Linux. Host/baseline setup and public submission/observation tooling remain separate work.
+Current executable gate: [TN-4c1 read-only operator confirmation](testnet-operator-confirmation.md). TN-3b3 passed native Linux. The new wrapper validates original signed inputs before RPC and reports exact confirmation state; historical monitoring and explicit submission tooling remain outstanding.
+
+Previous gate: [TN-3b3 preparation-bound signing](testnet-approved-signing.md). Windows approval/signature tests passed; native LANDO passed, confirmed on 2026-11-12. TN-3b2 passed native Linux. Host/baseline setup and public submission/observation tooling remain separate work.
 
 Previous gate: [TN-3b2 exclusive owner-key creation and validation](testnet-owner-creation.md). Windows tests passed; native LANDO passed, confirmed on 2026-11-12. It remains separate from signing approval and live host setup.
 
