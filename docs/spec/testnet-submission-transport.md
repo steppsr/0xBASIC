@@ -1,5 +1,7 @@
 # TN-4d2a: isolated submission transport boundary
 
+Follow-up: [TN-4d2b](testnet-verified-dispatch.md) wires fresh verification and bounded dispatch. Outstanding-work descriptions below record the original transport-only gate.
+
 Status: Windows integration suite passed **130 tests (19 Linux-only skips)**. Native LANDO passed, confirmed on 2026-11-13. The previous [attempt-record gate](testnet-submission-attempt.md) passed native Linux and is published as `893e53d5a90c1a44c5056df1c0cbbbb528f53766`. All exact-revision CI passed: [compiler](https://github.com/steppsr/0xBASIC/actions/runs/43370953860), [simulator](https://github.com/steppsr/0xBASIC/actions/runs/43370953849), [packages](https://github.com/steppsr/0xBASIC/actions/runs/43370953857).
 
 ## Scope

@@ -1,6 +1,8 @@
 # Development status and roadmap
 
-[TN-4d2a isolated submission transport](spec/testnet-submission-transport.md) adds a separate single-use push transport and strict reply handling. Windows passed 130 tests (19 Linux-only skips); native LANDO passed, confirmed on 2026-11-13. It has no public CLI; verified dispatch and bounded workers remain next.
+[TN-4d2b verified bounded dispatch](spec/testnet-verified-dispatch.md) combines fresh signed-input verification, exact bundle approval, intent persistence and a worker that checks fresh node/coin state. Windows unit suite passed 136 tests (19 Linux-only skips); native LANDO passed, confirmed on 2026-11-13. No public submission CLI yet.
+
+[TN-4d2a isolated submission transport](spec/testnet-submission-transport.md) adds a separate single-use push transport and strict reply handling. Windows and native LANDO passed, confirmed on 2026-11-13; published as `f7525c0`.
 
 [TN-4d1 submission attempt records](spec/testnet-submission-attempt.md) adds internal persistence before a single dispatch callback, with ambiguous interruption outcomes and no automatic retry. Windows passed 123 tests (19 Linux-only skips); native LANDO passed, confirmed on 2026-11-12; published as `893e53d`.
 

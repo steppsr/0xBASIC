@@ -1,5 +1,7 @@
 # Experimental testnet integration
 
+[TN-4d2b verified bounded dispatch](../docs/spec/testnet-verified-dispatch.md) adds an internal fresh-verification/approval boundary and one bounded worker with fresh coin checks. No public CLI. Current suite: 136 tests (19 Linux-only); the pinned operator matrix adds dispatch 2 positive/5 negative. Native LANDO passed, confirmed on 2026-11-13.
+
 [TN-4d2a isolated submission transport](../docs/spec/testnet-submission-transport.md) adds an internal single-use `push_tx` transport, exercised only against disposable TLS fixtures. Original read-only allowlists are unchanged. Current suite: 130 tests (19 Linux-only); native LANDO passed, confirmed on 2026-11-13. Fresh verification/approval and bounded dispatch must be wired before a public submission command exists.
 
 [TN-4d1 submission attempt records](../docs/spec/testnet-submission-attempt.md) adds an internal intent-before-dispatch persistence boundary, exercised only by disposable callbacks. It has no CLI or RPC adapter. Current integration suite: 123 tests (19 Linux-only); native LANDO passed, confirmed on 2026-11-12.

@@ -1,6 +1,8 @@
 # Testnet integration: selected milestone
 
-Current executable gate: [TN-4d2a isolated submission transport](testnet-submission-transport.md). Windows passed 130 tests (19 Linux-only skips); native LANDO passed, confirmed on 2026-11-13. The adapter is split into this transport gate, verified/bounded dispatch, then full-node rehearsal before any public command.
+Current executable gate: [TN-4d2b verified bounded dispatch](testnet-verified-dispatch.md). Fresh independent verification, exact bundle approval and intent persistence precede a bounded worker with live-state checks. Native LANDO pending; full-node rehearsal remains next before any public command.
+
+Previous gate: [TN-4d2a isolated submission transport](testnet-submission-transport.md). Windows and native LANDO passed, confirmed on 2026-11-13; published as `f7525c0`.
 
 Previous gate: [TN-4d1 submission intent/outcome boundary](testnet-submission-attempt.md). Windows and native LANDO passed, confirmed on 2026-11-12; published as `893e53d`.
 

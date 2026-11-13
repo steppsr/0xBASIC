@@ -94,7 +94,9 @@ Testnet integration is selected for future implementation: [plan](testnet-integr
 
 [TN-4c2 historical confirmation](testnet-historical-confirmation.md) revalidates old signed expectations explicitly for read-only observation while retaining fresh signing and submission boundaries.
 
-[TN-4d2a submission transport](testnet-submission-transport.md) tests a separate single-use mutating transport over local mutual TLS; verified dispatch and the public command remain future work.
+[TN-4d2b verified dispatch](testnet-verified-dispatch.md) adds fresh signature verification, exact bundle approval, fresh coin reads and bounded worker cleanup; the public command remains future work.
+
+[TN-4d2a submission transport](testnet-submission-transport.md) tests a separate single-use mutating transport over local mutual TLS.
 
 [TN-4d1 submission attempt records](testnet-submission-attempt.md) saves intent before a single callback and preserves ambiguous outcomes.
 

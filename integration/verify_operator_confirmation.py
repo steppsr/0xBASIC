@@ -10,6 +10,7 @@ import sys
 import tempfile
 import threading
 import time
+from types import SimpleNamespace
 
 from prepare_fee import ROOT, cli, digest, prepare, _prepare_for_identity
 from network_identity import PUBLIC_TESTNET
@@ -60,6 +61,7 @@ def main():
     server = ThreadingHTTPServer(("127.0.0.1", 0), Handler)
     thread = None
     positives, negatives, monitor_positives, monitor_negatives = [], [], [], []
+    dispatch_cases = []
     try:
         context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
         context.load_cert_chain(certs / "server.crt", certs / "server.key")
@@ -265,6 +267,57 @@ def main():
                     assert len(history["records"]) == (1 if case == "rpc-failure-preserves-prefix" else 0)
                     assert all(r["kind"] == "observation" for r in history["records"])
                 monitor_negatives.append(case)
+            # Internal verified dispatcher: actual pinned verifier and worker, fixture TLS only.
+            from submission_dispatch import _dispatch
+            from submission_attempt import read_attempt
+            from verify_signed_fee import verify_signed
+            for case in ("success", "pending", "wrong-approval", "invalid-signature", "spent", "wrong-network", "existing-attempt"):
+                f = reset()
+                f.records[name(f.input)] = f.record(f.input, 90, 0)
+                checked = verify_signed(binary, manifest, op, sp, pp, rp, 20)
+                original_call = f.call
+                def submission_call(route, request):
+                    if route == "push_tx":
+                        assert request == {"spend_bundle": checked["spend_bundle"]}
+                        return {"success": True, "status": "PENDING" if case == "pending" else "SUCCESS"}
+                    return original_call(route, request)
+                f.call = submission_call
+                attempt = base / ("dispatch-" + case + ".json")
+                a = SimpleNamespace(binary=binary, manifest=manifest, observation=op, solution=sp, preparation=pp,
+                    signature_response=rp, max_fee=20, max_observation_age=300, approved_bundle_id=checked["bundle_id"],
+                    endpoint=f"https://127.0.0.1:{server.server_port}", ca_cert=certs / "ca.crt", client_cert=certs / "client.crt",
+                    client_key=certs / "client.key", attempt=attempt, duration=15, timeout=2)
+                if case == "wrong-approval":
+                    a.approved_bundle_id = "ff" * 32
+                elif case == "invalid-signature":
+                    response = json.loads(rp.read_text())
+                    response["signature"] = "00" * 96
+                    rp.write_text(json.dumps(response))
+                elif case == "spent":
+                    f.records[name(f.input)] = f.record(f.input, 90, 100)
+                elif case == "wrong-network":
+                    f.override["get_network_info"] = {"success": True, "network_name": "mainnet"}
+                elif case == "existing-attempt":
+                    attempt.write_bytes(b"preserve")
+                if case in ("success", "pending"):
+                    result = _dispatch(a)
+                    assert result["outcome"] == "reply-" + case and seen.count("push_tx") == 1
+                    assert result["context"]["bundle_id"] == checked["bundle_id"] and not result["confirmation_established"]
+                else:
+                    try:
+                        _dispatch(a)
+                    except Exception:
+                        pass
+                    else:
+                        raise AssertionError(case)
+                    assert "push_tx" not in seen
+                    if case in ("spent", "wrong-network"):
+                        assert read_attempt(attempt)["outcome"] == "unknown"
+                    elif case == "existing-attempt":
+                        assert attempt.read_bytes() == b"preserve" and not seen
+                    else:
+                        assert not attempt.exists() and not seen
+                dispatch_cases.append(case)
     finally:
         if thread is not None:
             server.shutdown()
@@ -276,13 +329,15 @@ def main():
     assert len(monitor_positives) == 5 and len(monitor_negatives) == 4
     evidence = {"schema_version": 1, "validation": "public-fixture-operator-confirmation", "positive_cases": positives,
                 "negative_cases": negatives, "monitor_positive_cases": monitor_positives, "monitor_negative_cases": monitor_negatives,
-                "live_node_contacted": False, "resources_closed": True,
+                "dispatch_cases": dispatch_cases, "live_node_contacted": False, "resources_closed": True,
                 "binary_sha256": digest(binary.read_bytes()), "source_sha256": {str(p.relative_to(ROOT)).replace("\\", "/"): digest(p.read_bytes())
                   for p in (Path(__file__), ROOT / "integration/confirm_fee.py", ROOT / "integration/monitor_fee.py", ROOT / "integration/monitor_history.py", ROOT / "integration/confirmation.py",
                             ROOT / "integration/confirmation_transport.py", ROOT / "integration/testnet_probe.py",
-                            ROOT / "integration/verify_signed_fee.py", ROOT / "integration/prepare_fee.py", ROOT / "integration/test_confirmation.py")}}
+                            ROOT / "integration/verify_signed_fee.py", ROOT / "integration/prepare_fee.py", ROOT / "integration/test_confirmation.py",
+                            ROOT / "integration/submission_dispatch.py", ROOT / "integration/submission_transport.py", ROOT / "integration/submission_attempt.py")}}
     destination.write_text(json.dumps(evidence, sort_keys=True, indent=2) + "\n", encoding="utf-8")
-    print(f"PASS: confirmation 9 positive / 11 negative, monitor 5 positive / 4 negative over mutual TLS; resources closed. Report: {destination}")
+    assert len(dispatch_cases) == 7
+    print(f"PASS: confirmation 9 positive / 11 negative, monitor 5 positive / 4 negative, dispatch 2 positive / 5 negative over mutual TLS; resources closed. Report: {destination}")
 
 
 if __name__ == "__main__":
