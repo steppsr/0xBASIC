@@ -292,6 +292,15 @@ def main():
                     signature_response=rp, max_fee=20, max_observation_age=300, approved_bundle_id=checked["bundle_id"],
                     endpoint=f"https://127.0.0.1:{server.server_port}", ca_cert=certs / "ca.crt", client_cert=certs / "client.crt",
                     client_key=certs / "client.key", attempt=attempt, duration=15, timeout=2)
+                common = [sys.executable, str(ROOT / "integration/submit_fee.py")]
+                for field in ("binary", "manifest", "observation", "solution", "preparation", "signature_response", "max_fee", "max_observation_age"):
+                    common.extend(["--" + field.replace("_", "-"), str(getattr(a, field))])
+                if case == "success":
+                    review_run = subprocess.run([*common, "--review-only"], capture_output=True, timeout=60)
+                    assert review_run.returncode == 0, review_run.stderr
+                    reviewed = json.loads(review_run.stdout)
+                    assert reviewed["bundle_id"] == checked["bundle_id"] and reviewed["preparation"] == checked["preparation"]
+                    assert reviewed["transactions_submitted"] == 0 and not seen and not attempt.exists()
                 if case == "wrong-approval":
                     a.approved_bundle_id = "ff" * 32
                 elif case == "invalid-signature":
@@ -304,17 +313,17 @@ def main():
                     f.override["get_network_info"] = {"success": True, "network_name": "mainnet"}
                 elif case == "existing-attempt":
                     attempt.write_bytes(b"preserve")
+                command = [*common, "--approve-bundle-id", a.approved_bundle_id]
+                for field in ("endpoint", "ca_cert", "client_cert", "client_key", "attempt", "duration", "timeout"):
+                    command.extend(["--" + field.replace("_", "-"), str(getattr(a, field))])
+                cli_result = subprocess.run(command, capture_output=True, timeout=60)
                 if case in ("success", "pending"):
-                    result = _dispatch(a)
+                    assert cli_result.returncode == (0 if case == "success" else 3), cli_result.stderr
+                    result = read_attempt(attempt)
                     assert result["outcome"] == "reply-" + case and seen.count("push_tx") == 1
                     assert result["context"]["bundle_id"] == checked["bundle_id"] and not result["confirmation_established"]
                 else:
-                    try:
-                        _dispatch(a)
-                    except Exception:
-                        pass
-                    else:
-                        raise AssertionError(case)
+                    assert cli_result.returncode == 1, (case, cli_result.stderr)
                     assert "push_tx" not in seen
                     if case in ("spent", "wrong-network"):
                         assert read_attempt(attempt)["outcome"] == "unknown"
@@ -376,14 +385,15 @@ def main():
     assert len(monitor_positives) == 5 and len(monitor_negatives) == 4
     evidence = {"schema_version": 1, "validation": "public-fixture-operator-confirmation", "positive_cases": positives,
                 "negative_cases": negatives, "monitor_positive_cases": monitor_positives, "monitor_negative_cases": monitor_negatives,
-                "dispatch_cases": dispatch_cases, "isolated_dispatch_cases": isolated_dispatch_cases,
+                "dispatch_cases": dispatch_cases, "dispatch_via_operator_cli": True, "offline_submission_review_checked": True,
+                "isolated_dispatch_cases": isolated_dispatch_cases,
                 "live_node_contacted": False, "resources_closed": True,
                 "binary_sha256": digest(binary.read_bytes()), "source_sha256": {str(p.relative_to(ROOT)).replace("\\", "/"): digest(p.read_bytes())
                   for p in (Path(__file__), ROOT / "integration/confirm_fee.py", ROOT / "integration/monitor_fee.py", ROOT / "integration/monitor_history.py", ROOT / "integration/confirmation.py",
                             ROOT / "integration/confirmation_transport.py", ROOT / "integration/testnet_probe.py",
                             ROOT / "integration/verify_signed_fee.py", ROOT / "integration/prepare_fee.py", ROOT / "integration/test_confirmation.py",
                             ROOT / "integration/submission_dispatch.py", ROOT / "integration/submission_transport.py", ROOT / "integration/submission_attempt.py",
-                            ROOT / "simulator/isolated_dispatch.py")}}
+                            ROOT / "simulator/isolated_dispatch.py", ROOT / "integration/submit_fee.py")}}
     destination.write_text(json.dumps(evidence, sort_keys=True, indent=2) + "\n", encoding="utf-8")
     assert len(dispatch_cases) == 7 and len(isolated_dispatch_cases) == 3
     print(f"PASS: confirmation 9 positive / 11 negative, monitor 5 positive / 4 negative, dispatch 2 positive / 5 negative, isolated dispatch 1 positive / 2 negative over mutual TLS; resources closed. Report: {destination}")

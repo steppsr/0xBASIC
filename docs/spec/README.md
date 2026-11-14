@@ -94,6 +94,8 @@ Testnet integration is selected for future implementation: [plan](testnet-integr
 
 [TN-4c2 historical confirmation](testnet-historical-confirmation.md) revalidates old signed expectations explicitly for read-only observation while retaining fresh signing and submission boundaries.
 
+[TN-4d4 operator submission](testnet-operator-submission.md) adds separate offline review and exact-bundle-approved dispatch with explicit credentials, bounds and a new attempt file.
+
 [TN-4d3b full-node dispatch](testnet-full-node-dispatch.md) verifies real mempool/confirmation evidence and a deliberately lost reply through the isolated adapter.
 
 [TN-4d3a isolated dispatch identity](testnet-dispatch-identity.md) shares dispatch logic through separate fixed public and simulator adapters.

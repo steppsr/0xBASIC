@@ -1,6 +1,8 @@
 # Testnet integration: selected milestone
 
-Current executable gate: [TN-4d3b full-node verified dispatch](testnet-full-node-dispatch.md). Windows passed; native LANDO passed, confirmed on 2026-11-13. Partial/exact controls use verified dispatch, including deliberate reply loss and independent mempool observation.
+Current executable gate: [TN-4d4 operator submission](testnet-operator-submission.md). Separate offline review and explicit bundle-approved submission wrap the tested dispatch path. Native LANDO passed, confirmed on 2026-11-13. Host readiness, concrete funding/spend review and live trial remain separate.
+
+Previous gate: [TN-4d3b full-node verified dispatch](testnet-full-node-dispatch.md). Windows and native LANDO passed, confirmed on 2026-11-13; published as `c0c93a7`.
 
 Previous gate: [TN-4d3a fixed isolated dispatch adapter](testnet-dispatch-identity.md). Windows and native LANDO passed, confirmed on 2026-11-13; published as `4f52184` with all three CI workflows passing.
 
