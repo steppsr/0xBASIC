@@ -74,6 +74,30 @@ def audit(result):
     audit_shared_confirmation(result)
     audit_journal(result)
     audit_offline_pipeline(result)
+    audit_dispatch(result)
+
+
+def audit_dispatch(result):
+    from network_identity import ISOLATED_REHEARSAL
+    from submission_attempt import _document
+    entries = result["verified_dispatch"]
+    require([e["scenario"] for e in entries] == ["partial", "exact"], "Missing verified dispatch controls")
+    for entry, pipeline, confirmation in zip(entries, result["offline_pipeline"], result["fee_payment"]["confirmations"]):
+        verified = pipeline["bridge"]["verified"]
+        saved = entry["attempt"]
+        coin = confirmation["bundle"]["coin_spends"][0]["coin"]
+        expected = {"bundle_id": verified["bundle_id"], "bundle_sha256": verified["bundle_sha256"],
+                    "input_id": coin_id(coin["parent_coin_info"], coin["puzzle_hash"], coin["amount"]),
+                    "preparation_sha256": verified["preparation_sha256"], "signature_response_sha256": verified["signature_response_sha256"]}
+        loss = entry["scenario"] == "exact"
+        doc = _document(expected, "unknown" if loss else "reply-success", ISOLATED_REHEARSAL)
+        require(json.dumps({k: saved.get(k) for k in doc}, sort_keys=True) == json.dumps(doc, sort_keys=True)
+                and saved.get("fresh_chain_validation_required") is True
+                and saved.get("dispatch_may_have_occurred") is True, "Attempt evidence differs from verified bundle/outcome")
+        require(type(entry["worker_calls"]) is int and entry["worker_calls"] == 1
+                and entry["reply_loss_injected"] is loss and entry["automatic_retry_performed"] is False
+                and entry["node_environment_unchanged"] is True, "Dispatch lifecycle evidence differs")
+        require(entry["mempool_bundle"] == verified["spend_bundle"] == confirmation["bundle"], "Dispatched/mempool/confirmed bundle mismatch")
 
 
 def audit_offline_pipeline(result):
@@ -196,16 +220,39 @@ async def rehearse(node, api, binary, run, bt):
                                         "rpc_source_hashes": sources["source_hashes"]})
         journal.record("ready", result["initial_peak"])
 
+        dispatch_inputs = {}
+        result["verified_dispatch"] = []
         async def submit(bundle):
-            reply = await call("push_tx", {"spend_bundle": bundle.to_json_dict()})
-            receipt = {"bundle_id": bundle.name().hex(), "accepted": reply["success"] is True, "response": reply}
+            dispatch_entry = dispatch_inputs.get(bundle.name().hex())
+            if dispatch_entry is not None:
+                work, manifest, label = dispatch_entry
+                roots = {k: os.environ.get(k) for k in ("CHIA_ROOT", "CHIA_KEYS_ROOT", "CHIA_SIMULATOR_ROOT")}
+                command = [sys.executable, str(BASE / "dispatch_bridge.py"), "--binary", str(binary), "--manifest", str(manifest),
+                           "--work", str(work), "--bundle-id", bundle.name().hex(), "--endpoint", f"https://127.0.0.1:{rpc.listen_port}",
+                           "--ca", str(ca), "--cert", str(cert), "--key", str(key)]
+                if label == "exact":
+                    command.append("--lose-reply")
+                await asyncio.to_thread(subprocess.run, command, check=True, timeout=120)
+                require(roots == {k: os.environ.get(k) for k in roots}, "Dispatch worker changed node environment")
+                entry = json.loads((work / "dispatch-result.json").read_text())
+                entry.update({"scenario": label, "node_environment_unchanged": True})
+                # Resolve ambiguity by observing exact mempool bytes, never by retry.
+                item = (await success("get_mempool_item_by_tx_id", {"tx_id": bundle.name().hex()}))["mempool_item"]
+                require(SpendBundle.from_json_dict(item["spend_bundle"]) == bundle, "Dispatched bundle missing or changed in mempool")
+                entry["mempool_bundle"] = item["spend_bundle"]
+                result["verified_dispatch"].append(entry)
+                reply = None  # Acceptance evidence comes from the exact mempool read, not an invented RPC reply.
+            else:
+                reply = await call("push_tx", {"spend_bundle": bundle.to_json_dict()})
+            receipt = {"bundle_id": bundle.name().hex(), "accepted": dispatch_entry is not None or reply["success"] is True, "response": reply,
+                       "acceptance_evidence": "verified-dispatch-and-exact-mempool" if dispatch_entry is not None else "push-tx-reply"}
             result["submissions"].append(receipt)
-            if not reply["success"]:
+            if not receipt["accepted"]:
                 structured = reply.get("structuredError", {})
                 require(structured.get("code") == "TRANSACTION_FAILED", "Unexpected RPC submission error")
                 error = structured["data"]["error"]
                 return MempoolInclusionStatus.FAILED, Err[error]
-            require(reply.get("status") == "SUCCESS", "Unexpected pending RPC result")
+            require(dispatch_entry is not None or reply.get("status") == "SUCCESS", "Unexpected pending RPC result")
             item = (await success("get_mempool_item_by_tx_id", {"tx_id": bundle.name().hex()}))["mempool_item"]
             require(SpendBundle.from_json_dict(item["spend_bundle"]) == bundle, "RPC mempool bundle mismatch")
             receipt["mempool_bundle_matched"] = True
@@ -243,6 +290,7 @@ async def rehearse(node, api, binary, run, bt):
             require(expected == set(outputs) and verified["preparation"]["signing_request"]["message"] == details["final_signing_message"], "Shared pipeline differs from independent fee oracle")
             checked = SpendBundle.from_json_dict(verified["spend_bundle"])
             require(checked == original, "Shared pipeline returned a different bundle")
+            dispatch_inputs[checked.name().hex()] = (work, manifest, label)
             result["offline_pipeline"].append({"scenario": label, "node_constants_sha256": constants_hash, "bridge": bridge,
                                                 "node_environment_unchanged": True})
             return checked

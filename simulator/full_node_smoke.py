@@ -206,7 +206,8 @@ def worker(run, binary=None, rpc_rehearsal=False):
         report["rpc_harness_hashes"] = {str(p.relative_to(ROOT)).replace("\\", "/"): hashlib.sha256(p.read_bytes()).hexdigest()
             for p in [BASE / "full_node_rpc.py", BASE / "rpc_reorg.py", BASE / "rpc_reconfirm.py", BASE / "rpc_poll.py", BASE / "observation_journal.py", BASE / "isolated_observation.py", BASE / "rpc_sources.json", ROOT / "integration/network_identity.py", ROOT / "integration/testnet_probe.py",
                       ROOT / "integration/confirmation_transport.py", ROOT / "integration/confirmation.py",
-                      BASE / "isolated_preparation.py", BASE / "offline_bridge.py",
+                      BASE / "isolated_preparation.py", BASE / "offline_bridge.py", BASE / "isolated_dispatch.py", BASE / "dispatch_bridge.py",
+                      ROOT / "integration/submission_dispatch.py", ROOT / "integration/submission_attempt.py", ROOT / "integration/submission_transport.py",
                       ROOT / "integration/prepare_fee.py", ROOT / "integration/verify_signed_fee.py"]}
     (run / "result.json").write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 

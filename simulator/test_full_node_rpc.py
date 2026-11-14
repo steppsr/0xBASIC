@@ -19,7 +19,7 @@ def evidence():
               "submissions": [{"accepted": i < 9, "duplicate_success": True, "mempool_bundle_matched": True} for i in range(13)]}
     index = 0
     for c in fee["confirmations"]:
-        c["bundle_id"] = str(index)
+        c["bundle_id"] = f"{index:064x}"
         c["bundle"] = {"coin_spends": []}
         c["inclusion_block"].update(height=10, header_hash="ab" * 32)
         c["output_records"] = []
@@ -87,10 +87,41 @@ def evidence():
         result["offline_pipeline"].append({"scenario": confirmation["scenario"], "node_constants_sha256": "ab" * 32,
             "node_environment_unchanged": True, "bridge": {"verified": verified, "negative_cases": list(NEGATIVES),
             "original_bundle_equal": True, "private_keys_loaded": False, "sockets_allowed": False}})
+    from submission_attempt import _document
+    result["verified_dispatch"] = []
+    for pipeline, confirmation in zip(result["offline_pipeline"], fee["confirmations"]):
+        verified = pipeline["bridge"]["verified"]
+        verified.update(bundle_sha256="11" * 32, preparation_sha256="22" * 32, signature_response_sha256="33" * 32)
+        coin = confirmation["bundle"]["coin_spends"][0]["coin"]
+        context = {"bundle_id": verified["bundle_id"], "bundle_sha256": verified["bundle_sha256"],
+                   "input_id": coin_id(coin["parent_coin_info"], coin["puzzle_hash"], coin["amount"]),
+                   "preparation_sha256": verified["preparation_sha256"], "signature_response_sha256": verified["signature_response_sha256"]}
+        loss = confirmation["scenario"] == "exact"
+        saved = {**_document(context, "unknown" if loss else "reply-success", ISOLATED_REHEARSAL),
+                 "fresh_chain_validation_required": True, "dispatch_may_have_occurred": True}
+        result["verified_dispatch"].append({"scenario": confirmation["scenario"], "attempt": saved,
+            "worker_calls": 1, "reply_loss_injected": loss, "automatic_retry_performed": False,
+            "node_environment_unchanged": True, "mempool_bundle": copy.deepcopy(confirmation["bundle"])})
     return result
 
 
 class RpcEvidenceTests(unittest.TestCase):
+    def test_dispatch_evidence_mutations_fail(self):
+        changes = [lambda r: r["verified_dispatch"].pop(),
+                   lambda r: r["verified_dispatch"][0].update(worker_calls=2),
+                   lambda r: r["verified_dispatch"][1].update(reply_loss_injected=False),
+                   lambda r: r["verified_dispatch"][0].update(automatic_retry_performed=True),
+                   lambda r: r["verified_dispatch"][0].update(node_environment_unchanged=False),
+                   lambda r: r["verified_dispatch"][1]["attempt"].update(outcome="reply-success"),
+                   lambda r: r["verified_dispatch"][0]["attempt"]["context"].update(bundle_id="ff" * 32),
+                   lambda r: r["verified_dispatch"][0]["attempt"].update(confirmation_established=True),
+                   lambda r: r["verified_dispatch"][0]["mempool_bundle"].update(aggregated_signature="00" * 96)]
+        for change in changes:
+            r = evidence()
+            change(r)
+            with self.assertRaises(RuntimeError):
+                audit(r)
+
     def test_offline_pipeline_mutations_fail(self):
         changes = [lambda r: r["offline_pipeline"].pop(),
             lambda r: r["offline_pipeline"][0].update(node_environment_unchanged=False),

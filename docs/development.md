@@ -1,5 +1,7 @@
 # Development status and roadmap
 
+[TN-4d3b full-node dispatch](spec/testnet-full-node-dispatch.md) connects verified controls to the isolated node and preserves a deliberately unknown outcome before independent mempool observation. Windows passed 51 simulator tests and the full RPC rehearsal; native LANDO passed, confirmed on 2026-11-13. TN-4d3a is published as `4f52184` with all CI passing.
+
 [TN-4d3a fixed isolated dispatch](spec/testnet-dispatch-identity.md) separates public and simulator workers/attempt records. Windows unit suite: 141 tests (19 Linux-only skips); native LANDO passed, confirmed on 2026-11-13. Full-node dispatch integration follows this adapter gate. TN-4d2b is published as `ef08322` with all CI passing.
 
 [TN-4d2b verified bounded dispatch](spec/testnet-verified-dispatch.md) combines fresh signed-input verification, exact bundle approval, intent persistence and a worker that checks fresh node/coin state. Windows unit suite passed 136 tests (19 Linux-only skips); native LANDO passed, confirmed on 2026-11-13. No public submission CLI yet.

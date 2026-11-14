@@ -1,5 +1,7 @@
 # Isolated M4 simulator environment
 
+[TN-4d3b verified dispatch](../docs/spec/testnet-full-node-dispatch.md) routes the partial/exact RPC controls through the fixed isolated adapter in separate processes. It records normal and deliberately lost replies, checks exact mempool/confirmation evidence, and preserves existing reorg/reconfirmation checks. Windows: 51 evidence tests and full RPC passed; native LANDO passed, confirmed on 2026-11-13. Follow the linked gate for exact commands.
+
 M4-1 Windows smoke verified with Python 3.13.7, Chia 2.7.4 and chia_rs 0.48.0. Linux environment setup and smoke passed, as confirmed by the user. Compiler version and the 274 Windows / 275 Linux Rust tests are unchanged.
 
 The environment smoke harness runs in-process SpendSim with an in-memory database. It farms one block, checks two reward records through SimClient, verifies an empty mempool and closes resources. It does not submit or sign a spend and does not prove payment authorization. First farmed block is recorded by this upstream simulator at height 0; coin-store confirmation indexes are recorded separately rather than assumed equal.
