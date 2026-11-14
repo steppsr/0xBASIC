@@ -1,0 +1,79 @@
+{
+  "baseline_peak": {
+    "header_hash": "0x5c31b5f16cd1f5ea5da00647207b1215da07414f28d464acc5e0e524a7bdc1c2",
+    "height": 4964268,
+    "timestamp": null
+  },
+  "baseline_peak_stable": true,
+  "baseline_synced": true,
+  "chia_rs_wheel_comparison": {
+    "exact_match": true,
+    "lobot_member_sha256": "621fbf14878e4c03b20178963be695bd6a91d7211e538c76d04665c84731356b",
+    "member": "chia_rs/chia_rs.cpython-312-x86_64-linux-gnu.so",
+    "member_sha256": "621fbf14878e4c03b20178963be695bd6a91d7211e538c76d04665c84731356b",
+    "package": "chia_rs",
+    "version": "0.48.0",
+    "wheel": "chia_rs-0.48.0-cp312-cp312-manylinux_2_28_x86_64.whl",
+    "wheel_sha256": "db506c1e6a6f4114fb54d97750153c5a0143808f88f3ef20f70681f929a8f44c",
+    "wheel_url": "https://files.pythonhosted.org/packages/8f/4f/dd098c8e40283c04a991cf590cea24208ead22b3db074fa068b6e11e6ef8/chia_rs-0.48.0-cp312-cp312-manylinux_2_28_x86_64.whl"
+  },
+  "configured_overrides_match_reviewed_testnet11": true,
+  "credentials_copied": false,
+  "effective_constants_match_reviewed_testnet11": true,
+  "effective_constants_sha256": "6aaed577a4edff3a8e9390af7aced93a3d9665d47d6d44dc46db8e0772f2a163",
+  "endpoint": "https://127.0.0.1:8555",
+  "expected_mempool_flags_at_observed_height": 50987607,
+  "full_node_executable_sha256": "c5373c8e883c102da3de6df47e3ac32706a6b4a97bc9828c2f2f0ca56bd29c1c",
+  "funding_or_submission_authorized": false,
+  "host": "LOBOT",
+  "limits": [
+    "Dated observations; not current chain proof.",
+    "RPC constants are node-reported, not independent full-binary attestation.",
+    "The library file hash matches an official wheel member; this does not attest the entire running process.",
+    "No funded contract coin, destination, owner or budget was selected."
+  ],
+  "mutating_rpc_calls": 0,
+  "network": {
+    "genesis_challenge": "37a90eb5185a9c4439a91ddc98bbadce7b4feba060d50116a067de66bf236615",
+    "network_name": "testnet11",
+    "network_prefix": "txch"
+  },
+  "node_cli_sha256": "274189209a28db0b17410ca3e5d0decf50d4b27b4508cc035fb57a74ad8fc5f7",
+  "node_root": "/home/steve/.chia/mainnet",
+  "node_version": "2.7.5",
+  "observed_at": "2026-11-14T15:24:47.527441+00:00",
+  "package_version": "2.7.5",
+  "repository_probe": {
+    "after": {
+      "header_hash": "d9a59e33cd11cf2dab373f641e373164269647fb4fb510c8d60d5ab988bd6f9f",
+      "height": 4964290,
+      "sync_mode": false,
+      "synced": true
+    },
+    "atomic_snapshot": false,
+    "before": {
+      "header_hash": "d9a59e33cd11cf2dab373f641e373164269647fb4fb510c8d60d5ab988bd6f9f",
+      "height": 4964290,
+      "sync_mode": false,
+      "synced": true
+    },
+    "coin": null,
+    "compiler_profile": "chia-clvm-0.19-strict-v2",
+    "network": {
+      "genesis_challenge": "37a90eb5185a9c4439a91ddc98bbadce7b4feba060d50116a067de66bf236615",
+      "name": "testnet11",
+      "prefix": "txch"
+    },
+    "node_version": "2.7.5",
+    "observed_at": "2026-11-14T15:30:09.855085+00:00",
+    "schema_version": 1,
+    "spend_validated": false,
+    "transactions_submitted": 0,
+    "validation": "rpc-observation-only"
+  },
+  "schema_version": 1,
+  "services_changed": false,
+  "upstream_commit": "ff71448437a137c7092775923d5ecbbe104433e7",
+  "validation": "dated-read-only-host-baseline",
+  "wallet_keys_accessed": false
+}

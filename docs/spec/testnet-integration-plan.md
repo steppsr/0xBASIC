@@ -1,6 +1,6 @@
 # Testnet integration: selected milestone
 
-Current step: [operator walkthrough](testnet-operator-walkthrough.md) and [host readiness](testnet-host-readiness.md). Documentation consolidation requires no native rerun. Read-only LANDO inventory found an existing mainnet directory and running Chia harvester/daemon; confirm the host choice before preparing deployment changes. Existing services remain untouched.
+Current step: [LOBOT host readiness](testnet-host-readiness.md). The selected existing Testnet11 node/faucet must stay running. Read-only live identity, sync, effective constants and bundled-library checks passed on 2026-11-14. Reuse that node; prepare an isolated tools workspace, not a new node installation. No additional native test is required for this baseline documentation.
 
 Previous executable gate: [TN-4d4 operator submission](testnet-operator-submission.md). Windows and native LANDO passed, confirmed on 2026-11-13; published as `1ee9791`. Concrete host baseline, funding/spend review and live trial remain separate.
 

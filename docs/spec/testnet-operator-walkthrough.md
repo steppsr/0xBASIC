@@ -10,7 +10,7 @@ Implementation revision: `1ee9791f7781ed7aa0372403fa7daad115e6dd3f`. All exact-r
 | --- | --- |
 | Compiler checkout and built CLI | Build and independently validate the reviewed fee-payment contract |
 | Pinned `.work/m4/venv` | Offline CLVM/signature calculations and integration commands; retains Chia 2.7.4/chia_rs 0.48.0 |
-| Dedicated testnet node | Reviewed public baseline Chia 2.7.5/testnet11; explicit configuration, separate runtime/root and loopback mutual-TLS RPC |
+| Existing LOBOT testnet node | Reviewed Chia 2.7.5/testnet11; preserve its existing root/runtime/faucet and use explicit loopback mutual-TLS RPC |
 | Linux signer vault | Test-only owner file under the account's native home, outside the checkout, share and reports |
 
 The isolated full-node rehearsal is disposable and uses simulator constants. Passing it does not make a public node's effective configuration match the reviewed baseline. Never change the verifier's network identity merely to accept a different node.

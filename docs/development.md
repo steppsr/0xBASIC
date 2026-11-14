@@ -1,5 +1,7 @@
 # Development status and roadmap
 
+[LOBOT readiness](spec/testnet-host-readiness.md) passed read-only live baseline checks on 2026-11-14: Chia 2.7.5/Testnet11, synced node, matching effective constants and exact official chia_rs 0.48.0 library bytes. The existing faucet/node remain unchanged. Reuse this node and prepare a separate tools workspace; no new node installation or native regression gate is needed for this documentation update.
+
 The [operator walkthrough](spec/testnet-operator-walkthrough.md) and [host-readiness record](spec/testnet-host-readiness.md) consolidate the completed testnet tooling. TN-4d4 passed Windows/native Linux and is published as `1ee9791`. No new native test is needed for this documentation step. Read-only inventory found an existing Chia harvester/daemon on LANDO; host selection must account for those services before deployment planning proceeds.
 
 [TN-4d4 operator submission](spec/testnet-operator-submission.md) adds offline review and an explicit approval/TLS/bounds/attempt-file command. Windows unit suite: 145 tests (19 Linux-only skips); native LANDO passed, confirmed on 2026-11-13. TN-4d3b passed native Linux and is published as `c0c93a7`. No live trial is performed by this gate.
