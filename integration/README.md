@@ -1,5 +1,7 @@
 # Experimental testnet integration
 
+Start with the [consolidated operator walkthrough](../docs/spec/testnet-operator-walkthrough.md) and [host readiness](../docs/spec/testnet-host-readiness.md). Operator CLI validation passed Windows and native Linux; actual host setup and public funding/spending are separate reviewed steps.
+
 [TN-4d4 operator submission](../docs/spec/testnet-operator-submission.md) adds `submit_fee.py`: separate offline `--review-only` and explicitly approved single-bundle dispatch. Submission requires every TLS/timing argument and a new attempt file. Exit 0 is not confirmation; monitor separately. Windows suite: 145 tests (19 Linux-only); native LANDO passed, confirmed on 2026-11-13. Follow the fixture gate before live use.
 
 [TN-4d3a fixed isolated dispatch](../docs/spec/testnet-dispatch-identity.md) adds a harness-only simulator adapter and separate record reader. Public dispatch keeps its reviewed identity. Suite: 141 tests (19 Linux-only); the pinned matrix adds isolated dispatch 1 positive/2 negative. Native LANDO passed, confirmed on 2026-11-13.

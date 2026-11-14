@@ -1,6 +1,8 @@
 # Testnet integration: selected milestone
 
-Current executable gate: [TN-4d4 operator submission](testnet-operator-submission.md). Separate offline review and explicit bundle-approved submission wrap the tested dispatch path. Native LANDO passed, confirmed on 2026-11-13. Host readiness, concrete funding/spend review and live trial remain separate.
+Current step: [operator walkthrough](testnet-operator-walkthrough.md) and [host readiness](testnet-host-readiness.md). Documentation consolidation requires no native rerun. Read-only LANDO inventory found an existing mainnet directory and running Chia harvester/daemon; confirm the host choice before preparing deployment changes. Existing services remain untouched.
+
+Previous executable gate: [TN-4d4 operator submission](testnet-operator-submission.md). Windows and native LANDO passed, confirmed on 2026-11-13; published as `1ee9791`. Concrete host baseline, funding/spend review and live trial remain separate.
 
 Previous gate: [TN-4d3b full-node verified dispatch](testnet-full-node-dispatch.md). Windows and native LANDO passed, confirmed on 2026-11-13; published as `c0c93a7`.
 

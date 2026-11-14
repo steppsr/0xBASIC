@@ -4,6 +4,8 @@ Current development documentation targets compiler `0.3.0-alpha.1`, language `0.
 
 ## Choose a starting point
 
+For the experimental testnet path, start with the [operator walkthrough](testnet-operator-walkthrough.md) and [host-readiness record](testnet-host-readiness.md). These consolidate the implemented tools and remaining deployment/trial decisions.
+
 | Task | Read |
 | --- | --- |
 | Download and run the compiler | [Release record](loop-release-review.md), then [package usage](package-usage.md) |
