@@ -4,6 +4,7 @@ import base64
 import hashlib
 import json
 import math
+import os
 import re
 import secrets
 import shlex
@@ -14,6 +15,7 @@ import time
 from pathlib import Path, PurePosixPath
 
 from testnet_probe import ProbeError, require, hex32, uint, coin_id, endpoint as validate_endpoint
+from prepare_fee import observation as validate_preparation_observation
 
 HERE = Path(__file__).resolve().parent
 MODULES = ("network_identity", "testnet_probe")
@@ -150,6 +152,26 @@ def probe(target, endpoint, ca_cert, client_cert, client_key, duration=30, timeo
         transfer.close()
 
 
+def export_observation(path, result):
+    """Publish a fresh preparation-compatible observation without overwriting files."""
+    value = result["observation"]
+    validate_preparation_observation(value)
+    payload = (json.dumps(value, indent=2, allow_nan=False) + "\n").encode("utf-8")
+    temporary = None
+    try:
+        with tempfile.NamedTemporaryFile(dir=path.parent, prefix=".ssh-observation-", delete=False) as handle:
+            temporary = Path(handle.name)
+            handle.write(payload)
+            handle.flush()
+            os.fsync(handle.fileno())
+        # Same-directory hard link publishes completed bytes exclusively, even if a
+        # competing writer created the destination after the CLI's early check.
+        os.link(temporary, path)
+    finally:
+        if temporary is not None:
+            temporary.unlink(missing_ok=True)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     for name in ("ssh-target", "endpoint", "ca-cert", "client-cert", "client-key"):
@@ -159,11 +181,22 @@ def main():
     parser.add_argument("--coin-id")
     parser.add_argument("--expected-puzzle-hash")
     parser.add_argument("--expected-amount", type=int)
+    parser.add_argument("--observation-out", type=Path,
+                        help="New local observation file for offline preparation; requires coin expectations")
     args = parser.parse_args()
     try:
+        if args.observation_out is not None:
+            require(all(value is not None for value in
+                        (args.coin_id, args.expected_puzzle_hash, args.expected_amount)),
+                    "Observation export requires complete coin expectations")
+            require(not args.observation_out.exists() and not args.observation_out.is_symlink(),
+                    "Observation output must be a new file")
+            require(args.observation_out.parent.is_dir(), "Observation output directory must exist")
         result = probe(args.ssh_target, args.endpoint, args.ca_cert, args.client_cert,
                        args.client_key, args.duration, args.timeout,
                        args.coin_id, args.expected_puzzle_hash, args.expected_amount)
+        if args.observation_out is not None:
+            export_observation(args.observation_out, result)
         print(json.dumps(result, indent=2))
         return 0
     except (ProbeError, OSError, ValueError, RecursionError, subprocess.SubprocessError, KeyboardInterrupt):

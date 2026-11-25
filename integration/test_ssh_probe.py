@@ -1,15 +1,18 @@
 """SSH argument, request binding, deadline and remote worker regression checks."""
 import hashlib
+import io
 import json
 import os
 import subprocess
 import sys
+import tempfile
 import time
 import unittest
 from unittest.mock import patch
 
 import ssh_probe
 import test_testnet_probe as fixtures
+import prepare_fee
 from testnet_probe import ProbeError
 
 
@@ -87,6 +90,64 @@ class SSHProbeTests(unittest.TestCase):
                 with self.subTest(args=args), self.assertRaises(ProbeError):
                     self.run_probe(**args)
             launch.assert_not_called()
+
+    def test_export_is_readable_by_preparation_and_never_overwrites(self):
+        value = fixtures.probe.observe(lambda route, request: fixtures.replies()[route],
+                                       fixtures.COIN_ID, fixtures.PUZZLE, 1000)
+        with tempfile.TemporaryDirectory() as directory:
+            path = ssh_probe.Path(directory) / "observation.json"
+            ssh_probe.export_observation(path, {"observation": value})
+            saved = path.read_bytes()
+            decoded = prepare_fee.read_json(saved)
+            self.assertEqual(decoded, value)
+            coin, height = prepare_fee.observation(decoded)
+            self.assertEqual((coin["name"], height), (fixtures.COIN_ID, 100))
+            with self.assertRaises(FileExistsError):
+                ssh_probe.export_observation(path, {"observation": value})
+            self.assertEqual(path.read_bytes(), saved)
+            self.assertEqual(list(path.parent.iterdir()), [path])
+
+    def test_export_rejects_stale_invalid_or_unpublishable_observations(self):
+        value = fixtures.probe.observe(lambda route, request: fixtures.replies()[route],
+                                       fixtures.COIN_ID, fixtures.PUZZLE, 1000)
+        with tempfile.TemporaryDirectory() as directory:
+            path = ssh_probe.Path(directory) / "observation.json"
+            for mutation in ({"observed_at": "2000-01-01T00:00:00+00:00"},
+                             {"coin": None}, {"network": {}}, {"spend_validated": True}):
+                with self.subTest(mutation=mutation), self.assertRaises(ProbeError):
+                    ssh_probe.export_observation(path, {"observation": dict(value, **mutation)})
+                self.assertEqual(list(path.parent.iterdir()), [])
+            with patch.object(ssh_probe.os, "link", side_effect=OSError("unsupported filesystem")):
+                with self.assertRaises(OSError):
+                    ssh_probe.export_observation(path, {"observation": value})
+            self.assertEqual(list(path.parent.iterdir()), [])
+
+    def test_export_cli_preflight_failure_and_success(self):
+        value = fixtures.probe.observe(lambda route, request: fixtures.replies()[route],
+                                       fixtures.COIN_ID, fixtures.PUZZLE, 1000)
+        base = ["ssh_probe", "--ssh-target", "LOBOT", "--endpoint", "https://127.0.0.1:8555",
+                "--ca-cert", "/ca", "--client-cert", "/cert", "--client-key", "/key"]
+        coin_args = ["--coin-id", fixtures.COIN_ID, "--expected-puzzle-hash", fixtures.PUZZLE,
+                     "--expected-amount", "1000"]
+        with tempfile.TemporaryDirectory() as directory:
+            path = ssh_probe.Path(directory) / "observation.json"
+            with patch.object(sys, "stderr", io.StringIO()), patch.object(sys, "stdout", io.StringIO()):
+                with patch.object(ssh_probe, "probe") as probe:
+                    with patch.object(sys, "argv", base + ["--observation-out", str(path)]):
+                        self.assertEqual(ssh_probe.main(), 1)
+                    path.write_text("existing evidence")
+                    with patch.object(sys, "argv", base + coin_args + ["--observation-out", str(path)]):
+                        self.assertEqual(ssh_probe.main(), 1)
+                    probe.assert_not_called()
+                    self.assertEqual(path.read_text(), "existing evidence")
+                path.unlink()
+                with patch.object(sys, "argv", base + coin_args + ["--observation-out", str(path)]):
+                    with patch.object(ssh_probe, "probe", side_effect=ProbeError("failed read")):
+                        self.assertEqual(ssh_probe.main(), 1)
+                    self.assertFalse(path.exists())
+                    with patch.object(ssh_probe, "probe", return_value={"observation": value}):
+                        self.assertEqual(ssh_probe.main(), 0)
+                    self.assertEqual(json.loads(path.read_text()), value)
 
     def test_coin_worker_and_parent_with_synthetic_rpc(self):
         # Run the actual streamed observation and parent protocol in a subprocess.

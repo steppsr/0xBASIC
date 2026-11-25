@@ -1,5 +1,7 @@
 # Development status and roadmap
 
+The [SSH observation export gate](spec/testnet-ssh-probe.md#next-gate-local-observation-export) adds optional `--observation-out` for a fresh local preparation-compatible coin observation. Publication refuses existing files and validates freshness and the public observation schema. Windows passed 155 integration tests (21 Linux-only skips); the user confirmed native Linux testing passed on 2026-11-24. Coin observation commit `af255d5` is published with all three CI workflows passing.
+
 The next [SSH coin observation gate](spec/testnet-ssh-probe.md#next-gate-explicit-coin-observations) requires an explicit coin ID, puzzle hash and amount, checks them through the existing read-only observer, and binds the returned coin to the request. Windows passed 152 integration tests (21 Linux-only skips); the user confirmed native Linux testing passed on 2026-11-24. Fixtures need no live coin or wallet. The original no-coin SSH gate is published as `f3379df` after the user's native pass.
 
 The [read-only SSH worker](spec/testnet-ssh-probe.md) implements the approved LANDO-tools/LOBOT-node layout's first gate. Windows passed 150 integration tests (21 Linux-only skips); the new client passed a live read-only LOBOT observation. The user confirmed native Linux and LANDO-to-LOBOT testing passed on 2026-11-24; reproducible commands are in the gate document. Remote monitoring and submission remain separate steps.

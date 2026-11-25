@@ -42,8 +42,50 @@ Replies bind a fresh nonce and streamed source hashes. These detect request mixu
 not a dishonest host. The CLI writes a JSON envelope to stdout only on success;
 errors go to stderr with exit 1 (usage errors: 2). The envelope contains an
 `observation` and is labelled `ssh-read-only-probe`. The wrapper is not a direct
-preparation input; preparation/report export integration is a later gate. Equal
-peaks are not an atomic snapshot or chain attestation.
+preparation input; use the optional local export described below. Equal peaks
+are not an atomic snapshot or chain attestation.
+
+## Next gate: local observation export
+
+`--observation-out PATH` writes the nested observation as a local UTF-8 JSON file
+in the existing preparation input format. Complete coin expectations are required.
+The parent applies the public preparation observation validator before writing:
+network/version/profile, observation scope, positive amount, coin consistency,
+stable synced peak and timestamp freshness (at most 300 seconds). No compiler,
+CLVM execution, signing or spend validation occurs during export. Preparation
+still independently validates this input and applies its own freshness checks.
+
+Choose a new file in an existing directory on LANDO's native filesystem. Existing
+files, directories and symlinks are refused before SSH starts. After a successful
+probe, complete JSON is written and fsynced in a temporary file in that directory,
+then published with an exclusive hard link. A competing destination causes failure
+without overwriting it. Temporary files are removed after normal success/failure.
+Filesystems without hard-link support fail closed; use native storage rather than
+a shared mount. No directory fsync or power-loss durability guarantee is claimed.
+A process kill can leave a temporary file; an error after publication (such as a
+stdout failure) does not prove that the completed observation file is absent.
+
+The default stdout SSH envelope is unchanged and retains source hashes. The saved
+file contains only the observation, with no TLS paths, credentials or SSH wrapper.
+Remote paths are not local output paths. Nothing is written on LOBOT. Use a fresh
+filename for each attempt; failed reads do not refresh an earlier observation.
+
+For a later approved coin, add this option to the existing SSH command alongside
+all three coin expectations:
+
+```text
+--observation-out /home/steve/0xbasic-trial/observation-001.json
+```
+
+The parent directory must already exist. The resulting file can be supplied to
+`prepare_fee.py --observation PATH` with that tool's other required original
+inputs. This is a format bridge, not authorization to fund, sign or submit a coin.
+
+Three new regression tests exercise the preparation validator against saved bytes,
+existing-file refusal, invalid/stale observations, publication failure cleanup and
+CLI success/failure. Windows passed **155 tests, with 21 Linux-only skips**. Native
+Linux testing for this export gate passed, confirmed by the user on 2026-11-24. Run the sync/test block below and
+expect **155 tests, OK, no skips**. No live coin or repeat LOBOT check is required.
 
 ## Next gate: explicit coin observations
 
@@ -96,7 +138,8 @@ for this slice:
 ```
 
 Original gate: **150 tests, OK, no skips**, confirmed passed. With the additional
-coin checks, expect **152 tests, OK, no skips** before committing that new slice.
+coin checks, **152 tests, OK, no skips** was confirmed passed. The local export
+gate now expects **155 tests, OK, no skips** before committing its changes.
 
 With LANDO-to-LOBOT SSH trust and batch authentication already configured, this
 additional command exercises the approved topology without installing anything:
