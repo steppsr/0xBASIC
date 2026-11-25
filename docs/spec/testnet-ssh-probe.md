@@ -1,5 +1,9 @@
 # Read-only SSH worker gate
 
+The probe, coin expectations and observation export gates passed native Linux
+testing. The current next gate is the [SSH confirmation adapter](testnet-ssh-confirmation.md);
+use that document for the latest native test count and commands.
+
 The approved layout keeps compiler and offline signing work on LANDO and uses
 LOBOT's existing Testnet11 node through a lightweight SSH worker. Node TLS keys
 stay on LOBOT. No compiler, Python environment, checkout or service is installed

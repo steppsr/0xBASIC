@@ -54,6 +54,8 @@ Tests need no Chia installation or keys beyond the deliberately public fixtures.
 
 The [SSH worker gate](../docs/spec/testnet-ssh-probe.md) keeps compiler/signing on LANDO and TLS credentials on LOBOT. `ssh_probe.py` performs a bounded read-only observation, without remote installation. Optional coin checks require the coin ID, expected puzzle hash and expected amount together. `--observation-out` exports a fresh observation into a new local file for preparation, refusing overwrites. The linked document contains native fixture and live read-only commands. Remote submission and monitoring are not implemented yet.
 
+The [SSH confirmation adapter](../docs/spec/testnet-ssh-confirmation.md) adds one bounded read-only observation using the existing exact-spend/children/depth/anchor checks. It is internal and not yet wired into `monitor_fee.py`; original-input verification remains the caller's responsibility.
+
 ## Offline preparation (TN-2)
 
 `prepare_fee.py` prepares only the reviewed fee-payment contract from a complete artifact, a coin-bearing observation and an explicit solution/fee budget. It requires the existing pinned simulator Python environment for independent execution; it never creates a node, signs or submits. See [TN-2](../docs/spec/testnet-preparation.md) for its format, limits and exact native test commands. `verify_preparation.py --binary PATH` exercises synthetic observations only.

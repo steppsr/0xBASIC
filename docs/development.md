@@ -1,5 +1,7 @@
 # Development status and roadmap
 
+The [SSH confirmation adapter](spec/testnet-ssh-confirmation.md) adds a bounded internal worker for exact-spend/child/depth/anchor observations over SSH. It is not yet connected to the operator monitor. Windows passed 158 integration tests (21 Linux-only skips); the user confirmed native Linux validation passed on 2026-11-24. Observation export is published as `adf0175` after the user's native pass.
+
 The [SSH observation export gate](spec/testnet-ssh-probe.md#next-gate-local-observation-export) adds optional `--observation-out` for a fresh local preparation-compatible coin observation. Publication refuses existing files and validates freshness and the public observation schema. Windows passed 155 integration tests (21 Linux-only skips); the user confirmed native Linux testing passed on 2026-11-24. Coin observation commit `af255d5` is published with all three CI workflows passing.
 
 The next [SSH coin observation gate](spec/testnet-ssh-probe.md#next-gate-explicit-coin-observations) requires an explicit coin ID, puzzle hash and amount, checks them through the existing read-only observer, and binds the returned coin to the request. Windows passed 152 integration tests (21 Linux-only skips); the user confirmed native Linux testing passed on 2026-11-24. Fixtures need no live coin or wallet. The original no-coin SSH gate is published as `f3379df` after the user's native pass.
