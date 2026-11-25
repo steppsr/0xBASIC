@@ -9,6 +9,7 @@ import unittest
 from unittest.mock import patch
 
 import ssh_probe
+import test_testnet_probe as fixtures
 from testnet_probe import ProbeError
 
 
@@ -75,6 +76,69 @@ class SSHProbeTests(unittest.TestCase):
             with patch.object(ssh_probe.subprocess, "Popen", side_effect=launch_child(Child(mutate))):
                 with self.assertRaises(ProbeError):
                     self.run_probe()
+
+    def test_coin_arguments_rejected_before_ssh(self):
+        with patch.object(ssh_probe.subprocess, "Popen") as launch:
+            for args in ({"requested_coin": fixtures.COIN_ID},
+                         {"expected_amount": 1000},
+                         {"requested_coin": "bad", "expected_puzzle_hash": fixtures.PUZZLE, "expected_amount": 1000},
+                         *({"requested_coin": fixtures.COIN_ID, "expected_puzzle_hash": fixtures.PUZZLE,
+                            "expected_amount": amount} for amount in (-1, True, 2**64))):
+                with self.subTest(args=args), self.assertRaises(ProbeError):
+                    self.run_probe(**args)
+            launch.assert_not_called()
+
+    def test_coin_worker_and_parent_with_synthetic_rpc(self):
+        # Run the actual streamed observation and parent protocol in a subprocess.
+        # Replace only RPC I/O with public fixture replies. POSIX uses the real alarm;
+        # Windows disables that Linux-specific mechanism, covered by native tests.
+        launch = subprocess.Popen
+        read_text = ssh_probe.Path.read_text
+        data = fixtures.replies()
+        extra = ""
+
+        def fixture_source(path, *args, **kwargs):
+            source = read_text(path, *args, **kwargs)
+            if path.name == "testnet_probe.py":
+                source += ("\n_DATA = " + repr(data) + "\nclass Transport:\n"
+                           " def __init__(self, *args): pass\n"
+                           " def call(self, route, request):\n"
+                           "  if route == 'get_coin_record_by_name':\n"
+                           "   assert request == {'name': '0x" + fixtures.COIN_ID + "'}\n"
+                           "  return _DATA[route]\n")
+                source += extra
+            return source
+
+        def local_worker(*args, **kwargs):
+            prelude = "DURATION = 5\n"
+            if os.name != "posix":
+                prelude += ("import signal\nsignal.SIGALRM = signal.SIGTERM\n"
+                            "signal.ITIMER_REAL = 0\nsignal.setitimer = lambda *args: None\n")
+            return launch([sys.executable, "-I", "-B", "-c", prelude + ssh_probe.REMOTE], **kwargs)
+
+        args = {"requested_coin": fixtures.COIN_ID.upper(),
+                "expected_puzzle_hash": "0x" + fixtures.PUZZLE, "expected_amount": 1000}
+        with patch.object(ssh_probe.Path, "read_text", fixture_source), \
+                patch.object(ssh_probe.subprocess, "Popen", side_effect=local_worker):
+            result = self.run_probe(**args)
+            self.assertEqual(result["observation"]["coin"]["name"], fixtures.COIN_ID)
+            self.assertEqual(result["observation"]["coin"]["amount"], "1000")
+            self.assertFalse(result["observation"]["spend_validated"])
+            for key, value in (("spent", True), ("spent_block_index", 1)):
+                data = fixtures.replies()
+                data["get_coin_record_by_name"]["coin_record"][key] = value
+                with self.subTest(key=key), self.assertRaises(ProbeError):
+                    self.run_probe(**args)
+            data = fixtures.replies()
+            with self.assertRaises(ProbeError):
+                self.run_probe(**dict(args, expected_amount=999))
+            with self.assertRaises(ProbeError):
+                self.run_probe(**dict(args, expected_puzzle_hash="ff" * 32))
+            # Even a well-formed envelope must not substitute another observed coin.
+            extra = ("\n_original = observe\ndef observe(*args):\n"
+                     " result = _original(*args)\n result['coin']['name'] = '00' * 32\n return result\n")
+            with self.assertRaises(ProbeError):
+                self.run_probe(**args)
 
     def test_real_local_timeout_kills_reaps_and_closes_pipes(self):
         launch = subprocess.Popen

@@ -13,7 +13,7 @@ import tempfile
 import time
 from pathlib import Path, PurePosixPath
 
-from testnet_probe import ProbeError, require, endpoint as validate_endpoint
+from testnet_probe import ProbeError, require, hex32, uint, coin_id, endpoint as validate_endpoint
 
 HERE = Path(__file__).resolve().parent
 MODULES = ("network_identity", "testnet_probe")
@@ -48,7 +48,9 @@ try:
     client = probe.Transport(request['endpoint'], Path(request['ca_cert']),
                              Path(request['client_cert']), Path(request['client_key']),
                              request['timeout'])
-    observation = probe.observe(client.call)
+    expected = request.get('expected_coin')
+    observation = (probe.observe(client.call) if expected is None else
+                   probe.observe(client.call, expected['name'], expected['puzzle_hash'], expected['amount']))
     print(json.dumps({'nonce': packet['nonce'], 'sources': hashes,
                       'observation': observation}), flush=True)
 except Exception:
@@ -73,9 +75,16 @@ def command(target, duration):
             "/usr/bin/python3 -I -B -c " + shlex.quote(loader)]
 
 
-def probe(target, endpoint, ca_cert, client_cert, client_key, duration=30, timeout=10):
+def probe(target, endpoint, ca_cert, client_cert, client_key, duration=30, timeout=10,
+          requested_coin=None, expected_puzzle_hash=None, expected_amount=None):
     argv = command(target, duration)
     validate_endpoint(endpoint)
+    expected = None
+    if any(value is not None for value in (requested_coin, expected_puzzle_hash, expected_amount)):
+        require(all(value is not None for value in (requested_coin, expected_puzzle_hash, expected_amount)),
+                "Coin ID, expected puzzle hash and expected amount must be supplied together")
+        expected = {"name": hex32(requested_coin), "puzzle_hash": hex32(expected_puzzle_hash),
+                    "amount": uint(expected_amount)}
     require(type(timeout) in (int, float) and math.isfinite(timeout) and 0 < timeout <= 30,
             "Socket timeout must be in (0, 30] seconds")
     for path in (ca_cert, client_cert, client_key):
@@ -86,7 +95,7 @@ def probe(target, endpoint, ca_cert, client_cert, client_key, duration=30, timeo
     nonce = secrets.token_hex(32)
     packet = json.dumps({"nonce": nonce, "modules": sources, "request": {
         "endpoint": endpoint, "ca_cert": ca_cert, "client_cert": client_cert,
-        "client_key": client_key, "timeout": timeout}}).encode()
+        "client_key": client_key, "timeout": timeout, "expected_coin": expected}}).encode()
     require(len(packet) <= MAX_PACKET, "Worker packet is too large")
     deadline = time.monotonic() + duration
     transfer = tempfile.TemporaryFile()
@@ -117,8 +126,18 @@ def probe(target, endpoint, ca_cert, client_cert, client_key, duration=30, timeo
                 "Worker reply does not match this request")
         observation = reply["observation"]
         require(type(observation) is dict and observation.get("validation") == "rpc-observation-only"
-                and observation.get("transactions_submitted") == 0
-                and observation.get("coin") is None, "Unexpected observation")
+                and observation.get("transactions_submitted") == 0, "Unexpected observation")
+        coin = observation.get("coin")
+        if expected is None:
+            require(coin is None, "Unexpected coin observation")
+        else:
+            require(type(coin) is dict and coin.get("name") == expected["name"]
+                    and coin.get("puzzle_hash") == expected["puzzle_hash"]
+                    and coin.get("amount") == str(expected["amount"])
+                    and coin.get("spent") is False and type(coin.get("spent_block_index")) is int
+                    and coin["spent_block_index"] == 0, "Coin observation does not match request")
+            require(coin_id(coin.get("parent_coin_info"), expected["puzzle_hash"], expected["amount"])
+                    == expected["name"], "Coin observation has inconsistent ID")
         return {"schema_version": 1, "validation": "ssh-read-only-probe",
                 "sources": hashes, "observation": observation}
     finally:
@@ -137,10 +156,14 @@ def main():
         parser.add_argument("--" + name, required=True)
     parser.add_argument("--duration", type=float, default=30)
     parser.add_argument("--timeout", type=float, default=10)
+    parser.add_argument("--coin-id")
+    parser.add_argument("--expected-puzzle-hash")
+    parser.add_argument("--expected-amount", type=int)
     args = parser.parse_args()
     try:
         result = probe(args.ssh_target, args.endpoint, args.ca_cert, args.client_cert,
-                       args.client_key, args.duration, args.timeout)
+                       args.client_key, args.duration, args.timeout,
+                       args.coin_id, args.expected_puzzle_hash, args.expected_amount)
         print(json.dumps(result, indent=2))
         return 0
     except (ProbeError, OSError, ValueError, RecursionError, subprocess.SubprocessError, KeyboardInterrupt):

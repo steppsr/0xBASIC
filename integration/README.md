@@ -52,7 +52,7 @@ Tests need no Chia installation or keys beyond the deliberately public fixtures.
 
 ## SSH read-only probe
 
-The [SSH worker gate](../docs/spec/testnet-ssh-probe.md) keeps compiler/signing on LANDO and TLS credentials on LOBOT. `ssh_probe.py` performs only a bounded no-coin observation, without remote installation. The linked document contains native fixture and live read-only commands. Remote submission and monitoring are not implemented yet.
+The [SSH worker gate](../docs/spec/testnet-ssh-probe.md) keeps compiler/signing on LANDO and TLS credentials on LOBOT. `ssh_probe.py` performs a bounded read-only observation, without remote installation. Optional coin checks require the coin ID, expected puzzle hash and expected amount together. The linked document contains native fixture and live read-only commands. Remote submission and monitoring are not implemented yet.
 
 ## Offline preparation (TN-2)
 
